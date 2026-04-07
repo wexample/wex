@@ -92,7 +92,7 @@
   - Inclure les deux causait des doublons de container names
 - **Trailing slash sur `path` et `setup_path`** : cohérence avec v5 pour les concaténations dans compose (`${APP_SETUP_PATH}apache/…`)
 
-- [ ] **`app/perms`** — fix permissions (dépendance de start)
+- [x] **`app/perms`** — fix permissions via `filestate` (`Scope.PERMISSIONS` + `Scope.OWNERSHIP`)
   - `chown` + `chmod` récursif selon config `permissions.*`
   - Local env : utilise l'utilisateur courant
   - Autre env : utilise `www-data` ou config
@@ -106,36 +106,50 @@
 
 - [x] **`config/get`** / **`config/set`** — lecture/écriture dans `.wex/config.yml` + `--runtime` pour le runtime config
 
-### Phase 7 — Commandes distantes (après tout le reste)
-- [ ] **`remote/exec`** — SSH vers un serveur distant
-  - Options : `--environment`, `--command`, `--terminal`
-  - Construit la commande SSH depuis la config `env.<env>.server.ip`
+### Phase 7 — Stubs restants dans app/start
+- [ ] **`_checkup`** — détecter app déjà démarrée + env absent (bloqué par `env/choose`)
+- [ ] **`_proxy`** — démarrer le proxy si requis (bloqué par proxy helper)
+- [ ] **`_update_hosts`** — appeler `hosts/update` (bloqué par proxy + sudo)
+- [ ] **`_serve` / `_first_init`** — hooks post-start (bloqué par migration services)
+- [ ] **`_complete`** — afficher domaines + next commands
 
-- [ ] **`remote/push`** — SCP + webhook
-  - Copie les fichiers marqués `remote: push` dans le schema
-  - Appelle le webhook HTTP du serveur distant
-  - **Complexe** — à faire en dernier
+### Phase 8 — Migration fichier v5→v6
+- [x] **`migration/run`** — commande existante (`migration/run`, `migration/status`, `migration/rollback`)
+- [ ] **`migration_6_0_0.py`** — fichier de migration v5→v6
+  - Clé `wex.version` → `global.wex_version` (à confirmer)
+  - Structure `.wex/tmp/` — vérifier cohérence avec v6
+  - Clé `docker.main_db_container` → inchangée
+  - Clé `global.type: app` — doit être présente
+  - **Test** : faire tourner sur une app encore en v5
+
+### Phase 9 — Commandes mineures manquantes
+- [ ] **`app/serve`** — hook uniquement, trivial
+- [ ] **`app/go`** — alias `app/exec --interactive` avec shell par défaut
+- [ ] **`container/list`** — liste containers depuis docker-compose.runtime.yml
+- [ ] **`env/choose`** / **`env/set`** / **`env/get`** — gestion environnement
+- [ ] **`domain/list`** — liste les domaines configurés
+- [ ] **`logs/follow`** — tail des logs docker compose
+- [ ] **`config/write`** todos — domains/domain_tld, user/group/uid/gid
+
+### Phase 10 (last) — Commandes distantes
+- [ ] **`remote/exec`** — SSH vers un serveur distant
+- [ ] **`remote/push`** — SCP + webhook (complexe)
+- [ ] **`remote/go`**, **`remote/available`**, **`remote/push_receive`**
 
 ---
 
-## Système de migration des apps v5→v6
+## Hors scope / non prioritaire
 
-> En v5 le système existait mais était peu utilisé.
-> En v6 on le réactive et on l'enrichit pour couvrir la transition v5→v6.
+- `app/init` — création d'une nouvelle app (complexe, peu urgent)
+- `hosts/update` — dépend du proxy
+- `webhook/*` — après app/start complet
+- `service/install`, `service/used`
+- `branch/env`, `branch/ip`
+- `notification/notify`, `info/update` (AI)
 
-### Commande à créer
-- [x] **`migration/run`** — migre une app (commande existante : `migration/run`, `migration/status`, `migration/rollback`)
+---
 
-### Fichiers de migration à créer dans `wex-addon-app/migrations/`
-- [ ] **`migration_6_0_0.py`** — migration v5→v6
-  - Choses à vérifier/adapter sur une app v5 :
-    - Clé `wex.version` → devient `global.wex_version` (à confirmer)
-    - Structure `.wex/tmp/` — vérifier que les fichiers runtime sont attendus au même endroit
-    - Clé `docker.main_db_container` → inchangée (déjà v5-compatible)
-    - Clé `global.type: app` — doit être présente (ajoutée par migration_5_0_1)
-  - **Test** : faire tourner sur network, vérifier config.yml après
-
-### App network — état actuel (ref pour les migrations)
+## App network — état actuel (ref)
 ```yaml
 # .wex/config.yml (network)
 wex:
@@ -149,26 +163,7 @@ docker:
 require_proxy: true
 ```
 - `app/start` testé et fonctionnel sur network en wex v6 ✅
-- `docker-compose.yml` migré : `${APP_NAME}` → `${APP_PROJECT_NAME}` pour les container names, `links` utilisent les service names directs
-
----
-
-## Commandes hors scope (pour l'instant)
-
-Ces commandes existent en v5 mais ne sont pas prioritaires :
-
-- `app/init` — création d'une nouvelle app (complexe, peu urgent)
-- `app/serve` — hook uniquement, trivial
-- `app/go` — alias de `app/exec --interactive` avec le shell par défaut
-- `hosts/update` — modifier `/etc/hosts` (sudo, dépend du proxy)
-- `container/list` — liste les containers depuis docker-compose.runtime.yml
-- `webhook/*` — système webhook complet (après app/start)
-- `service/install`, `service/used` — gestion des services
-- `remote/go`, `remote/available`, `remote/push_receive`
-- `branch/env`, `branch/ip`
-- `env/get`, `env/set`, `env/choose`
-- `domain/list`, `logs/follow`, `notification/notify`
-- `info/update` (AI)
+- `docker-compose.yml` migré : `${APP_NAME}` → `${APP_PROJECT_NAME}` pour les container names
 
 ---
 
