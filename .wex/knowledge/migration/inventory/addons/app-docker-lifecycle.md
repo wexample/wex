@@ -101,7 +101,7 @@
 - [x] **`config/get`** / **`config/set`** — lecture/écriture dans `.wex/config.yml` + `--runtime` pour le runtime config
 
 ### Phase 7 — Stubs restants dans app/start
-- [ ] **`_checkup`** — détecter app déjà démarrée + env absent (bloqué par `env/choose`)
+- [x] **`_checkup`** — vérifie existence `.wex/.env` (appelle `env/choose` si absent) + détecte app déjà démarrée via `_check_started()`
 - [ ] **`_proxy`** — démarrer le proxy si requis (bloqué par proxy helper)
 - [ ] **`_update_hosts`** — appeler `hosts/update` (bloqué par proxy + sudo)
 - ~~`_serve`~~ — supprimé, aucun usage trouvé en v5
@@ -119,7 +119,7 @@
 - ~~`app/serve`~~ — supprimé, aucun usage trouvé
 - [ ] **`app/go`** — alias `app/exec --interactive` avec shell par défaut
 - [ ] **`container/list`** — liste containers depuis docker-compose.runtime.yml
-- [ ] **`env/choose`** / **`env/set`** / **`env/get`** — gestion environnement
+- [x] **`env/choose`** / **`env/set`** / **`env/get`** — gestion environnement
 - [ ] **`domain/list`** — liste les domaines configurés
 - [ ] **`logs/follow`** — tail des logs docker compose
 - [ ] **`config/write`** todos — domains/domain_tld, user/group/uid/gid
