@@ -74,7 +74,7 @@
   - Récupère la commande via `@service::db/go`, puis `app/exec --interactive`
   - **Test** : `db go` sur network (doit ouvrir mysql CLI)
 
-- [ ] **`db/dump`** — dump de la DB
+- [x] **`db/dump`** — dump de la DB
   - Délègue au service (`@service::db/dump`), zip, symlink `db.latest`
   - **Test** : `db dump` sur network → vérifie le zip créé dans `.wex/mysql/dumps/`
 
