@@ -89,7 +89,7 @@ config/write passe.
 
 ---
 
-### STEP 4 — `_env` : projection mécanique du runtime.yml
+### ✅ STEP 4 — `_env` : projection mécanique du runtime.yml
 **Ce qu'on fait :**
 - `_env` lit `runtime.yml` et projette mécaniquement → `docker.env`
 - Table de mapping v5→v6 centralisée :
