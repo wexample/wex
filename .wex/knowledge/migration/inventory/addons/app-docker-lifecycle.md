@@ -117,7 +117,7 @@
 
 ### Phase 9 — Commandes mineures manquantes
 - ~~`app/serve`~~ — supprimé, aucun usage trouvé
-- [ ] **`app/go`** — alias `app/exec --interactive` avec shell par défaut
+- [x] **`app/go`** — alias `app/exec --interactive` avec shell par défaut
 - [ ] **`container/list`** — liste containers depuis docker-compose.runtime.yml
 - [x] **`env/choose`** / **`env/set`** / **`env/get`** — gestion environnement
 - [ ] **`domain/list`** — liste les domaines configurés
