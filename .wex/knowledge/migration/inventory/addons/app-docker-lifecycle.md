@@ -124,11 +124,7 @@
 > En v6 on le réactive et on l'enrichit pour couvrir la transition v5→v6.
 
 ### Commande à créer
-- [ ] **`migration/migrate`** — migre une app v5 vers v6
-  - Lit la version wex dans `config.yml` (clé `wex.version`)
-  - Exécute les fichiers de migration dans l'ordre (par numéro de version)
-  - Met à jour la version dans config.yml après chaque migration
-  - **Test** : `migration migrate` sur network (actuellement en `5.0.51`)
+- [x] **`migration/run`** — migre une app (commande existante : `migration/run`, `migration/status`, `migration/rollback`)
 
 ### Fichiers de migration à créer dans `wex-addon-app/migrations/`
 - [ ] **`migration_6_0_0.py`** — migration v5→v6
