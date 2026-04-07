@@ -61,27 +61,13 @@
 - [x] **`AppService`** — classe `wex-addon-app/service/app_service.py` : porte `name` + `app_workdir`
 - [x] **`ServiceCommandResolver`** — déplacé de `wex-core` vers `wex-addon-app` ; injecte `service: AppService`
 - [x] **`@mysql::config/runtime`** — écrit `mysql.cnf` + `db.main` dans runtime config
-- [x] **`@mysql::service/ready`** — poll `mysqladmin ping` (container name encore placeholder)
-- [x] **`@mysql::service/ready`** — résoudre le container name depuis `service.app_workdir.get_runtime_config()`
+- [x] **`@mysql::service/ready`** — poll `mysqladmin ping`, container name résolu depuis runtime config
 
 ### Phase 4 — Commandes DB (dépendent de app/exec)
-- [x] **`db/exec`** — exécute une commande dans le container DB
-  - Délègue la construction de la commande SQL au service (`@service::db/exec`)
-  - Puis appelle `app/exec` sur le container DB
-  - **Test** : `db exec -c "SELECT 1"` sur network
-
-- [x] **`db/go`** — entre dans le CLI DB (mysql, psql…)
-  - Récupère la commande via `@service::db/go`, puis `app/exec --interactive`
-  - **Test** : `db go` sur network (doit ouvrir mysql CLI)
-
-- [x] **`db/dump`** — dump de la DB
-  - Délègue au service (`@service::db/dump`), zip, symlink `db.latest`
-  - **Test** : `db dump` sur network → vérifie le zip créé dans `.wex/mysql/dumps/`
-
-- [x] **`db/restore`** — restaure un dump
-  - Liste les dumps disponibles (prompt si non précisé), unzip si besoin
-  - Délègue à `@service::db/destroy` puis `@service::db/restore`
-  - **Test** : `db restore` sur network → sélectionner un dump existant
+- [x] **`db/exec`** — exécute une commande SQL dans le container DB (`-s -N` pour mode scripting)
+- [x] **`db/go`** — ouvre le CLI MySQL interactif (`docker exec -ti`)
+- [x] **`db/dump`** — dump mysqldump → zip + symlinks `db.latest` / `db.latest.zip`
+- [x] **`db/restore`** — liste dumps, prompt, unzip, destroy+restore ; `--database` pour override db.main
 
 ### Phase 5 — Start (commande la plus complexe)
 - [x] **`app/start`** — fonctionnel sur network ✅
@@ -118,8 +104,7 @@
   - Testé sur network, fonctionne
   - Todos restants : domains/domain_tld, user/group/uid/gid
 
-- [ ] **`config/get`** / **`config/set`** — lecture/écriture dans `.wex/config.yml`
-  - Simple : wrap autour du loader de config v6
+- [x] **`config/get`** / **`config/set`** — lecture/écriture dans `.wex/config.yml` + `--runtime` pour le runtime config
 
 ### Phase 7 — Commandes distantes (après tout le reste)
 - [ ] **`remote/exec`** — SSH vers un serveur distant
