@@ -56,17 +56,35 @@ Pipeline final :
 
 ---
 
-### STEP 3 — `service.yml` : contributions déclaratives
-**Ce qu'on fait :**
-- `service.yml` peut déclarer des contributions calculées au runtime :
+### ✅ STEP 3 — `service.yml` : contributions déclaratives (bind avec résolution en couches)
+
+**Structure de fichiers dans l'app :**
+```
+.wex/
+  php/
+    web.ini          # base, commité, toujours présent
+  env/
+    local/
+      php/
+        web.ini      # override local (commité aussi — seul .env est exclu du git)
+    prod/
+      php/
+        web.ini      # override prod
+```
+
+**Déclaration dans `service.yml` :**
 ```yaml
 runtime:
   bind:
-    web_php_ini: php/web.{env}.ini   # résolu relatif à .wex/
+    web_php_ini: php/web.ini   # chemin stable, résolution env transparente
 ```
-- `AppService.get_runtime_contribution()` lit ce bloc et résout les chemins
 
-**Résultat :** `bind.web_php_ini` dans runtime.yml via symfony/service.yml, sans Python.
+**Résolution dans `AppService.get_runtime_contribution()` :**
+1. Cherche `.wex/env/{env}/php/web.ini`
+2. Fallback sur `.wex/php/web.ini`
+3. Erreur explicite si aucun n'existe (pas de masquage silencieux)
+
+**Résultat :** `bind.web_php_ini` dans runtime.yml pointe sur le fichier le plus spécifique disponible.
 config/write passe.
 
 ---
