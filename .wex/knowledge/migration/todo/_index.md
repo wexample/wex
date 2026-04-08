@@ -14,7 +14,6 @@ Unit and functional tests are intentionally excluded from this view.
 
 - [addons/core.md](addons/core.md) — core addon remaining commands
 - [addons/app.md](addons/app.md) — app-side remaining flows
-- [addons/docker.md](addons/docker.md) — global Docker parity
 - [addons/db.md](addons/db.md) — remote DB push/restore
 - [addons/services-db.md](addons/services-db.md) — database service family
 - [addons/services-php.md](addons/services-php.md) — PHP service family

@@ -16,8 +16,8 @@ Global dashboard for tracking the v5 -> v6 migration progress.
 
 ## Current Picture
 
-- `done/`: kernel, command system, decorators, response system, file structures, helper redistribution, default/system addons, app Docker lifecycle.
-- `todo/`: core mechanisms still open, CLI/autocomplete/install, resource/template gaps, remaining core/app/docker/db/services addon work.
+- `done/`: kernel, command system, decorators, response system, file structures, helper redistribution, default/system addons, app Docker lifecycle, global Docker quick wins.
+- `todo/`: core mechanisms still open, CLI/autocomplete/install, resource/template gaps, remaining core/app/db/services addon work.
 
 ## Files
 
