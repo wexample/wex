@@ -137,24 +137,27 @@ Les trois commandes v5 (`version/new`, `version/new_commit`, `version/new_write`
 
 → **Rien de fondamentalement nouveau à coder** sur la logique de bump/rectify/commit. La valeur ajoutée est dans l'orchestrateur et le système de hooks.
 
-### Étape 3 — Convention hooks locaux
+### Étape 3 — Système `attach` (mécanisme noyau)
 
-Définir la convention dans la doc wex-addon-app :
-- Les hooks sont des commandes dans `.wex/commands/` de l'app (ou dans un addon local)
-- Nommage : `app-publish-pre`, `app-publish-post`, `app-publish-pre-commit`, etc.
-- L'orchestrateur utilise `kernel.run_command_if_exists()` → pas d'erreur si absent
+Le kernel doit supporter la résolution des commandes attachées à un point d'exécution :
+- Un attribut `attach` (ou décorateur équivalent) sur une commande déclare `before`/`after` + la cible
+- Lors de l'exécution d'une étape, le kernel collecte les commandes attachées et les exécute dans l'ordre
+- Le mécanisme est générique — pas limité au pipeline de publication
+
+Ce point est un **prérequis noyau** à noter dans `core-mechanisms.md`.
 
 ### Étape 4 — Migration de build.sh (Syrtis, exemple concret)
 
-Une fois l'orchestrateur + hooks en place, `build.sh` de Syrtis se réécrit en commandes wex locales :
+Une fois l'orchestrateur + `attach` en place, `build.sh` de Syrtis se réécrit en commandes wex locales :
 
-```
-# .wex/commands/app_publish_pre.py
-composer install + cache:clear + update lock
+```python
+# .wex/commands/syrtis_build_prepare.py
+@attach(before="app::app/publish::commit")
+# composer install, cache:clear, update lock
 
-# .wex/commands/app_publish_post_commit.py  
-update registry version
-mirror bin/ → clients JS/PHP
+# .wex/commands/syrtis_build_mirror.py
+@attach(after="app::app/publish::bump")
+# mirror bin/ → clients JS/PHP, update registry version
 ```
 
 `build.sh` devient : `wex app::app/publish`
@@ -181,6 +184,5 @@ Ces étapes sont déclenchées **après le push** via CI/CD (GitHub Actions, Git
 
 Suite à cette analyse, `version/new`, `version/new_commit`, `version/new_write` dans `todo/addons/app.md` peuvent être **fermés** en faveur de :
 
-- [ ] `app::app/publish` — orchestrateur publication app avec hooks
-- [ ] Convention hooks locaux documentée
-- [ ] `kernel.run_command_if_exists()` — mécanisme noyau requis (voir `core-mechanisms.md`)
+- [ ] `app::app/publish` — orchestrateur publication app avec points d'ancrage
+- [ ] Système `attach` (before/after sur commande) — mécanisme noyau requis (voir `core-mechanisms.md`)
