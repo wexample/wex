@@ -192,18 +192,22 @@ Cette méthode existe déjà en v5 mais pas en v6.
 
 - [ ] Supprimer les string literals `_PROXY_DOCKER_COMPOSE` et `_PROXY_WEX_CONF`
 - [ ] Supprimer la création manuelle de fichiers dans `_create()`
-- [ ] Réintroduire l'option `--name / -n` avec validation contre `HELPER_APPS_LIST`
+- [x] Réintroduire l'option `--name / -n` avec validation contre `HELPER_APPS_LIST`
 - [ ] `_create()` devient :
   - Vérifier si `helper_app_path` existe + tourne → stop la queue (return `QueuedCollectionStopResponse`)
   - Créer le répertoire
   - Appeler `app/init` avec `name=f"wex-{name}"`, `services=[name]`, `env=env`
 - [ ] `_start()` reste inchangé (appelle `app/start` sur le path calculé)
-- [ ] Calculer le path via `get_helper_app_path(name, env)` (méthode centralisée)
+- [x] Calculer le path via `get_helper_app_path(name, env)` (méthode centralisée)
+
+Note d'avancement :
+- `helper/start` n'écrit plus le compose proxy ni `wex.conf` depuis des helpers Python ; il passe déjà par le hook `service/install`, ce qui remet les fichiers copiés dans le flux `samples` comme en v5.
+- En revanche, le vrai basculement vers `app/init` n'est pas encore fait : `helper/start` crée encore le squelette minimal (`.wex/config.yml`, `.wex/.env`, `.wex/tmp/`) à la main avant d'appeler le hook.
 
 ### Étape 7 — Refactoriser `app/start._proxy()`
 
-- [ ] Remplacer le path hardcodé `f"/var/www/{env}/wex-proxy"` par un appel à `get_helper_app_path("proxy", env)`
-- [ ] Passer `name=HELPER_APP_PROXY_SHORT_NAME` à `helper/start` au lieu d'omettre l'argument
+- [x] Remplacer le path hardcodé `f"/var/www/{env}/wex-proxy"` par un appel à `get_helper_app_path("proxy", env)`
+- [x] Passer `name=HELPER_APP_PROXY_SHORT_NAME` à `helper/start` au lieu d'omettre l'argument
 
 ### Étape 8 — Tests
 
