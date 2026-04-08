@@ -68,11 +68,12 @@
 
 ## Reste à migrer
 
-### Lifecycle / versioning
+### Publication / versioning app
 
-- [ ] `version/new`
-- [ ] `version/new_commit`
-- [ ] `version/new_write`
+- [x] `version/new` — absorbé par `app::package/bump` + futur `app::app/publish`
+- [x] `version/new_commit` — absorbé par `app::package/commit_and_push` + futur `app::app/publish`
+- [x] `version/new_write` — absorbé par `app::file_state/rectify` + futur `app::app/publish`
+- [ ] `app::app/publish` — orchestrateur de publication d'application
 
 ### À clarifier / faible priorité
 
@@ -102,4 +103,6 @@
 - En v5, `code/check` et `code/format` étaient des placeholders sans logique addon effective.
 - Ils ne sont donc pas à migrer tels quels en v6 ; le besoin de rectification passe déjà par `app::file_state/rectify`.
 - La partie webhook reste un chantier distinct si elle doit revenir en v6.
+- Le sujet `version/new*` n'est plus traité comme une migration 1:1 ; il est désormais requalifié en pipeline `app::app/publish`.
+- La roadmap détaillée associée est suivie dans `../app-publication-lifecycle.md`.
 - Le détail du périmètre Docker déjà migré est archivé dans `../../done/addons/app-docker-lifecycle.md`.
