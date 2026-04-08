@@ -13,14 +13,14 @@
 - [ ] `command/create` — generate new command scaffold
 - [ ] `test/create` — create new test
 - [ ] `test/cleanup` — clean test artifacts
-- [ ] `version/get` — get wex version
+- [x] `version/get` — SKIP: app version is already exposed via `app::info/show`
 - [ ] `version/new` — create new version
 - [ ] `version/new_commit` — version commit
 - [ ] `version/new_write` — write version file
 - [ ] `autocomplete/suggest` — shell completion suggestions ← depends on registry
 - [x] `registry/build` — scan all addons, persist registry to disk ← unblocks autocomplete, alias, info/show, test runner
 - [ ] `configure/all` — configure system
-- [ ] `service/resolve` — resolve service
+- [x] `service/resolve` — SKIP: absorbed by recursive resolution in `app::service/install`
 - [ ] `core/install` — install wex
 - [ ] `core/uninstall` — uninstall wex
 - [ ] `core/cleanup` — cleanup wex
