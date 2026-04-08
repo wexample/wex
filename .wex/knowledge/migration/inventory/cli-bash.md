@@ -6,28 +6,28 @@
 
 ## Entry points
 
-- [ ] `wex` — main bash entry point
-  - [ ] Load `.env`
-  - [ ] Generate task ID (`YYYYMMDD-HHMMSS-nanoseconds-PID`)
-  - [ ] Invoke Python kernel with task ID
-  - [ ] Execute post-exec commands loop
-  - [ ] Handle interruption cleanup
-- [ ] `wex-wrapper` — setuptools entry point wrapper
+- [x] `wex` — main bash entry point
+  - [x] Load `.env`
+  - [x] Generate request ID (`YYYYMMDD-HHMMSS-nanoseconds-PID`)
+  - [x] Invoke Python kernel with `--force-request-id`
+  - [ ] Execute post-exec commands loop — SKIP in v6, no post-exec queue
+  - [x] Handle interruption cleanup
+- [ ] `wex-wrapper` — setuptools / system wrapper not present in `bin/`
 
 ## Install scripts
 
-- [ ] `install` — check Python/pip/venv, create venv, install deps, update bashrc
-- [ ] `install-dev` — development installation
+- [ ] `install` — script exists, but still depends on non-migrated `core::core/install`
+- [x] `install-dev` — development installation
 - [ ] `uninstall`
-- [ ] `_init.sh` — shell init (set error flags)
-- [ ] `_init_sudo.sh` — sudo init
+- [x] `_init.sh` — shell init (set error flags)
+- [x] `_init_sudo.sh` — sudo init
 
 ## Shell integration
 
-- [ ] `autocomplete` — bash completion script
-- [ ] `autocomplete-handler` — completion handler
-- [ ] `terminal-handler` — terminal integration
-- [ ] `wex-coverage` — coverage testing wrapper
+- [ ] `autocomplete` — script exists, but backend `default::autocomplete/suggest` is not runnable yet
+- [ ] `autocomplete-handler` — script exists, but depends on incomplete autocomplete backend
+- [ ] `terminal-handler` — not present in `bin/`
+- [ ] `wex-coverage` — not present in `bin/`
 
 ## v6 target
 

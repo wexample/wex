@@ -14,9 +14,6 @@
 - [ ] `test/create` — create new test
 - [ ] `test/cleanup` — clean test artifacts
 - [x] `version/get` — SKIP: app version is already exposed via `app::info/show`
-- [ ] `version/new` — create new version
-- [ ] `version/new_commit` — version commit
-- [ ] `version/new_write` — write version file
 - [ ] `autocomplete/suggest` — shell completion suggestions ← depends on registry
 - [x] `registry/build` — scan all addons, persist registry to disk ← unblocks autocomplete, alias, info/show, test runner
 - [ ] `configure/all` — configure system

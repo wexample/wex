@@ -63,10 +63,13 @@
 
 ### Priorité utile
 
-- [ ] `config/bind_files`
-- [ ] `location/find`
-- [ ] `hook/exec`
-- [ ] `version/get`
+- [x] `config/bind_files` SKIP
+- [x] `location/find`
+- [x] `hook/exec` SKIP
+- [x] `version/get` SKIP replace par info/show
+
+### Update lifecycle
+
 - [ ] `version/new`
 - [ ] `version/new_commit`
 - [ ] `version/new_write`

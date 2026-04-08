@@ -11,8 +11,8 @@
 - [x] Render modes / output handlers: `stdout` / `file` / `none` — pluggable output targets in wex-core
 - [x] Addon and command resolution orchestration — `Kernel` in wex-core
 - [x] Addon registration system — `AbstractAddonManager` + addon registry
-- [ ] Task ID generation (format: `YYYYMMDD-HHMMSS-nanoseconds-PID`) — bash-side, to verify in `bin/wex`
-- [ ] Post-exec command handling (bash-side loop after Python exits)
+- [x] SKIP Task ID generation (format: `YYYYMMDD-HHMMSS-nanoseconds-PID`) — bash-side, to verify in `bin/wex`
+- [x] SKIP Post-exec command handling (bash-side loop after Python exits)
 
 ## v6 target
 

@@ -1,73 +1,49 @@
 # Helpers
 
-## v5 reference
+## Principle
 
-`wex-5/src/helper/`
+- We do not migrate v5 helpers one by one by default.
+- Useless or dead helpers are dropped.
+- Generic helpers are dispatched into shared packages (`packages/helpers`, `packages/prompt`, `packages/filestate`, etc.).
+- Wex-specific helpers stay only when they still carry Wex-specific behavior (`wex-core`, addon helpers).
 
-## Status
+## Quick status
 
-> Many helpers are already ported into `PACKAGES/PYTHON/packages/helpers` under a different structure.
-> Check individual functions before migrating — many exist under new names.
+- Most former `wex-5/src/helper/*` material is already absorbed by the Python packages layout.
+- This inventory is intentionally lightweight: if a helper still matters, it should show up through a real command, workdir, service, or package need.
 
-### command.py
-- [ ] `execute_command_sync` / `execute_command_async`
-- [ ] `execute_command_tree_sync` — nested command execution
-- [ ] `internal_command_to_shell`
-- [ ] `command_exists`, `command_escape`, `command_to_string`, `is_same_command`
-- [ ] `apply_command_decorator`
+## Still worth checking case by case
 
-### string.py
-> Check `helpers/src/wexample_helpers/helpers/string.py` first.
-- [ ] `string_to_camel_case`, `string_to_pascal_case`
-- [ ] `string_format_ignore_missing`
-- [ ] `string_truncate`, `string_multiline_center`, `string_trim_leading`
-- [ ] `string_count_lines_needed`, `string_replace_multiple`
-- [ ] `string_random_password_secure`, `string_random_password`
-- [ ] `string_has_trailing_new_line`, `string_add_lines_numbers`
-- [ ] `string_list_calculate_max_widths`
+- `core.py`
+  Core-only helper behavior may belong in `wex-core`.
+- `service.py`
+  Only if a remaining service flow still needs explicit helper logic.
+- `routing.py`
+  Only if webhook / routing migration needs old route helpers.
+- `test.py`
+  Only if old test-generation behavior is still wanted.
+- addon-specific helpers
+  Keep only when the logic is truly addon-specific and not generic enough for shared packages.
 
-### file.py
-> Check `helpers/src/wexample_helpers/helpers/file.py` and `PACKAGES/PYTHON/packages/file/` first.
-- [ ] `file_create_parent_dir`
-- [ ] `file_remove_file_if_exists`
-- [ ] File listing, reading, writing utilities
+## Not tracked in detail anymore
 
-### service.py
-- [ ] `service_get_dir`, `service_load_config`
-- [ ] `service_get_inheritance_tree`
-- [ ] `service_copy_sample_dir`, `service_get_all_dirs`
+- `command.py`
+- `string.py`
+- `file.py`
+- `prompt.py`
+- `user.py`
+- `module.py`
+- `package.py`
+- `patch.py`
+- `process.py`
+- `registry.py`
+- `system.py`
 
-### routing.py
-- [ ] `routing_get_route_name`, `routing_get_route_info`
-- [ ] `routing_is_allowed_route`
-- [ ] `routing_build_webhook_route_map`
-
-### prompt.py
-> Check `PACKAGES/PYTHON/packages/prompt/` first — `IoManager` covers many of these.
-- [ ] `prompt_build_progress_bar`, `prompt_progress_steps`
-- [ ] `prompt_choice`, `prompt_choice_dict`
-- [ ] `prompt_pick_a_file`, `prompt_pick_a_dir`
-
-### user.py
-- [ ] `get_sudo_username`, `get_user_or_sudo_user`
-- [ ] `get_uid_from_user_name`, `get_gid_from_group_name`
-- [ ] `get_user_group_name`, `get_sudo_gid`, `get_sudo_group`
-- [ ] `get_user_or_sudo_user_home_data_path`
-- [ ] `set_owner_recursively`, `set_permissions_recursively`
-- [ ] `is_current_user_sudo`, `user_exists`
-
-### Other modules
-- [ ] `core.py` — `core_kernel_get_version`, `core_dir_get_version`
-- [ ] `registry.py` — `registry_get_all_commands_from_registry_part`
-- [ ] `test.py` — test class/method naming, `create_test_from_command`
-- [ ] `module.py` — `module_load_from_file` (dynamic module loading)
-- [ ] `package.py` — `package_enable_logging`
-- [ ] `patch.py` — file patching operations
-- [ ] `process.py` — process management
+These are considered either already redistributed, superseded, or not worth migrating as a dedicated v5 helper list.
 
 ## v6 target
 
 - Generic helpers → `PACKAGES/PYTHON/packages/helpers`
 - Prompt helpers → `PACKAGES/PYTHON/packages/prompt`
-- File helpers → `PACKAGES/PYTHON/packages/file`
-- Wex-specific helpers → `wex-core`
+- File / state helpers → `PACKAGES/PYTHON/packages/filestate`
+- Wex-specific helpers → `PACKAGES/PYTHON/wex/wex-core`
