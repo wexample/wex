@@ -56,6 +56,9 @@ class Wex(Kernel):
             from wexample_wex_addon_services_monitoring.services_monitoring_addon_manager import (
                 ServicesMonitoringAddonManager,
             )
+            from wexample_wex_addon_services_collab.services_collab_addon_manager import (
+                ServicesCollabAddonManager,
+            )
             from wexample_wex_core.common.kernel import Kernel
             from wexample_wex_addon_filestate.filestate_addon_manager import FilestateAddonManager
             from wexample_wex_addon_app.app_addon_manager import AppAddonManager
@@ -68,6 +71,7 @@ class Wex(Kernel):
                 ServicesDbAddonManager,
                 ServicesPlatformAddonManager,
                 ServicesMonitoringAddonManager,
+                ServicesCollabAddonManager,
                 SystemAddonManager,
                 FilestateAddonManager,
                 JavascriptAddonManager,
