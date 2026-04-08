@@ -13,7 +13,6 @@ Unit and functional test migration is intentionally excluded.
 ## Service And Infrastructure Gaps
 
 - [ ] Remote DB push / restore in [addons/db.md](addons/db.md)
-- [ ] Service databases still incomplete in [addons/services-db.md](addons/services-db.md)
 - [ ] PHP service family still incomplete in [addons/services-php.md](addons/services-php.md)
 - [ ] Various service family still incomplete in [addons/services-various.md](addons/services-various.md)
 - [ ] Resource / template gaps in [resources-templates.md](resources-templates.md)

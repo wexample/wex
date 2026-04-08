@@ -17,4 +17,5 @@ This folder contains migration lanes reviewed as done, skipped, or explicitly cl
 - [addons/system.md](addons/system.md) — system addon migrated
 - [addons/app-docker-lifecycle.md](addons/app-docker-lifecycle.md) — app Docker lifecycle migrated
 - [addons/docker.md](addons/docker.md) — global Docker addon lane closed for current scope
+- [addons/services-db.md](addons/services-db.md) — database service family migrated in `wex-addon-db`
 - [addons/ai.md](addons/ai.md) — v5 AI addon closed as non-migration scope

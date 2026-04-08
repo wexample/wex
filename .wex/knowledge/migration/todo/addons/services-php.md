@@ -6,11 +6,11 @@
 
 ## Services
 
-- [~] `php` — tooling foundations exist (`wex-addon-dev-php`, `filestate-php`), but service command parity is not there
-- [ ] `symfony` — Symfony framework service
+- [x] `php` — base PHP service migrated in `wex-addon-dev-php`
+- [x] `symfony` — Symfony framework service migrated on top of `php`
 - [ ] `laravel` — Laravel framework service
 - [ ] `wordpress` — WordPress service
-- [ ] `phpmyadmin` — PhpMyAdmin service
+- [x] `phpmyadmin` — PhpMyAdmin service operational and validated on `network`
 
 ## v6 target
 
