@@ -9,7 +9,7 @@
 - [x] Ne plus proposer `app::db/go` si aucun DB principal n'est configuré
 - [x] Ne plus afficher de domaine pour le proxy si aucun domaine helper explicite n'existe
 - [x] Réintroduire `helper/stop`
-- [ ] Éviter que `helper/start` recrée brutalement un proxy déjà existant
+- [x] Éviter que `helper/start` recrée brutalement un proxy déjà existant
 - [ ] Remplacer la création "freestyle" du proxy par un flux helper plus standard
 - [ ] Redéfinir une base helper générique, pas uniquement proxy-centric
 - [ ] Décider si la restauration passe par la migration de `app/init` ou par une abstraction helper dédiée
