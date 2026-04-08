@@ -23,7 +23,7 @@
 ### services-monitoring
 
 - [x] `grafana`
-- [ ] `matomo`
+- [x] `matomo`
 
 ## v6 target
 
