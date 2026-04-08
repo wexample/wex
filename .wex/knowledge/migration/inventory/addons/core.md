@@ -9,7 +9,7 @@
 - [x] `version/increment` — `default::version/increment` in wex-core
 - [x] `test/run` — `test::run/all` in wex-core
 - [ ] `logo/show` — display wex logo
-- [ ] `check/hi` — health check
+- [x] `check/hi` — health check (wex hi)
 - [ ] `command/create` — generate new command scaffold
 - [ ] `test/create` — create new test
 - [ ] `test/cleanup` — clean test artifacts
@@ -18,7 +18,7 @@
 - [ ] `version/new_commit` — version commit
 - [ ] `version/new_write` — write version file
 - [ ] `autocomplete/suggest` — shell completion suggestions ← depends on registry
-- [ ] `registry/build` — scan all addons, persist registry to disk ← unblocks autocomplete, alias, info/show, test runner
+- [x] `registry/build` — scan all addons, persist registry to disk ← unblocks autocomplete, alias, info/show, test runner
 - [ ] `configure/all` — configure system
 - [ ] `service/resolve` — resolve service
 - [ ] `core/install` — install wex

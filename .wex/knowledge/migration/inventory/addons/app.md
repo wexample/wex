@@ -66,8 +66,6 @@
 - [ ] `config/bind_files`
 - [ ] `location/find`
 - [ ] `hook/exec`
-- [ ] `code/check`
-- [ ] `code/format`
 - [ ] `version/get`
 - [ ] `version/new`
 - [ ] `version/new_commit`
@@ -98,4 +96,6 @@
 - Le flux helper/proxy v5 a été restauré autour de `app/init` + `service/install`.
 - `samples/` redevient la source de vérité des fichiers copiés lors de l'installation d'un service.
 - `container/list` existe maintenant en rendu compact orienté app Wex, plus lisible que `docker ps`.
+- En v5, `code/check` et `code/format` étaient des placeholders sans logique addon effective.
+- Ils ne sont donc pas à migrer tels quels en v6 ; le besoin de rectification passe déjà par `app::file_state/rectify`.
 - La partie webhook reste un chantier distinct si elle doit revenir en v6.
