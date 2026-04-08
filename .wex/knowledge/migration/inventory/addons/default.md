@@ -12,8 +12,8 @@
 - [x] `config/set` — set config value
 - [x] `file/append_once` — append to file idempotently SKIP
 - [x] `file/remove_line` — remove line from file SKIP
-- [X] `version/parse` — parse version string SKIP
-- [ ] `python/init_dirs` — initialize Python directory structure
+- [x] `version/parse` — parse version string SKIP
+- [x] `python/init_dirs` — initialize Python directory structure SKIP
 
 ## v6 target
 
