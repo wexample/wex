@@ -8,7 +8,7 @@
 
 - [x] `version/increment` — `default::version/increment` in wex-core
 - [x] `test/run` — `test::run/all` in wex-core
-- [ ] `logo/show` — display wex logo
+- [x] `logo/show` — display wex logo
 - [x] `check/hi` — health check (wex hi)
 - [ ] `command/create` — generate new command scaffold
 - [ ] `test/create` — create new test
@@ -25,8 +25,8 @@
 - [ ] `core/uninstall` — uninstall wex
 - [ ] `core/cleanup` — cleanup wex
 - [ ] `install/update` — update installation
-- [ ] `logs/show` — display logs
-- [ ] `logs/rotate` — rotate log files
+- [x] `logs/show` — display logs
+- [x] `logs/rotate` — rotate log files (SKIP)
 
 ## New in v6 (no v5 equivalent)
 
