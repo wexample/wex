@@ -194,7 +194,7 @@ Cette méthode existe déjà en v5 mais pas en v6.
 - [ ] Supprimer les string literals `_PROXY_DOCKER_COMPOSE` et `_PROXY_WEX_CONF`
 - [ ] Supprimer la création manuelle de fichiers dans `_create()`
 - [x] Réintroduire l'option `--name / -n` avec validation contre `HELPER_APPS_LIST`
-- [ ] `_create()` devient :
+- [x] `_create()` devient :
   - Vérifier si `helper_app_path` existe + tourne → stop la queue (return `QueuedCollectionStopResponse`)
   - Créer le répertoire
   - Appeler `app/init` avec `name=f"wex-{name}"`, `services=[name]`, `env=env`
@@ -204,7 +204,8 @@ Cette méthode existe déjà en v5 mais pas en v6.
 Note d'avancement :
 - `helper/start` n'écrit plus le compose proxy ni `wex.conf` depuis des helpers Python ; il passe déjà par le hook `service/install`, ce qui remet les fichiers copiés dans le flux `samples` comme en v5.
 - `helper/start` appelle maintenant `app/init` avec `services=[name]`, ce qui aligne le flux helper sur l'esprit v5.
-- Il reste encore à finir le nettoyage de l'ancienne implémentation proxy-spécifique et à confirmer que `_create()`/`_start()` ont exactement le comportement cible décrit ci-dessus.
+- Le comportement de skip si le helper tourne déjà passe maintenant par `QueuedCollectionStopResponse`.
+- Il reste surtout à décider si `_start()` peut être considérée comme "inchangée" au sens strict de la note, mais le flux fonctionnel cible est désormais en place.
 
 ### Étape 7 — Refactoriser `app/start._proxy()`
 
