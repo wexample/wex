@@ -72,6 +72,6 @@
 ### Commandes locales manquantes
 
 - [ ] `container/list`
-- [ ] `domain/list`
+- [x] `domain/list`
 - [x] `logs/follow`
 - [x] Finaliser `config/write` pour `domains`, `domain_tld`, `user/group/uid/gid`
