@@ -89,14 +89,13 @@ En v5 : `service/install` copie `.wex/docker/docker-compose.yml` depuis les samp
 Ce fichier référence `${RUNTIME_SERVICE_PROXY_YML_ENV}` (résolu à la runtime par `config/write`).
 
 En v6 : le docker-compose proxy est une string literal dans `helper/start.py`.
-Il doit migrer vers `services/proxy/docker/docker-compose.yml`
-(attention : ce fichier existe déjà mais ne contient que la définition réseau).
-La solution est d'avoir deux fichiers :
-- `services/proxy/docker/docker-compose.yml` : réseau (déjà là)
-- `services/proxy/docker/docker-compose.app.yml` : définition du service proxy (à créer)
+Il doit migrer vers `services/proxy/samples/docker/docker-compose.yml`, car en continuité
+avec v5 le dossier `samples/` définit les fichiers copiés ou mixés lors de l'install
+d'un service.
 
-Le hook `service/install` copierait `docker-compose.app.yml` vers `.wex/docker/docker-compose.yml`
-dans l'app helper — c'est le "base app compose" que `config/write` cherche ici :
+Le hook `service/install` copierait `services/proxy/samples/docker/docker-compose.yml`
+vers `.wex/docker/docker-compose.yml` dans l'app helper — c'est le "base app compose"
+que `config/write` cherche ici :
 ```python
 base_compose = app_path / WORKDIR_SETUP_DIR / "docker" / "docker-compose.yml"
 ```
@@ -138,8 +137,9 @@ Cette méthode existe déjà en v5 mais pas en v6.
 - [ ] Créer `wex-addon-app/const/app.py` (ou compléter s'il existe) avec :
   - `HELPER_APP_PROXY_SHORT_NAME = "proxy"`
   - `HELPER_APPS_LIST = ["proxy"]`
+- [ ] Créer `wex-addon-app/helpers/app.py` avec :
   - `get_helper_app_path(name, env)` → `Path(f"/var/www/{env}/wex-{name}")`
-  - OU l'ajouter comme méthode de `AppAddonManager`
+- [ ] Exposer ce calcul via une méthode utilitaire de `AppAddonManager`
 
 ### Étape 2 — Samples proxy
 
@@ -226,9 +226,12 @@ Cette méthode existe déjà en v5 mais pas en v6.
 
 - Le hook `service/install` du proxy écrit `.wex/docker/docker-compose.yml`.
   `config/write` cherche ce fichier comme "base app compose".
-  Ces deux fichiers (réseau + service) sont tous deux dans `services/proxy/docker/` :
-  - `docker-compose.yml` (réseau, existant) → inclus automatiquement par config/write comme infra compose
-  - `docker-compose.app.yml` (service proxy, à créer) → copié par le hook install vers `.wex/docker/docker-compose.yml`
+  Le fichier source à copier reste dans `services/proxy/samples/docker/docker-compose.yml`,
+  conformément à la convention v5/v6 : `samples/` définit les fichiers copiés ou mixés
+  lors de l'install d'un service.
+
+- `services/proxy/docker/docker-compose.yml` reste réservé au compose d'infra du service
+  (ici le réseau `wex_net`) et n'est pas le fichier copié dans l'app helper.
 
 - En v5, `service/install` merge les docker-compose YAML (pour les apps ordinaires
   qui combinent plusieurs services). En v6, `config/write` gère déjà l'assemblage runtime.
