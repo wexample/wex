@@ -7,7 +7,7 @@ Deux cas d'usage distincts coexistent sous le terme "versioning/publication" :
 | Cas | Exemple | Destination | État v6 |
 |-----|---------|-------------|---------|
 | **Package / Suite** | wexample Python packages | PyPI, npm, Packagist | Mature, migré |
-| **Application** | Syrtis API, manager | Serveur/environnement | À construire |
+| **Application** | Syrtis API, manager | Serveur/environnement | Implémenté |
 
 Ce document traite exclusivement du second cas : la publication d'une **application déployée**.
 
@@ -71,98 +71,97 @@ Wex v6 fournit un **squelette de pipeline** avec des points d'ancrage. L'applica
 
 ### Points d'ancrage — système `attach`
 
-Les commandes app-spécifiques se déclarent elles-mêmes attachées à une étape du pipeline via un attribut (pseudocode illustratif) :
+Les commandes app-spécifiques se déclarent elles-mêmes attachées à une commande du pipeline via `@attach` :
 
 ```python
 # Dans la commande locale de l'app Syrtis, par exemple :
-@attach(before="app::app/publish::commit")
+@attach(before="app::app/publish")
 def syrtis_prepare_build():
     # composer install, cache:clear, update lock...
-```
 
-```python
-@attach(after="app::app/publish::bump")
+@attach(after="app::package/bump")
 def syrtis_mirror_clients():
     # mirror bin/ → clients JS/PHP
     # update registry version
 ```
 
-**Principe :** c'est la commande qui se déclare, pas l'orchestrateur qui cherche. L'orchestrateur exécute les commandes attachées à chaque point sans les connaître a priori. Aucune convention de nommage à respecter.
+**Principe :** c'est la commande qui se déclare, pas l'orchestrateur qui cherche. Les points d'ancrage sont les commandes réelles du pipeline (`app::app/publish`, `app::package/bump`, `app::file_state/rectify`...). Aucune convention de nommage à respecter.
 
 ---
 
-## Ce qui existe déjà en v6 (réutilisable tel quel)
+## Hiérarchie workdir
 
-- `app::package/bump` → logique de bump (détection changements, classification, branche version)
-- `app::file_state/rectify` → rectification fichiers générés
-- `app::package/commit_and_push` → commit + push
-- `app::version/propagate` → propagation vers dépendants (utile pour mono-repos)
+Suite à une clarification de la sémantique des workdirs, le renommage suivant a été effectué :
 
-Ces briques sont conçues pour les packages mais leur logique est directement réutilisable pour les apps.
+| Ancien nom | Nouveau nom | Rôle |
+|------------|-------------|------|
+| `AppWorkdir` | `ManagedWorkdir` | Répertoire géré par wex, sans hypothèse git |
+| `RepoWorkdir` | `RepoWorkdir` (inchangé) | ManagedWorkdir + git |
+| `CodeBaseWorkdir` | `CodeBaseWorkdir` (inchangé) | RepoWorkdir + publication (tag, merge, push) |
+
+Les apps déployées (sites web, apps mobiles) ont toujours un repo git → elles utilisent `CodeBaseWorkdir`, qui contient toutes les méthodes nécessaires à la publication.
 
 ---
 
-## Roadmap
+## Ce qui a été implémenté
 
-### Étape 1 — Commandes app/publish
+### `CodeBaseMiddleware`
 
-Créer `app::app/publish` comme orchestrateur de publication d'app :
+**Fichier :** `wex-addon-app/middleware/code_base_middleware.py`
+
+Middleware qui injecte un `CodeBaseWorkdir` dans les commandes de publication d'app. Hérite de `AppMiddleware`, override uniquement `_create_app_workdir`.
+
+### `app::app/publish`
+
+**Fichier :** `wex-addon-app/commands/app/publish.py`
+
+Orchestrateur de publication d'app. Pipeline en `QueuedCollectionResponse` :
 
 ```
 app::app/publish [--yes] [--no-bump] [--skip-rectify]
 ```
 
-Pipeline interne (points d'ancrage disponibles entre chaque étape) :
-1. → `before::publish`
-2. `app::package/bump` (sauf `--no-bump`) → `after::bump`
-3. `app::file_state/rectify` (sauf `--skip-rectify`) → `after::rectify`
-4. → `before::commit`
-5. `app::package/commit_and_push` → `after::commit`
-6. Tag git `{app_name}/v{version}` → `after::publish`
+1. `_bump` — `app_workdir.bump(interactive=not yes)` — stop si annulé
+2. `_rectify` — `run_function(app__file_state__rectify)`
+3. `_commit` — `commit_changes()` + `push_to_deployment_remote(main)`
+4. `_tag` — `add_publication_tag()`
 
-Les commandes attachées à chaque point sont collectées par le kernel au moment de l'exécution.
+La logique git est entièrement fournie par `CodeBaseWorkdir` (bump avec branche, tag annoté, push). La commande est un orchestrateur pur (~60 lignes).
 
-**Fichier cible :** `wex-addon-app/commands/app/publish.py`
-
-### Étape 2 — Résolution de `version/new` (v5)
-
-Les trois commandes v5 (`version/new`, `version/new_commit`, `version/new_write`) se dissolvent ainsi :
+### Résolution de `version/new` (v5)
 
 | v5 | v6 |
 |----|----|
-| `version/new` | `app::package/bump` (déjà en v6) |
-| `version/new_write` | `app::file_state/rectify` (déjà en v6) |
-| `version/new_commit` | `app::package/commit_and_push` (déjà en v6) |
-| orchestration | `app::app/publish` (à créer) |
+| `version/new` | `bump()` dans `CodeBaseWorkdir` via `app::app/publish` |
+| `version/new_write` | `app::file_state/rectify` |
+| `version/new_commit` | `commit_changes()` + `push_to_deployment_remote()` |
+| orchestration | `app::app/publish` ✓ |
 
-→ **Rien de fondamentalement nouveau à coder** sur la logique de bump/rectify/commit. La valeur ajoutée est dans l'orchestrateur et le système de hooks.
+---
 
-### Étape 3 — Système `attach` (mécanisme noyau)
+## Reste à faire
 
-Le kernel doit supporter la résolution des commandes attachées à un point d'exécution :
-- Un attribut `attach` (ou décorateur équivalent) sur une commande déclare `before`/`after` + la cible
-- Lors de l'exécution d'une étape, le kernel collecte les commandes attachées et les exécute dans l'ordre
-- Le mécanisme est générique — pas limité au pipeline de publication
+### Migration de build.sh (Syrtis, exemple concret)
 
-Ce point est un **prérequis noyau** à noter dans `core-mechanisms.md`.
-
-### Étape 4 — Migration de build.sh (Syrtis, exemple concret)
-
-Une fois l'orchestrateur + `attach` en place, `build.sh` de Syrtis se réécrit en commandes wex locales :
+Une fois l'orchestrateur en place, `build.sh` de Syrtis peut se réécrire en commandes wex locales :
 
 ```python
 # .wex/commands/syrtis_build_prepare.py
-@attach(before="app::app/publish::commit")
+@attach(before="app::app/publish")
 # composer install, cache:clear, update lock
 
 # .wex/commands/syrtis_build_mirror.py
-@attach(after="app::app/publish::bump")
+@attach(after="app::package/bump")
 # mirror bin/ → clients JS/PHP, update registry version
 ```
 
 `build.sh` devient : `wex app::app/publish`
 
-### Étape 5 (optionnel) — `app::app/publish-suite`
+### Point ouvert — branche version pour les apps
+
+`RepoWorkdir.bump()` crée une branche `version-x.y.z` (conçu pour les packages). Pour les apps, ce workflow de branche n'est pas forcément souhaité. À trancher : est-ce qu'`app::app/publish` doit appeler `merge_to_main()` après le tag, ou bypasser la création de branche ?
+
+### Étape optionnelle — `app::app/publish-suite`
 
 Si plusieurs apps d'un projet doivent publier ensemble (ex: api + manager), étendre `app::suite/publish` ou créer un orchestrateur de niveau projet.
 
@@ -176,13 +175,4 @@ Les éléments suivants **ne font pas partie** du cycle de vie wex local :
 - Build d'artefacts (Docker image, dist...)
 - Déploiement effectif sur serveur
 
-Ces étapes sont déclenchées **après le push** via CI/CD (GitHub Actions, GitLab CI...). Le hook `post_publish` peut éventuellement déclencher un pipeline, mais wex ne l'exécute pas directement.
-
----
-
-## Mise à jour du todo
-
-Suite à cette analyse, `version/new`, `version/new_commit`, `version/new_write` dans `todo/addons/app.md` peuvent être **fermés** en faveur de :
-
-- [ ] `app::app/publish` — orchestrateur publication app avec points d'ancrage
-- [ ] Système `attach` (before/after sur commande) — mécanisme noyau requis (voir `core-mechanisms.md`)
+Ces étapes sont déclenchées **après le push** via CI/CD (GitHub Actions, GitLab CI...).
