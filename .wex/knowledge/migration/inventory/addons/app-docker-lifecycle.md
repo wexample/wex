@@ -1,159 +1,93 @@
-# Migration plan : Docker lifecycle (wex-addon-app)
+# Migration plan: Docker lifecycle (`wex-addon-app`)
 
-> Fichier de suivi spécifique pour la migration des commandes Docker/app v5→v6.
-> Les commandes "dev workflow" (package, suite…) sont déjà migrées — ce fichier ne couvre que le cycle de vie Docker.
+> Suivi de la migration v5→v6 des commandes Docker/app.
+> Les commandes de workflow hors cycle de vie Docker ne sont pas couvertes ici.
 
----
+## Référence et cadre de test
 
-## Contexte et contraintes
+- App de référence: `/home/weeger/Desktop/WIP/WEB/WEXAMPLE/NETWORK/local/network/`
+- App v5 avec services: `symfony`, `mysql`, `phpmyadmin`
+- Config notable: `wex.version: 5.0.51`, `require_proxy: true`, `main_db_container: mysql`
+- Validation faite en pointant le symlink `app-manager` v6 vers `wex-addon-app/.../resources/app-manager.sh`
+- Si une app v5 ne passe pas en v6, la migration est portée via `migration/run` sur `network`
 
-### App de test
-- **App de référence** : `/home/weeger/Desktop/WIP/WEB/WEXAMPLE/NETWORK/local/network/`
-- App v5 avec services : `symfony`, `mysql`, `phpmyadmin`
-- Config : `wex.version: 5.0.51`, `require_proxy: true`, `main_db_container: mysql`
-- Commande v5 actuelle : `wex app/start` (fonctionne avec wex v5)
+## Architecture retenue
 
-### Stratégie de test (symlink wex v6)
-- Le symlink `wex-core/.wex/bin/app-manager` → `wex-addon-app/.../resources/app-manager.sh`
-- Chaque commande migrée se teste via le wex v6 pointé par ce symlink
-- Si une app v5 ne fonctionne pas en v6 → on crée une migration `migration/migrate` et on la fait tourner sur `network`
-- Cycle : migrer commande → tester sur network → si besoin écrire migration → re-tester
+- Les commandes Docker vivent dans `wex-addon-app/src/wexample_wex_addon_app/commands/`
+- Le cas Docker est couvert par `AppMiddleware` + `AppWorkdir`
+- `DockerAppMiddleware` a été abandonné avant implémentation
+- `ServiceCommandResolver` a été déplacé dans `wex-addon-app` et injecte `service: AppService`
+- Un service `default` centralise les options Compose communes injectées via `extends`
 
-### Architecture v6 retenue
-- Les commandes Docker vont dans `wex-addon-app/src/wexample_wex_addon_app/commands/` (sous-dossiers `app/`, `db/`, `remote/`)
-- Un nouveau middleware `DockerAppMiddleware` (ou variante de `AppMiddleware`) résout l'appdir Docker sans valider la structure "package"
-- Le `AppCommandResolver` existant gère déjà les commandes locales `.wex/commands/` — pas de changement là
+## Fait
 
----
+### Lifecycle app
 
-## Ordre de migration
+- [x] `app/started`
+- [x] `app/exec`
+- [x] `app/go`
+- [x] `app/stop`
+- [x] `app/restart`
+- [x] `app/start`
+- [x] `app/perms`
 
-### Phase 1 — Infrastructure middleware Docker
-- [x] **`DockerAppMiddleware`** — **ABANDONNÉ** : fusionné dans `AppMiddleware` existant
-  - `AppMiddleware` injecte déjà `app_workdir` sans valider la structure "package"
-  - Aucun commit jamais créé — décision prise avant l'implémentation
-  - `AppMiddleware` + `AppWorkdir` couvrent le cas Docker sans middleware séparé
+### Config app
 
-### Phase 2 — Commandes simples (building blocks)
-- [x] **`app/started`** — écrit, utilise `AppMiddleware` + `AppWorkdir`
-  - Lit `config.runtime.yml` (clé `started`) + interroge `docker ps`
-  - Modes : `config` / `any-container` / `full`
-  - Retourne `BoolResponse`
-  - **Test** : lancer sur network stoppée → `False`, network démarrée → `True`
+- [x] `config/write`
+  - Génère `config.runtime.yml`, `docker.env`, `docker-compose.runtime.yml`
+  - Reste à compléter: `domains`, `domain_tld`, `user/group/uid/gid`
+- [x] `config/get`
+- [x] `config/set`
 
-- [x] **`app/exec`** — exécute une commande dans un container via `docker exec`
-  - Options : `--container-name`, `--command`, `--user`, `--interactive`, `--sync`
-  - Retourne `InteractiveShellCommandResponse` ou `ShellCommandResponse`
-  - **Test** : `app exec -c "echo hello"` dans network
+### Base de données
 
-### Phase 3 — Stop/restart (pas de dépendance externe)
-- [x] **`app/stop`** — arrête l'app
-  - `docker compose stop` + `docker compose rm -f`
-  - Hooks : `app/stop-pre`, `app/stop-post`
-  - Met à jour `config.runtime.yml` (`started: false`)
-  - **Test** : `app stop` sur network démarrée
+- [x] `@mysql::config/runtime`
+- [x] `@mysql::service/ready`
+- [x] `db/exec`
+- [x] `db/go`
+- [x] `db/dump`
+- [x] `db/restore`
 
-- [x] **`app/restart`** — stop + start (squelette, délègue à stop + start)
-  - Délègue à `app/stop` puis `app/start`
-  - **Test** : `app restart` sur network
+### Environnement / migration
 
-### Phase 3b — Services DB (wex-addon-services-db)
-- [x] **`AppService`** — classe `wex-addon-app/service/app_service.py` : porte `name` + `app_workdir`
-- [x] **`ServiceCommandResolver`** — déplacé de `wex-core` vers `wex-addon-app` ; injecte `service: AppService`
-- [x] **`@mysql::config/runtime`** — écrit `mysql.cnf` + `db.main` dans runtime config
-- [x] **`@mysql::service/ready`** — poll `mysqladmin ping`, container name résolu depuis runtime config
+- [x] `env/choose`
+- [x] `env/set`
+- [x] `env/get`
+- [x] `migration/run` et commandes liées
+- [x] `migration_6_0_0.py`
+  - Migration de `docker.main_db_container` vers `docker.db.main`
+  - Vérifie la présence de `global.type: app`
 
-### Phase 4 — Commandes DB (dépendent de app/exec)
-- [x] **`db/exec`** — exécute une commande SQL dans le container DB (`-s -N` pour mode scripting)
-- [x] **`db/go`** — ouvre le CLI MySQL interactif (`docker exec -ti`)
-- [x] **`db/dump`** — dump mysqldump → zip + symlinks `db.latest` / `db.latest.zip`
-- [x] **`db/restore`** — liste dumps, prompt, unzip, destroy+restore ; `--database` pour override db.main
+### Support app/start
 
-### Phase 5 — Start (commande la plus complexe)
-- [x] **`app/start`** — fonctionnel sur network ✅
-  - `docker compose up -d` avec `InteractiveShellCommandResponse` (output live)
-  - `--env-file docker.env` passé au `up` (nécessaire pour les `extends` non résolus dans le runtime)
-  - Stubs restants : voir Phase 7
+- [x] `_checkup`
+- [x] `_proxy`
+- [x] `_update_hosts`
+- [x] `_complete`
+- [x] `helper/start`
+- [x] `hosts/update`
 
-### Décisions d'architecture prises lors de app/go et app/exec
+## Reste à faire
 
-- **`app/go` n'utilise pas `app/exec`** : construit `docker exec -ti container shell` directement via `InteractiveShellCommandResponse` — pas de `-c`, shell interactif pur
-- **`app/exec --interactive`** : utilise `shell -c command` + `InteractiveShellCommandResponse` (TTY hérité, mais commande via shell)
-- **Service `default`** : créé dans `wex-addon-app/services/default/` — injecté automatiquement en premier par `get_services()` dans `AppMiddleware` — fournit `stdin_open`, `tty`, `restart`, `environment`, `networks` à tous les services via `extends`
-  - Variable compose : `${SERVICE_DEFAULT_COMPOSE}` (générée dans `docker.env` par `config/write`)
-  - Valeurs par défaut : `APP_DOCKER_COMPOSE_STDIN_OPEN:-true`, `APP_DOCKER_COMPOSE_TTY:-true`
+### Commandes locales manquantes
 
-### Décisions d'architecture prises lors de app/start
+- [ ] `container/list`
+- [ ] `domain/list`
+- [ ] `logs/follow`
+- [ ] Finaliser `config/write` pour `domains`, `domain_tld`, `user/group/uid/gid`
 
-- **`APP_NAME` vs `APP_PROJECT_NAME`** : deux variables séparées dans le runtime
-  - `APP_NAME=network` — nom de l'app seul, pour les service names dans compose et les `links`
-  - `APP_PROJECT_NAME=network_local` — `{name}_{env}`, pour les container names et `--project-name` docker
-  - Motivation : permettre de faire tourner la même app en dev et prod sur le même serveur sans conflit
-- **Service composes dans `-f`** : seuls les composes sans clé `services` sont inclus (ex: proxy → `wex_net`)
-  - Les service composes avec services (symfony, mysql…) sont référencés via `extends` uniquement
-  - Inclure les deux causait des doublons de container names
-- **Trailing slash sur `path` et `setup_path`** : cohérence avec v5 pour les concaténations dans compose (`${APP_SETUP_PATH}apache/…`)
+### Commandes distantes
 
-- [x] **`app/perms`** — fix permissions via `filestate` (`Scope.PERMISSIONS` + `Scope.OWNERSHIP`)
-  - `chown` + `chmod` récursif selon config `permissions.*`
-  - Local env : utilise l'utilisateur courant
-  - Autre env : utilise `www-data` ou config
-  - Requiert sudo (`@as_sudo`)
-  - **Test** : `app perms` sur network
+- [ ] `remote/exec`
+- [ ] `remote/push`
+- [ ] `remote/go`
+- [ ] `remote/available`
+- [ ] `remote/push_receive`
 
-### Phase 6 — Config app (dépendances de start)
-- [x] **`config/write`** — génère `config.runtime.yml` + `docker.env` + `docker-compose.runtime.yml`
-  - Testé sur network, fonctionne
-  - Todos restants : domains/domain_tld, user/group/uid/gid
+## Hors scope / faible priorité
 
-- [x] **`config/get`** / **`config/set`** — lecture/écriture dans `.wex/config.yml` + `--runtime` pour le runtime config
-
-### Phase 7 — Stubs restants dans app/start
-- [x] **`_checkup`** — vérifie existence `.wex/.env` (appelle `env/choose` si absent) + détecte app déjà démarrée via `_check_started()`
-- [x] **`_proxy`** — démarre le proxy si requis ; `helper/start` si proxy inexistant
-- [x] **`_update_hosts`** — appelle `hosts/update` (écrit `/etc/hosts` wex block)
-- ~~`_serve`~~ — supprimé, aucun usage trouvé en v5
-- ~~`_first_init`~~ — supprimé, aucun usage trouvé en v5
-- [x] **`_complete`** — domaines + suggestions de commandes via `AddonCommandResolver`
-
-### Décisions d'architecture app/start (phase 7)
-- **`run_function` → retourner la réponse** : appeler `run_function(fn)` depuis un step sans `return` orpheline la `QueuedCollectionResponse` — toujours `return run_function(fn)` pour que les steps s'exécutent
-- **`app_path` explicite** : `run_function(app__config__write)` sans `app_path` utilise `kernel.call_workdir` (le cwd de l'utilisateur), pas le workdir de la commande — toujours passer `{"app_path": str(app_path)}`
-- **`VIRTUAL_HOST`** : nginx-proxy requiert `VIRTUAL_HOST=${APP_DOMAIN_MAIN}` sur le container main — ajouté dans le service symfony docker-compose
-- **`helper/start`** : crée `/var/www/{env}/wex-proxy/` from scratch (config.yml v6, docker-compose nginx-proxy) puis appelle `app/start`
-- **`hosts/update`** : écrit un bloc `#[ wex ]# ... #[ end-wex ]#` dans `/etc/hosts`, `127.0.1.1` pour env local
-- **`start-pre` / `start-post`** : supprimés — aucun usage réel en v5 ; `@attach` remplace `start-post`
-- **`start-options`** (nextcloud) : non migré — à remplacer par `depends_on: condition: service_healthy` dans le docker-compose du service
-
-### Phase 8 — Migration fichier v5→v6
-- [x] **`migration/run`** — commande existante (`migration/run`, `migration/status`, `migration/rollback`)
-- [x] **`migration_6_0_0.py`** — fichier de migration v5→v6
-  - Clé `docker.main_db_container` → `docker.db.main`
-  - Clé `global.type: app` — doit être présente
-
-### Phase 9 — Commandes mineures manquantes
-- ~~`app/serve`~~ — supprimé, aucun usage trouvé
-- [x] **`app/go`** — alias `app/exec --interactive` avec shell par défaut
-- [ ] **`container/list`** — liste containers depuis docker-compose.runtime.yml
-- [x] **`env/choose`** / **`env/set`** / **`env/get`** — gestion environnement
-- [ ] **`domain/list`** — liste les domaines configurés
-- [ ] **`logs/follow`** — tail des logs docker compose
-- [ ] **`config/write`** todos — domains/domain_tld, user/group/uid/gid
-
-### Phase 10 (last) — Commandes distantes
-- [ ] **`remote/exec`** — SSH vers un serveur distant
-- [ ] **`remote/push`** — SCP + webhook (complexe)
-- [ ] **`remote/go`**, **`remote/available`**, **`remote/push_receive`**
-
----
-
-## Hors scope / non prioritaire
-
-- `app/init` — création d'une nouvelle app (complexe, peu urgent)
-- `hosts/update` — dépend du proxy
-- `webhook/*` — après app/start complet
+- `app/init`
+- `webhook/*`
 - `service/install`, `service/used`
 - `branch/env`, `branch/ip`
-- `notification/notify`, `info/update` (AI)
-
----
+- `notification/notify`, `info/update`
