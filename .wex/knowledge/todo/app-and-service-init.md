@@ -179,7 +179,7 @@ Cette méthode existe déjà en v5 mais pas en v6.
 
 ### Étape 5 — Commande `app/init`
 
-- [ ] Créer `commands/app/init.py` :
+- [x] Créer `commands/app/init.py` :
   - Options : `--name / -n` (required), `--services / -s` (liste, required), `--env / -e` (optional), `--app-path / -a` (optional)
   - Crée le répertoire `{app_path}/.wex/` et `{app_path}/.wex/tmp/`
   - Écrit `.wex/config.yml` avec `global.name`, `global.version: 1.0.0`, `global.type: app`
@@ -203,7 +203,8 @@ Cette méthode existe déjà en v5 mais pas en v6.
 
 Note d'avancement :
 - `helper/start` n'écrit plus le compose proxy ni `wex.conf` depuis des helpers Python ; il passe déjà par le hook `service/install`, ce qui remet les fichiers copiés dans le flux `samples` comme en v5.
-- En revanche, le vrai basculement vers `app/init` n'est pas encore fait : `helper/start` crée encore le squelette minimal (`.wex/config.yml`, `.wex/.env`, `.wex/tmp/`) à la main avant d'appeler le hook.
+- `helper/start` appelle maintenant `app/init` avec `services=[name]`, ce qui aligne le flux helper sur l'esprit v5.
+- Il reste encore à finir le nettoyage de l'ancienne implémentation proxy-spécifique et à confirmer que `_create()`/`_start()` ont exactement le comportement cible décrit ci-dessus.
 
 ### Étape 7 — Refactoriser `app/start._proxy()`
 
