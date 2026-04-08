@@ -1,7 +1,7 @@
 # Addon: app
 
-> En v6, `wex-addon-app` couvre surtout le workflow de dev (packages, suites, versions).
-> Le cycle de vie Docker hérité de v5 est suivi séparément dans `app-docker-lifecycle.md`.
+> En v6, `wex-addon-app` couvre à la fois le workflow de dev et une partie du cycle de
+> vie Docker. Le chantier helper/proxy v5 → v6 est désormais migré.
 
 ## Référence v5
 
@@ -10,6 +10,8 @@
 
 ## Déjà présent en v6
 
+### Workflow packages / suites
+
 - [x] `app::dependencies/check`
 - [x] `app::dependencies/publish`
 - [x] `app::file_state/rectify`
@@ -17,6 +19,7 @@
 - [x] `app::package/bump`
 - [x] `app::package/publish`
 - [x] `app::package/publish_bumped`
+- [x] `app::suite/status`
 - [x] `app::suite/publish`
 - [x] `app::suite/exec_command`
 - [x] `app::suite/exec_shell`
@@ -27,58 +30,60 @@
 - [x] `app::setup/install`
 - [x] `app::info/show`
 
-## Migration v5→v6 restant à suivre ici
+### Cycle app / Docker déjà migré
 
-### Non détaillé ici car suivi dans la roadmap Docker dédiée
+- [x] `app::app/init`
+- [x] `app::app/start`
+- [x] `app::app/stop`
+- [x] `app::app/restart`
+- [x] `app::app/started`
+- [x] `app::app/go`
+- [x] `app::app/exec`
+- [x] `app::config/get`
+- [x] `app::config/set`
+- [x] `app::config/write`
+- [x] `app::container/list`
+- [x] `app::db/dump`
+- [x] `app::db/exec`
+- [x] `app::db/go`
+- [x] `app::db/restore`
+- [x] `app::domain/list`
+- [x] `app::env/choose`
+- [x] `app::env/get`
+- [x] `app::env/set`
+- [x] `app::helper/start`
+- [x] `app::helper/stop`
+- [x] `app::hosts/update`
+- [x] `app::logs/follow`
+- [x] `app::service/install`
 
-- Cycle de vie Docker `app/*`
-- `config/get`, `config/set`, `config/write`
-- `container/list`
-- `db/*`
-- `domain/list`
-- `env/*`
-- `hosts/update`
-- `logs/follow`
-- `migration/*`
-- `remote/*`
-- `helper/start`
+## Reste à migrer
 
-### À traiter hors roadmap Docker
+### Priorité utile
 
 - [ ] `config/bind_files`
 - [ ] `location/find`
 - [ ] `services/exec`
 - [ ] `hook/exec`
-- [ ] `helper/stop`
 - [ ] `code/check`
 - [ ] `code/format`
 - [ ] `version/get`
 - [ ] `version/new`
 - [ ] `version/new_commit`
 - [ ] `version/new_write`
+- [ ] `service/used`
 
-### Faible priorité / à clarifier
+### À clarifier / faible priorité
 
+- [ ] `branch/env`
+- [ ] `branch/ip`
+- [ ] `notification/notify`
+- [ ] `info/update`
 - [ ] `webhook/exec`
 - [ ] `webhook/listen`
 - [ ] `webhook/status`
 - [ ] `webhook/status_process`
 - [ ] `webhook/stop`
-- [ ] `service/install`
-- [ ] `service/used`
-- [ ] `branch/env`
-- [ ] `branch/ip`
-- [ ] `notification/notify`
-- [ ] `info/update`
-- [ ] `app/init`
-
-## Autres
-
-- `app/init`
-- `webhook/*`
-- `service/install`, `service/used`
-- `branch/env`, `branch/ip`
-- `notification/notify`, `info/update`
 
 ### Commandes distantes
 
@@ -88,9 +93,9 @@
 - [ ] `remote/available`
 - [ ] `remote/push_receive`
 
-## Cible v6
+## Notes
 
-- Workflow app: `wex-addon-app`
-- Lifecycle Docker: suivi dédié dans `app-docker-lifecycle.md`
-- Webhook: à migrer ou réécrire à partir de `WebhookHttpRequestHandler`
-
+- Le flux helper/proxy v5 a été restauré autour de `app/init` + `service/install`.
+- `samples/` redevient la source de vérité des fichiers copiés lors de l'installation d'un service.
+- `container/list` existe maintenant en rendu compact orienté app Wex, plus lisible que `docker ps`.
+- La partie webhook reste un chantier distinct si elle doit revenir en v6.
