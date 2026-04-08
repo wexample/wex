@@ -6,11 +6,11 @@
 
 ## v6 target
 
-- Dedicated `PACKAGES/PYTHON/wex/wex-addon-db`
+- Dedicated `PACKAGES/PYTHON/wex/wex-addon-services-db`
 
 ## Status
 
-- [x] Package extracted and renamed from the initial `wex-addon-services-db` draft to `wex-addon-db`
+- [x] Dedicated `wex-addon-services-db` package in place for DB services
 - [x] `mysql`
 - [x] `postgres`
 - [x] `mongo`

@@ -4,19 +4,31 @@
 
 `wex-5/addons/services_various/`
 
-## Services
+## Target groups
+
+### services-platform
+
+- [ ] `gitlab`
+- [ ] `jenkins`
+- [ ] `sonarqube`
+- [ ] `n8n`
+- [ ] `listmonk`
+
+### services-collab
 
 - [ ] `rocketchat`
-- [ ] `jenkins`
-- [ ] `listmonk`
-- [ ] `sonarqube`
 - [ ] `onlyoffice`
-- [ ] `n8n`
-- [ ] `gitlab`
+- [ ] `nextcloud`
+
+### services-monitoring
+
 - [ ] `grafana`
 - [ ] `matomo`
-- [ ] `nextcloud`
 
 ## v6 target
 
-- Dedicated packages per service, or a `wex-addon-services` umbrella package
+- Dedicated group packages instead of a catch-all `services-various`
+- Target naming:
+  - `wex-addon-services-platform`
+  - `wex-addon-services-collab`
+  - `wex-addon-services-monitoring`
