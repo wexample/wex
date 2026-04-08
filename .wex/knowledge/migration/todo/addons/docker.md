@@ -7,8 +7,8 @@
 ## Commands
 
 - [~] `container/runs` — partially covered by `app::container/list`, but no global addon equivalent yet
-- [ ] `docker/ip` — get Docker bridge IP
-- [ ] `docker/stop_all` — stop all running containers
+- [x] `docker/ip` — global Docker local IP command restored in v6
+- [x] `docker/stop_all` — global Docker cleanup command restored in v6
 
 ## v6 target
 
