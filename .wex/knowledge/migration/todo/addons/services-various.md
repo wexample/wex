@@ -8,7 +8,7 @@
 
 ### services-platform
 
-- [ ] `gitlab`
+- [x] `gitlab`
 - [x] `jenkins`
 - [x] `sonarqube`
 - [x] `n8n`
