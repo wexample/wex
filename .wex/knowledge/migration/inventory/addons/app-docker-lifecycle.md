@@ -73,21 +73,5 @@
 
 - [ ] `container/list`
 - [ ] `domain/list`
-- [ ] `logs/follow`
-- [ ] Finaliser `config/write` pour `domains`, `domain_tld`, `user/group/uid/gid`
-
-### Commandes distantes
-
-- [ ] `remote/exec`
-- [ ] `remote/push`
-- [ ] `remote/go`
-- [ ] `remote/available`
-- [ ] `remote/push_receive`
-
-## Hors scope / faible priorité
-
-- `app/init`
-- `webhook/*`
-- `service/install`, `service/used`
-- `branch/env`, `branch/ip`
-- `notification/notify`, `info/update`
+- [x] `logs/follow`
+- [x] Finaliser `config/write` pour `domains`, `domain_tld`, `user/group/uid/gid`

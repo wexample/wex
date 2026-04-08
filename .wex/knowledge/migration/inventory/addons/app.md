@@ -72,8 +72,25 @@
 - [ ] `info/update`
 - [ ] `app/init`
 
+## Autres
+
+- `app/init`
+- `webhook/*`
+- `service/install`, `service/used`
+- `branch/env`, `branch/ip`
+- `notification/notify`, `info/update`
+
+### Commandes distantes
+
+- [ ] `remote/exec`
+- [ ] `remote/push`
+- [ ] `remote/go`
+- [ ] `remote/available`
+- [ ] `remote/push_receive`
+
 ## Cible v6
 
 - Workflow app: `wex-addon-app`
 - Lifecycle Docker: suivi dédié dans `app-docker-lifecycle.md`
 - Webhook: à migrer ou réécrire à partir de `WebhookHttpRequestHandler`
+
