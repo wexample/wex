@@ -56,6 +56,8 @@
 - [x] `app::hosts/update`
 - [x] `app::logs/follow`
 - [x] `app::service/install`
+- [x] `app::service/used`
+- [x] `app::services/exec`
 
 ## Reste à migrer
 
@@ -71,7 +73,6 @@
 - [ ] `version/new`
 - [ ] `version/new_commit`
 - [ ] `version/new_write`
-- [ ] `service/used`
 
 ### À clarifier / faible priorité
 
@@ -79,14 +80,14 @@
 - [ ] `branch/ip`
 - [ ] `notification/notify`
 - [ ] `info/update`
+
+### Commandes distantes
+
 - [ ] `webhook/exec`
 - [ ] `webhook/listen`
 - [ ] `webhook/status`
 - [ ] `webhook/status_process`
 - [ ] `webhook/stop`
-
-### Commandes distantes
-
 - [ ] `remote/exec`
 - [ ] `remote/push`
 - [ ] `remote/go`

@@ -1,23 +1,22 @@
 # Migration plan: Docker lifecycle (`wex-addon-app`)
 
-> Suivi de la migration v5→v6 des commandes Docker/app.
-> Les commandes de workflow hors cycle de vie Docker ne sont pas couvertes ici.
+> Suivi ciblé du cycle de vie Docker/app en v6.
+> L'inventaire général de l'addon vit maintenant dans `addons/app.md`.
 
 ## Référence et cadre de test
 
 - App de référence: `/home/weeger/Desktop/WIP/WEB/WEXAMPLE/NETWORK/local/network/`
 - App v5 avec services: `symfony`, `mysql`, `phpmyadmin`
-- Config notable: `wex.version: 5.0.51`, `require_proxy: true`, `main_db_container: mysql`
-- Validation faite en pointant le symlink `app-manager` v6 vers `wex-addon-app/.../resources/app-manager.sh`
-- Si une app v5 ne passe pas en v6, la migration est portée via `migration/run` sur `network`
+- Validation helper/proxy faite aussi avec `/var/www/local/wex-proxy`
+- Si une app v5 ne passe pas en v6, la migration est portée via `migration/run`
 
 ## Architecture retenue
 
 - Les commandes Docker vivent dans `wex-addon-app/src/wexample_wex_addon_app/commands/`
-- Le cas Docker est couvert par `AppMiddleware` + `AppWorkdir`
-- `DockerAppMiddleware` a été abandonné avant implémentation
-- `ServiceCommandResolver` a été déplacé dans `wex-addon-app` et injecte `service: AppService`
-- Un service `default` centralise les options Compose communes injectées via `extends`
+- Le cas Docker repose sur `AppMiddleware` + `AppWorkdir`
+- `ServiceCommandResolver` injecte `service: AppService`
+- Le service `default` centralise les options Compose communes via `extends`
+- Le flux helper/proxy repose désormais sur `app/init` + `service/install`
 
 ## Fait
 
@@ -34,19 +33,24 @@
 ### Config app
 
 - [x] `config/write`
-  - Génère `config.runtime.yml`, `docker.env`, `docker-compose.runtime.yml`
-  - Reste à compléter: `domains`, `domain_tld`, `user/group/uid/gid`
 - [x] `config/get`
 - [x] `config/set`
 
+### Containers / services / helper
+
+- [x] `container/list`
+- [x] `service/install`
+- [x] `helper/start`
+- [x] `helper/stop`
+- [x] `hosts/update`
+
 ### Base de données
 
-- [x] `@mysql::config/runtime`
-- [x] `@mysql::service/ready`
 - [x] `db/exec`
 - [x] `db/go`
 - [x] `db/dump`
 - [x] `db/restore`
+- [x] `docker.db.main` remplace `docker.main_db_container`
 
 ### Environnement / migration
 
@@ -54,24 +58,16 @@
 - [x] `env/set`
 - [x] `env/get`
 - [x] `migration/run` et commandes liées
-- [x] `migration_6_0_0.py`
-  - Migration de `docker.main_db_container` vers `docker.db.main`
-  - Vérifie la présence de `global.type: app`
 
-### Support app/start
+## Validé récemment
 
-- [x] `_checkup`
-- [x] `_proxy`
-- [x] `_update_hosts`
-- [x] `_complete`
-- [x] `helper/start`
-- [x] `hosts/update`
+- Le helper proxy est bien créé dans `/var/www/{env}/wex-proxy`
+- Les samples proxy sont bien copiés dans l'app helper
+- `config/write` génère un `docker-compose.runtime.yml` valide pour le helper
+- Le container proxy démarre correctement via le flux v6 restauré
 
-## Reste à faire
+## À surveiller
 
-### Commandes locales manquantes
-
-- [ ] `container/list`
-- [x] `domain/list`
-- [x] `logs/follow`
-- [x] Finaliser `config/write` pour `domains`, `domain_tld`, `user/group/uid/gid`
+- Le cycle helper/proxy est réparé; les prochains incidents probables sur `app/start`
+  viendront plutôt du compose de l'app métier elle-même que du helper.
+- Les webhook restent hors de ce périmètre.
