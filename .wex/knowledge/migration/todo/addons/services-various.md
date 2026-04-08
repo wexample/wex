@@ -11,7 +11,7 @@
 - [ ] `gitlab`
 - [ ] `jenkins`
 - [ ] `sonarqube`
-- [ ] `n8n`
+- [x] `n8n`
 - [ ] `listmonk`
 
 ### services-collab

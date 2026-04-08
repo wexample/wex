@@ -50,6 +50,9 @@ class Wex(Kernel):
             from wexample_wex_addon_services_db.services_db_addon_manager import (
                 ServicesDbAddonManager,
             )
+            from wexample_wex_addon_services_platform.services_platform_addon_manager import (
+                ServicesPlatformAddonManager,
+            )
             from wexample_wex_core.common.kernel import Kernel
             from wexample_wex_addon_filestate.filestate_addon_manager import FilestateAddonManager
             from wexample_wex_addon_app.app_addon_manager import AppAddonManager
@@ -60,6 +63,7 @@ class Wex(Kernel):
                 DemoAddonManager,
                 DockerAddonManager,
                 ServicesDbAddonManager,
+                ServicesPlatformAddonManager,
                 SystemAddonManager,
                 FilestateAddonManager,
                 JavascriptAddonManager,
