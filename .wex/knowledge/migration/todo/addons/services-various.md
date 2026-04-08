@@ -17,7 +17,7 @@
 ### services-collab
 
 - [x] `rocketchat`
-- [ ] `onlyoffice`
+- [x] `onlyoffice`
 - [x] `nextcloud`
 
 ### services-monitoring
