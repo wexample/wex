@@ -56,7 +56,7 @@ git add -A + commit + push            # commit final
 
 ### Principe directeur
 
-Wex v6 fournit un **squelette de pipeline** avec des points d'ancrage (hooks). L'application définit ses propres commandes pour remplir ces points. Les tests passent en CI/CD, pas en local.
+Wex v6 fournit un **squelette de pipeline** avec des points d'ancrage. L'application définit ses propres commandes et les **attache** explicitement aux étapes du pipeline via un attribut `attach`. Les tests passent en CI/CD, pas en local.
 
 ### Étapes canoniques
 
@@ -69,19 +69,25 @@ Wex v6 fournit un **squelette de pipeline** avec des points d'ancrage (hooks). L
 5. [CI/CD]       Tests, lint, build, deploy
 ```
 
-### Points d'ancrage (hooks app)
+### Points d'ancrage — système `attach`
 
-Chaque étape peut être précédée/suivie par des commandes déclarées dans le `.wex/` local de l'app :
+Les commandes app-spécifiques se déclarent elles-mêmes attachées à une étape du pipeline via un attribut (pseudocode illustratif) :
 
+```python
+# Dans la commande locale de l'app Syrtis, par exemple :
+@attach(before="app::app/publish::commit")
+def syrtis_prepare_build():
+    # composer install, cache:clear, update lock...
 ```
-pre_publish      avant tout (sync deps, composer install, migrations...)
-post_bump        après le bump (ex: écrire la version dans des fichiers tiers)
-pre_commit       avant le commit (ex: cache:clear, update lock file)
-post_commit      après le commit (ex: notifier CI, mettre à jour un registre)
-post_publish     après le tag (ex: déclencher deploy, notifier Slack)
+
+```python
+@attach(after="app::app/publish::bump")
+def syrtis_mirror_clients():
+    # mirror bin/ → clients JS/PHP
+    # update registry version
 ```
 
-Ces hooks sont de simples commandes wex locales (`app-specific`) — pas de magie, juste la convention de nommage qui permet à l'orchestrateur de les appeler s'ils existent.
+**Principe :** c'est la commande qui se déclare, pas l'orchestrateur qui cherche. L'orchestrateur exécute les commandes attachées à chaque point sans les connaître a priori. Aucune convention de nommage à respecter.
 
 ---
 
@@ -106,15 +112,15 @@ Créer `app::app/publish` comme orchestrateur de publication d'app :
 app::app/publish [--yes] [--no-bump] [--skip-rectify]
 ```
 
-Pipeline interne :
-1. Appel hook `pre_publish` si défini localement
-2. `app::package/bump` (sauf `--no-bump`)
-3. Appel hook `post_bump` si défini
-4. `app::file_state/rectify` (sauf `--skip-rectify`)
-5. Appel hook `pre_commit` si défini
-6. `app::package/commit_and_push`
-7. Tag git `{app_name}/v{version}`
-8. Appel hook `post_publish` si défini
+Pipeline interne (points d'ancrage disponibles entre chaque étape) :
+1. → `before::publish`
+2. `app::package/bump` (sauf `--no-bump`) → `after::bump`
+3. `app::file_state/rectify` (sauf `--skip-rectify`) → `after::rectify`
+4. → `before::commit`
+5. `app::package/commit_and_push` → `after::commit`
+6. Tag git `{app_name}/v{version}` → `after::publish`
+
+Les commandes attachées à chaque point sont collectées par le kernel au moment de l'exécution.
 
 **Fichier cible :** `wex-addon-app/commands/app/publish.py`
 
