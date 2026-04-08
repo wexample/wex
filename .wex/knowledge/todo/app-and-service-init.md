@@ -169,12 +169,12 @@ Cette méthode existe déjà en v5 mais pas en v6.
   - Options : `--service / -s` (required), `--app-path / -a` (optional, defaults to cwd)
   - Vérifie que le service existe via `AppAddonManager.find_service_dir(service)`
   - Vérifie que le service n'est pas déjà dans la config (sauf si `--force`)
+  - Résout récursivement les dépendances du service avant installation
   - Ajoute `service.{name}: {}` dans config.yml
   - Set `global.main_service` si pas encore défini
   - Appelle le hook `service/install` via `AppAddonManager.run_service_hook()`
   - S'inspirer de `v5/addons/app/command/service/install.py`
   - Note : pas besoin de gérer le merge de docker-compose (c'est le hook qui copie le fichier)
-  - Note : pas besoin des dépendances de service dans un premier temps
 
 ### Étape 5 — Commande `app/init`
 
