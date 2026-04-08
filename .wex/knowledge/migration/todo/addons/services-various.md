@@ -12,7 +12,7 @@
 - [ ] `jenkins`
 - [ ] `sonarqube`
 - [x] `n8n`
-- [ ] `listmonk`
+- [x] `listmonk`
 
 ### services-collab
 
