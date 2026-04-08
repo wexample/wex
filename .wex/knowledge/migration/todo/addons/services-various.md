@@ -9,7 +9,7 @@
 ### services-platform
 
 - [ ] `gitlab`
-- [ ] `jenkins`
+- [x] `jenkins`
 - [x] `sonarqube`
 - [x] `n8n`
 - [x] `listmonk`
