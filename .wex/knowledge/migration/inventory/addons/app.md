@@ -65,7 +65,6 @@
 
 - [ ] `config/bind_files`
 - [ ] `location/find`
-- [ ] `services/exec`
 - [ ] `hook/exec`
 - [ ] `code/check`
 - [ ] `code/format`
