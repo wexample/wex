@@ -69,7 +69,7 @@ En v5, `app/service/install` fait :
 3. Si le service n'est pas encore dans la config → l'ajoute
 4. Copie les samples du service dans l'app (merge docker-compose, merge .gitignore, copie le reste)
 5. Set `global.main_service` si pas encore défini
-6. Set `docker.main_db_container` si le service a le tag `db`
+6. Set `docker.db.main` si le service a le tag `db`
 7. Merge les clés `docker` et `global` depuis `service.config.yml`
 8. Appelle le hook `@{service}::service/install` pour les actions service-spécifiques
 
@@ -172,6 +172,7 @@ Cette méthode existe déjà en v5 mais pas en v6.
   - Résout récursivement les dépendances du service avant installation
   - Ajoute `service.{name}: {}` dans config.yml
   - Set `global.main_service` si pas encore défini
+  - Set `docker.db.main` si le service a le tag `db` et que la clé n'est pas encore définie
   - Appelle le hook `service/install` via `AppAddonManager.run_service_hook()`
   - S'inspirer de `v5/addons/app/command/service/install.py`
   - Note : pas besoin de gérer le merge de docker-compose (c'est le hook qui copie le fichier)
