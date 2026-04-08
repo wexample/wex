@@ -164,8 +164,8 @@ Cette méthode existe déjà en v5 mais pas en v6.
 
 ### Étape 4 — Commande `app/service/install`
 
-- [ ] Créer `commands/service/__init__.py`
-- [ ] Créer `commands/service/install.py` :
+- [x] Créer `commands/service/__init__.py`
+- [x] Créer `commands/service/install.py` :
   - Options : `--service / -s` (required), `--app-path / -a` (optional, defaults to cwd)
   - Vérifie que le service existe via `AppAddonManager.find_service_dir(service)`
   - Vérifie que le service n'est pas déjà dans la config (sauf si `--force`)
