@@ -9,7 +9,6 @@ Unit and functional test migration is intentionally excluded.
 - [ ] CLI / shell parity still open in [cli-bash.md](cli-bash.md)
 - [ ] Remaining core addon work in [addons/core.md](addons/core.md)
 - [ ] Remaining app addon work in [addons/app.md](addons/app.md)
-- [ ] App publication lifecycle in [app-publication-lifecycle.md](app-publication-lifecycle.md)
 
 ## Service And Infrastructure Gaps
 

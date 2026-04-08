@@ -16,6 +16,7 @@ This folder contains migration lanes reviewed as done, skipped, or explicitly cl
 - [addons/default.md](addons/default.md) — default addon lane closed
 - [addons/system.md](addons/system.md) — system addon migrated
 - [addons/app-docker-lifecycle.md](addons/app-docker-lifecycle.md) — app Docker lifecycle migrated
+- [addons/app-publication-lifecycle.md](addons/app-publication-lifecycle.md) — app publication lifecycle validated with successful `app::app/publish`
 - [addons/docker.md](addons/docker.md) — global Docker addon lane closed for current scope
 - [addons/services-db.md](addons/services-db.md) — database service family migrated in `wex-addon-services-db`
 - [addons/services-php.md](addons/services-php.md) — PHP service family migrated

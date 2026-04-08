@@ -70,10 +70,10 @@
 
 ### Publication / versioning app
 
-- [x] `version/new` — absorbé par `app::package/bump` + futur `app::app/publish`
-- [x] `version/new_commit` — absorbé par `app::package/commit_and_push` + futur `app::app/publish`
-- [x] `version/new_write` — absorbé par `app::file_state/rectify` + futur `app::app/publish`
-- [ ] `app::app/publish` — orchestrateur de publication d'application
+- [x] `version/new` — absorbé par `app::package/bump` + `app::app/publish`
+- [x] `version/new_commit` — absorbé par `app::package/commit_and_push` + `app::app/publish`
+- [x] `version/new_write` — absorbé par `app::file_state/rectify` + `app::app/publish`
+- [x] `app::app/publish` — orchestrateur de publication d'application validé en réel
 
 ### À clarifier / faible priorité
 
@@ -105,5 +105,6 @@
 - La partie webhook reste un chantier distinct si elle doit revenir en v6.
 - `notification/notify` n'est pas traité comme une dette bloquante : le besoin existe peut-être, mais le bon design sera probablement redéfini plus tard autour des workflows distants / déploiement / automation.
 - Le sujet `version/new*` n'est plus traité comme une migration 1:1 ; il est désormais requalifié en pipeline `app::app/publish`.
-- La roadmap détaillée associée est suivie dans `../app-publication-lifecycle.md`.
+- Le premier `app::app/publish` successful a été validé en local en fin de journée.
+- La roadmap détaillée associée est archivée dans `../../done/addons/app-publication-lifecycle.md`.
 - Le détail du périmètre Docker déjà migré est archivé dans `../../done/addons/app-docker-lifecycle.md`.
