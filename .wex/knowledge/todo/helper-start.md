@@ -1,5 +1,22 @@
 # Bug: régression helper/proxy entre v5 et v6
 
+## Checklist
+
+- [x] Inspecter le flux v5 `app/start` / `helper/start` / `helper/stop`
+- [x] Inspecter le flux v6 `app/start` / `helper/start`
+- [x] Confirmer les symptômes observés sur le proxy v6
+- [ ] Corriger l'UX `_complete` de `app/start` pour les helpers
+- [ ] Ne plus proposer `app::db/go` si aucun DB principal n'est configuré
+- [ ] Ne plus afficher de domaine pour le proxy si aucun domaine helper explicite n'existe
+- [ ] Réintroduire `helper/stop`
+- [ ] Éviter que `helper/start` recrée brutalement un proxy déjà existant
+- [ ] Remplacer la création "freestyle" du proxy par un flux helper plus standard
+- [ ] Redéfinir une base helper générique, pas uniquement proxy-centric
+- [ ] Décider si la restauration passe par la migration de `app/init` ou par une abstraction helper dédiée
+- [ ] Tester `app/start` sur une app nécessitant un proxy
+- [ ] Tester `helper/start` / `helper/stop` sur le proxy
+- [ ] Vérifier que le proxy ne reçoit ni domaine applicatif ni suggestions DB incohérentes
+
 ## Constat
 
 Le flux `app/start` v6 a perdu plusieurs comportements utiles du système de helpers v5.
@@ -99,9 +116,9 @@ La migration v6 a simplifié un mécanisme sophistiqué en visant uniquement le 
 - éviter que `helper/start` réécrive brutalement le proxy s'il existe déjà
 - restaurer `helper/stop`
 - rendre la logique helper à nouveau générique, même si seul le proxy est supporté dans un premier temps
-- corriger `_complete` dans `app/start`:
-  - pas de domaine affiché pour le proxy tant qu'il n'a pas de domaine propre déclaré
-  - pas de suggestion `app::db/go` sans service DB principal
+- corriger `_complete` dans `app/start`
+- pas de domaine affiché pour le proxy tant qu'il n'a pas de domaine propre déclaré
+- pas de suggestion `app::db/go` sans service DB principal
 
 ## Fichiers à revoir
 
@@ -116,5 +133,8 @@ La migration v6 a simplifié un mécanisme sophistiqué en visant uniquement le 
 
 ## Notes
 
+- respecter les syntaxes et patterns déjà utilisés en v6
+- éviter le code trop défensif
+- éviter le code de compatibilité ou les couches legacy supplémentaires
 - `app/init` n'est pas migré à ce stade, donc une vraie restauration du flux v5 demandera soit sa migration, soit une abstraction équivalente dédiée aux helpers
 - pour un correctif court terme, on peut déjà corriger l'UX de `app/start` sans attendre la refonte complète des helpers
