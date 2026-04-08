@@ -79,8 +79,8 @@
 
 - [ ] `branch/env`
 - [ ] `branch/ip`
-- [ ] `notification/notify`
-- [ ] `info/update`
+- [x] `notification/notify` SKIP for now — lightweight v6 proof of concept already exists via `@n8n::notification/notify`, but the final product shape is not stable enough to justify a generic app-level migration yet
+- [x] `info/update` SKIP
 
 ### Webhooks et commandes distantes
 
@@ -103,6 +103,7 @@
 - En v5, `code/check` et `code/format` étaient des placeholders sans logique addon effective.
 - Ils ne sont donc pas à migrer tels quels en v6 ; le besoin de rectification passe déjà par `app::file_state/rectify`.
 - La partie webhook reste un chantier distinct si elle doit revenir en v6.
+- `notification/notify` n'est pas traité comme une dette bloquante : le besoin existe peut-être, mais le bon design sera probablement redéfini plus tard autour des workflows distants / déploiement / automation.
 - Le sujet `version/new*` n'est plus traité comme une migration 1:1 ; il est désormais requalifié en pipeline `app::app/publish`.
 - La roadmap détaillée associée est suivie dans `../app-publication-lifecycle.md`.
 - Le détail du périmètre Docker déjà migré est archivé dans `../../done/addons/app-docker-lifecycle.md`.
