@@ -20,13 +20,13 @@
 
 - [x] Addon resolver — `AddonCommandResolver` exists in wex-core
 - [x] Service resolver — `ServiceCommandResolver` exists in wex-core
-- [ ] User resolver — to evaluate
+- [x] User resolver — `UserCommandResolver` exists in wex-core
 
 ### Runners
 
 - [x] Python runner — `CorePythonCommandRunner` implemented
 - [x] YAML runner — `CoreYamlCommandRunner` implemented
-- [ ] Execution pathway — not fully tested end-to-end
+- [x] Execution pathway — exercised end-to-end via `kernel.execute_kernel_command()` and the demo command flow
 
 ### Command request lifecycle
 
@@ -37,6 +37,6 @@
 
 ### Response system
 
-> ⚠️ Paradigm change: v5 used response objects (`DefaultResponse`, `TableResponse`…).
-> v6 replaces this with `ExecutionContext` + pluggable output handlers.
-> See `response-system.md` for migration status of individual response types.
+> v6 keeps response objects, but execution now passes through `ExecutionContext`
+> plus pluggable output handlers.
+> See `response-system.md` for the response-level inventory.

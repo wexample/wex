@@ -4,7 +4,7 @@ You are reading this file because you need information about the migration from 
 
 ## Directory registry
 
-- 📄 _index.md: Global dashboard — domains list with migration status
-- 📄 context.md: Paths, breaking changes, objectives, methodology
-- 📄 todo.md: Active task list
-- 📁 inventory/: Feature-by-feature migration status, one file per domain
+- 📄 [_index.md](_index.md): Global dashboard
+- 📄 [context.md](context.md): Paths, breaking changes, objectives, methodology
+- 📁 [done/](done/): Domains considered migrated, skipped, or explicitly closed
+- 📁 [todo/](todo/): Remaining work for a functionally complete v6

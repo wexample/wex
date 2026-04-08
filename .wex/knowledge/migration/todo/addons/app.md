@@ -1,7 +1,7 @@
 # Addon: app
 
-> En v6, `wex-addon-app` couvre à la fois le workflow de dev et une partie du cycle de
-> vie Docker. Le chantier helper/proxy v5 → v6 est désormais migré.
+> En v6, `wex-addon-app` couvre à la fois le workflow de dev et le cycle de vie Docker principal.
+> Le chantier helper/proxy v5 -> v6 est considéré comme migré.
 
 ## Référence v5
 
@@ -59,16 +59,16 @@
 - [x] `app::service/used`
 - [x] `app::services/exec`
 
-## Reste à migrer
-
-### Priorité utile
+## Fermé ou absorbé
 
 - [x] `config/bind_files` SKIP
 - [x] `location/find`
 - [x] `hook/exec` SKIP
 - [x] `version/get` SKIP replace par info/show
 
-### Update lifecycle
+## Reste à migrer
+
+### Lifecycle / versioning
 
 - [ ] `version/new`
 - [ ] `version/new_commit`
@@ -81,7 +81,7 @@
 - [ ] `notification/notify`
 - [ ] `info/update`
 
-### Commandes distantes
+### Webhooks et commandes distantes
 
 - [ ] `webhook/exec`
 - [ ] `webhook/listen`
@@ -102,3 +102,4 @@
 - En v5, `code/check` et `code/format` étaient des placeholders sans logique addon effective.
 - Ils ne sont donc pas à migrer tels quels en v6 ; le besoin de rectification passe déjà par `app::file_state/rectify`.
 - La partie webhook reste un chantier distinct si elle doit revenir en v6.
+- Le détail du périmètre Docker déjà migré est archivé dans `../../done/addons/app-docker-lifecycle.md`.

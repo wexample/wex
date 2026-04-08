@@ -35,7 +35,7 @@ You are reading this file because you need the global context of the v5 → v6 m
 ## Methodology
 
 1. Compare wex-5 and wex-6 structures
-2. Fill the feature inventory in `inventory/`
+2. Fill the migration inventory in `done/` and `todo/`
 3. Migrate features domain by domain, with improvements
 4. Once a domain is fully migrated, the user removes it from wex-5
 5. wex-5 is empty when migration is complete

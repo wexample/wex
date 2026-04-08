@@ -6,7 +6,7 @@
 
 ## Services
 
-- [ ] `mysql`
+- [~] `mysql` — partial v6 package exists in `wex-addon-services-db` (`config/runtime`, `db/*`, `service/ready`)
 - [ ] `postgres`
 - [ ] `mongo`
 - [ ] `maria` — MariaDB
@@ -15,4 +15,4 @@
 
 ## v6 target
 
-- `PACKAGES/PYTHON/wex/wex-addon-app` or dedicated `wex-addon-services-db`
+- Dedicated `PACKAGES/PYTHON/wex/wex-addon-services-db`

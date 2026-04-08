@@ -6,7 +6,7 @@
 
 ## Services
 
-- [ ] `php` — base PHP service
+- [~] `php` — tooling foundations exist (`wex-addon-dev-php`, `filestate-php`), but service command parity is not there
 - [ ] `symfony` — Symfony framework service
 - [ ] `laravel` — Laravel framework service
 - [ ] `wordpress` — WordPress service
@@ -14,4 +14,4 @@
 
 ## v6 target
 
-- Dedicated `wex-addon-dev-php` package (exists in `PACKAGES/PYTHON/wex/`)
+- Dedicated service/addon packages on top of the existing PHP tooling packages

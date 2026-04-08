@@ -1,7 +1,7 @@
 # Migration plan: Docker lifecycle (`wex-addon-app`)
 
 > Suivi ciblé du cycle de vie Docker/app en v6.
-> L'inventaire général de l'addon vit maintenant dans `addons/app.md`.
+> L'inventaire général de l'addon vit maintenant dans `../../todo/addons/app.md`.
 
 ## Référence et cadre de test
 
