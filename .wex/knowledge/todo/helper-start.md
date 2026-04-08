@@ -5,10 +5,10 @@
 - [x] Inspecter le flux v5 `app/start` / `helper/start` / `helper/stop`
 - [x] Inspecter le flux v6 `app/start` / `helper/start`
 - [x] Confirmer les symptômes observés sur le proxy v6
-- [ ] Corriger l'UX `_complete` de `app/start` pour les helpers
-- [ ] Ne plus proposer `app::db/go` si aucun DB principal n'est configuré
-- [ ] Ne plus afficher de domaine pour le proxy si aucun domaine helper explicite n'existe
-- [ ] Réintroduire `helper/stop`
+- [x] Corriger l'UX `_complete` de `app/start` pour les helpers
+- [x] Ne plus proposer `app::db/go` si aucun DB principal n'est configuré
+- [x] Ne plus afficher de domaine pour le proxy si aucun domaine helper explicite n'existe
+- [x] Réintroduire `helper/stop`
 - [ ] Éviter que `helper/start` recrée brutalement un proxy déjà existant
 - [ ] Remplacer la création "freestyle" du proxy par un flux helper plus standard
 - [ ] Redéfinir une base helper générique, pas uniquement proxy-centric
