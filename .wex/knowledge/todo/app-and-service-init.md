@@ -134,16 +134,16 @@ Cette méthode existe déjà en v5 mais pas en v6.
 
 ### Étape 1 — Constantes helper
 
-- [ ] Créer `wex-addon-app/const/app.py` (ou compléter s'il existe) avec :
+- [x] Créer `wex-addon-app/const/app.py` (ou compléter s'il existe) avec :
   - `HELPER_APP_PROXY_SHORT_NAME = "proxy"`
   - `HELPER_APPS_LIST = ["proxy"]`
-- [ ] Créer `wex-addon-app/helpers/app.py` avec :
+- [x] Créer `wex-addon-app/helpers/app.py` avec :
   - `get_helper_app_path(name, env)` → `Path(f"/var/www/{env}/wex-{name}")`
-- [ ] Exposer ce calcul via une méthode utilitaire de `AppAddonManager`
+- [x] Exposer ce calcul via une méthode utilitaire de `AppAddonManager`
 
 ### Étape 2 — Samples proxy
 
-- [ ] Créer les fichiers sample du service proxy (à copier lors de `service/install`) :
+- [x] Créer les fichiers sample du service proxy (à copier lors de `service/install`) :
   - `services/proxy/samples/proxy/certs/.gitkeep`
   - `services/proxy/samples/proxy/html/.gitkeep`
   - `services/proxy/samples/proxy/logs/.gitkeep`
@@ -153,8 +153,8 @@ Cette méthode existe déjà en v5 mais pas en v6.
 
 ### Étape 3 — Hook `service/install` pour le proxy
 
-- [ ] Créer `services/proxy/commands/service/__init__.py`
-- [ ] Créer `services/proxy/commands/service/install.py` :
+- [x] Créer `services/proxy/commands/service/__init__.py`
+- [x] Créer `services/proxy/commands/service/install.py` :
   - Type `COMMAND_TYPE_SERVICE`
   - Reçoit `app_path` et `service` (comme les autres hooks de service)
   - Copie `services/proxy/samples/proxy/` → `{app_path}/proxy/`
