@@ -6,5 +6,6 @@ You are reading this file because you need information about the migration from 
 
 - 📄 [_index.md](_index.md): Global dashboard
 - 📄 [context.md](context.md): Paths, breaking changes, objectives, methodology
+- 📄 [service-migration-procedure.md](service-migration-procedure.md): Standard service/addon migration procedure
 - 📁 [done/](done/): Domains considered migrated, skipped, or explicitly closed
 - 📁 [todo/](todo/): Remaining work for a functionally complete v6
