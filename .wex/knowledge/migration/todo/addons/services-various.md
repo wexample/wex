@@ -10,7 +10,7 @@
 
 - [ ] `gitlab`
 - [ ] `jenkins`
-- [ ] `sonarqube`
+- [x] `sonarqube`
 - [x] `n8n`
 - [x] `listmonk`
 
