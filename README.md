@@ -1,4 +1,11 @@
-# Wex 6
+# wex
+
+Version: 6.0.0
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Testing](#testing)
 
 ## Check Wex Installation
 
@@ -12,12 +19,7 @@ wex hi  # Returns "hi!"
 bash bin/wex hi  # Returns "hi!"
 ```
 
-## Testing
-
-This project uses pytest for unit and integration testing. You can run tests using either the built-in WEX command or
-pytest directly.
-
-### Using WEX Command
+### Using Command
 
 Execute all tests including core and every addon tests suite.
 
@@ -37,6 +39,11 @@ pytest
 # Or using Python module
 python -m pytest
 ```
+
+## Testing
+
+This project uses pytest for unit and integration testing. You can run tests using either the built-in WEX command or
+pytest directly.
 
 ## Test Structure
 
