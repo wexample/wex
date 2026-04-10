@@ -1,120 +1,120 @@
 # App-level filestate rules (ownership, service contributions)
 
-## Problème concret déclencheur
+## Problème déclencheur
 
 Au démarrage de `store_mongo`, le répertoire `logs/` est créé par Docker avec `root:root`.
 Le process mongo (uid 999) ne peut pas y écrire → crash exit 1.
-Fix manuel : `sudo chown -R 999:999 logs/`.
-
-Objectif : que ce fix soit **appliqué automatiquement** lors du `apply` filestate au démarrage, via une règle déclarative, sans intervention manuelle.
+Objectif : ce fix appliqué automatiquement lors du `apply` filestate au démarrage.
 
 ---
 
-## Analyse de l'existant
+## Architecture de résolution (décisions prises)
 
-### Ce qui existe déjà
-- `app_addon_manager.create_app_workdir()` résout la classe workdir : cherche `.wex/app_workdir.py` → `AppWorkdir`, sinon `ManagedWorkdir`.
-- `ManagedWorkdir.prepare_value()` injecte la structure filestate (`.wex/`, permissions globales 777, etc.).
-- Les services contribuent au **runtime config** (docker-compose, env) via `get_runtime_contribution()` — mais **pas** à la structure filestate.
-- Chaque app peut surcharger via `.wex/app_workdir.py`.
+### Accès aux services dans `prepare_value()`
 
-### Ce qui manque
-1. **Pas d'option `owner` (uid:gid) dans filestate** — seul `mode.permissions` (octal) existe.
-2. **Pas de mécanisme pour que les services déclarent leurs besoins filesystem** (ownership de répertoires, présence de fichiers avec perms spécifiques).
-3. **Pas de merge YAML → filestate** depuis un fichier de config de l'app.
+`ManagedWorkdir` a `self.parent_io_handler` qui est le kernel.
+`AppAddonManager.from_kernel(self.parent_io_handler)` retourne le manager.
+`.get_app_services(self)` retourne la liste des `AppService` actifs (lu depuis `config.yml` sur disque).
+Le `config.yml` est disponible sur disque au moment de `prepare_value()` — pas de circular dependency.
 
----
+### Sudo
 
-## Options envisagées
+`app/start` lance docker avec `as_sudo`. Le `ChownOperation` utilisera donc `subprocess(['sudo', 'chown', ...])`.
+Le cas sans sudo (dossier créé par wex avant docker) n'est pas garanti, donc sudo est la seule voie fiable.
 
-### A — `app_workdir.py` par app (existant, mais verbeux)
-Surcharger `prepare_value()` dans `.wex/python/app_manager/app_workdir.py` de chaque app.
-- ✅ Fonctionne maintenant, pattern déjà établi.
-- ❌ Code Python par app pour quelque chose de déclaratif → lourd, non-reusable entre apps similaires.
+### Trois mécanismes qui coexistent (par priorité croissante)
 
-### B — YAML app-level (`app_workdir.yml` ou section dans `config.yml`)
-Lire un fichier YAML dans l'app qui décrit des règles filestate supplémentaires, mergées dans `prepare_value`.
-- ✅ Déclaratif, accessible sans code Python.
-- ❌ Duplique la config entre apps du même type (toutes les apps mongo auraient le même YAML).
-- ❌ Pas de lien sémantique entre le service et ses besoins filesystem.
+```
+[1] Service contribution     ← déclaré dans le package service (ex: wex-addon-services-db)
+[2] config.yml app-level     ← section `workdir.children` dans .wex/config.yml de l'app
+[3] app_workdir.py           ← override Python complet pour cas complexes
+```
 
-### C — Contribution filestate par service (recommandée)
-Chaque service (mongo, postgres, redis…) peut déclarer une méthode `get_workdir_contribution()` qui retourne des règles filestate additionnelles. `ManagedWorkdir.prepare_value()` itère les services actifs et merge leurs contributions.
-- ✅ Cohérent avec le pattern `get_runtime_contribution()` existant.
-- ✅ Le service déclare lui-même ses besoins → DRY, reusable pour toutes les apps mongo.
-- ✅ Peut cohabiter avec B (YAML) pour des overrides app-spécifiques.
-- ❌ Nécessite d'ajouter l'option `owner` dans filestate (prérequis).
-
-### D — `mongo_workdir.py` dans le package service
-Classe workdir dédiée dans `wex-addon-services-db/services/mongo/workdir.py` qui étend `ManagedWorkdir` et override `prepare_value`. Wex la détecte et l'utilise quand mongo est le service principal.
-- ✅ Encapsulation parfaite.
-- ❌ Nécessite un mécanisme de résolution de classe workdir par service (à créer).
-- ❌ Sur-ingénierie pour le cas présent ; la contribution (option C) est suffisante.
+Ordre de merge dans `prepare_value()` : contributions services → config.yml → stop.
+`app_workdir.py` override `prepare_value()` entièrement (pattern existant, il gagne toujours).
 
 ---
 
-## Décision recommandée
+## Étape 1 — `OwnerOption` + `ChownOperation` dans filestate
 
-**Approche C (contributions services) + prérequis `owner` dans filestate.**
-
-L'option B (YAML app-level) peut être ajoutée en complément comme escape hatch pour des règles purement app-spécifiques, mais le cas mongo doit être résolu côté service.
-
----
-
-## Roadmap d'implémentation
-
-### Étape 1 — Ajouter `OwnerOption` dans filestate
 **Package** : `wexample_filestate`
-**Fichiers concernés** :
-- `packages/filestate/src/wexample_filestate/option/mode_option.py` — ajouter `OwnerOption` dans `allowed_options`
-- `packages/filestate/src/wexample_filestate/option/mode/owner_option.py` — créer l'option
-- `packages/filestate/src/wexample_filestate/operation/` — créer `ChownOperation` (ou étendre l'opération de mode existante)
 
-**Comportement attendu** :
+### Syntaxe YAML (définitive)
+
 ```yaml
 mode:
-  owner: "999:999"   # ou "mongodb:mongodb"
-  permissions: "750"
+  owner: "999:999"          # uid:gid numérique
+  owner: "mongodb:mongodb"  # user:group symbolique (résolu via pwd.getpwnam / grp.getgrnam)
+  owner: "999"              # uid seul, gid inchangé
+  permissions: "750"        # octal string ou int
   recursive: true
 ```
-- Supporte `"uid:gid"` (numérique) et `"user:group"` (symbolique).
-- `build_operations()` détecte le owner actuel via `os.stat()` et génère un `ChownOperation` si différent.
-- `ChownOperation.apply()` appelle `os.chown()` (ou `subprocess chown` pour les cas root → nécessite sudo ou un runner privilégié).
 
-**Point à trancher** : pour chowner en 999:999 un dossier créé par root, il faut des droits root. Deux options :
-- a) Utiliser `sudo chown` avec un wrapper (add sudoers rule au setup).
-- b) Créer le dossier dès le départ avec le bon owner (empêche Docker de le créer root).
-→ **Option b préférable** : si filestate crée `logs/` avant le premier `docker up`, Docker ne le recrée pas. `os.makedirs` + `os.chown` n'a pas besoin de sudo si le process wex tourne en tant que l'user courant et le dossier n'existe pas encore.
+Les deux formats (numérique et symbolique) sont supportés dès v1.
+Résolution symbolique : `pwd.getpwnam(user).pw_uid` + `grp.getgrnam(group).gr_gid` — stdlib Python, pas de dépendance externe.
 
-### Étape 2 — Mécanisme `get_workdir_contribution()` dans `AppService`
-**Package** : `wexample_wex_addon_app`
-**Fichiers concernés** :
-- `wex-addon-app/src/wexample_wex_addon_app/service/app_service.py` — ajouter méthode `get_workdir_contribution() -> dict | None` (retourne `None` par défaut = pas de contribution)
+### Fichiers à créer / modifier
 
-**Signature** :
+| Fichier | Action |
+|---|---|
+| `option/mode/owner_option.py` | Nouveau. Valide et normalise le format (`str` → `tuple[int, int]`). Accepte `"uid:gid"`, `"user:group"`, `"uid"`. |
+| `option/mode_option.py` | Ajouter `OwnerOption` dans `allowed_options`. |
+| `operation/chown_operation.py` | Nouveau. `build()` : compare `os.stat().st_uid/st_gid` à la cible. `apply()` : `subprocess(['sudo', 'chown', '-R'?, 'uid:gid', path])`. Respecte `recursive`. |
+| `item/abstract_item_target.py` | `build_operations()` doit appeler `ChownOperation.build()` si `owner` défini dans `mode`. |
+
+### Comportement
+
+- `build_operations()` génère un `ChownOperation` seulement si le owner courant diffère de la cible.
+- `recursive=true` → flag `-R` sur le chown.
+- `permissions` et `owner` sont indépendants, peuvent être utilisés séparément.
+
+---
+
+## Étape 2 — `get_workdir_contribution()` dans `AppService`
+
+**Package** : `wexample_wex_addon_app`  
+**Fichier** : `service/app_service.py`
+
 ```python
 def get_workdir_contribution(self) -> dict | None:
-    """Return filestate children config to be merged into app workdir prepare_value."""
+    """Filestate children rules injected into the app workdir at prepare_value time."""
     return None
 ```
 
-### Étape 3 — `ManagedWorkdir.prepare_value()` collecte les contributions
-**Package** : `wexample_wex_addon_app`
-**Fichier** : `wex-addon-app/src/wexample_wex_addon_app/workdir/managed_workdir.py`
+Retourne `None` par défaut. Les services qui ont des besoins filesystem l'override.
 
-Dans `prepare_value()`, après la définition de la structure `.wex/`, itérer les services actifs :
+---
+
+## Étape 3 — Collecte dans `ManagedWorkdir.prepare_value()`
+
+**Fichier** : `workdir/managed_workdir.py`
+
+À la fin de `prepare_value()`, après la structure `.wex/` :
+
 ```python
-for service in self.get_active_services():
+# 1. Service contributions
+from wexample_wex_addon_app.app_addon_manager import AppAddonManager
+manager = AppAddonManager.from_kernel(self.parent_io_handler)
+for service in manager.get_app_services(self):
     contribution = service.get_workdir_contribution()
     if contribution:
-        raw_value["children"].extend(contribution.get("children", []))
+        raw_value.setdefault("children", []).extend(
+            contribution.get("children", [])
+        )
+
+# 2. config.yml app-level (section workdir.children)
+app_config = self.get_config()
+workdir_extra = app_config.search("workdir.children") if app_config else None
+if workdir_extra:
+    raw_value.setdefault("children", []).extend(workdir_extra.to_list())
 ```
 
-`get_active_services()` existe probablement déjà (via runtime config) — vérifier le mixin `WithRuntimeConfigMixin`.
+---
 
-### Étape 4 — Implémenter `get_workdir_contribution()` dans le service mongo
-**Package** : `wexample_wex_addon_services_db`
-**Fichier** : `wex-addon-services-db/src/wexample_wex_addon_services_db/services/mongo/app_service.py` (à créer ou étendre)
+## Étape 4 — Contribution du service mongo
+
+**Package** : `wexample_wex_addon_services_db`  
+**Fichier** : `services/mongo/app_service.py` (créer ou étendre la classe existante)
 
 ```python
 def get_workdir_contribution(self) -> dict:
@@ -143,41 +143,55 @@ def get_workdir_contribution(self) -> dict:
     }
 ```
 
-### Étape 5 — (Optionnel) YAML app-level override
-**Mécanisme** : si `.wex/app_workdir.yml` existe, `ManagedWorkdir.prepare_value()` le lit et merge son contenu `children` après les contributions services.
+---
 
-Utile pour des besoins purement app-spécifiques (ex : un dossier custom propre à une instance).
+## Étape 5 — Génération du mongo-keyfile
 
-### Étape 6 — Générer le mongo-keyfile si vide
-Le fichier `mongo-keyfile` doit contenir une clé non-vide. Deux options :
-- a) Traiter ça dans filestate via une `ContentOption` (contenu généré si vide).
-- b) Ajouter une étape de setup dans la commande `app start` / `service mongo setup`.
+Filestate vérifie l'existence et les permissions du fichier, mais **pas son contenu**.
+La génération de la clé est du ressort d'une commande setup, pas de filestate.
 
-**Recommandation** : option b, car générer une clé cryptographique n'est pas du ressort de filestate. Créer une commande `mongo::setup` (ou hook `service/mongo/setup`) qui :
-1. Génère la clé si `mongo-keyfile` est vide : `openssl rand -base64 756`
-2. Set les permissions et owner
+**Solution** : hook ou commande `mongo::service__setup` (idempotente) qui tourne avant `docker up` :
 
-Ce setup doit tourner **avant** le premier `docker up` et être idempotent.
+```python
+# Si mongo-keyfile est vide (taille 0), générer la clé
+keyfile_path = self.get_path() / "mongo-keyfile"
+if keyfile_path.stat().st_size == 0:
+    key = subprocess.check_output(['openssl', 'rand', '-base64', '756'])
+    key = key.replace(b'\n', b'')
+    keyfile_path.write_bytes(key)
+```
+
+Filestate s'occupe ensuite du chown/chmod via la contribution mongo (étape 4).
 
 ---
 
-## Ordre d'implémentation suggéré
+## Syntaxe YAML app-level (section `workdir` dans `.wex/config.yml`)
 
-| # | Tâche | Package | Priorité |
-|---|-------|---------|----------|
-| 1 | `OwnerOption` dans filestate + `ChownOperation` | `wexample_filestate` | Bloquant |
-| 2 | `get_workdir_contribution()` dans `AppService` | `wexample_wex_addon_app` | Bloquant |
-| 3 | Collect contributions dans `ManagedWorkdir.prepare_value()` | `wexample_wex_addon_app` | Bloquant |
-| 4 | Contribution mongo (`logs/`, `mongo-keyfile` owner+perms) | `wexample_wex_addon_services_db` | Bloquant |
-| 5 | Commande/hook `mongo::setup` pour keyfile | `wexample_wex_addon_services_db` | Nécessaire |
-| 6 | YAML app-level override (`app_workdir.yml`) | `wexample_wex_addon_app` | Nice-to-have |
+Pour des règles spécifiques à une instance, sans créer d'`app_workdir.py` :
+
+```yaml
+# .wex/config.yml
+service:
+  mongo: {}
+
+workdir:
+  children:
+    - name: custom-data
+      type: directory
+      should_exist: true
+      mode:
+        owner: "1000:1000"
+        permissions: "755"
+```
 
 ---
 
-## Points à trancher avant d'implémenter
+## Ordre d'implémentation
 
-1. **Sudo pour chown** : on suppose que filestate crée les dossiers *avant* Docker (pas de chown root nécessaire). À confirmer : est-ce qu'on peut garantir que le premier `app start` tourne avant le premier `docker up` ?
-
-2. **Résolution des services actifs dans workdir** : comment `ManagedWorkdir` connaît-il les services actifs au moment du `prepare_value` ? Via `self.get_config()["services"]` ? Vérifier que le runtime config est disponible à ce stade.
-
-3. **Format du `owner`** : string `"uid:gid"` numérique uniquement (simple) ou aussi symbolique `"user:group"` (requiert résolution `/etc/passwd` ou dans-container) ? Recommandation : numérique uniquement en v1.
+| # | Tâche | Package | Statut |
+|---|-------|---------|--------|
+| 1 | `OwnerOption` + `ChownOperation` dans filestate | `wexample_filestate` | TODO |
+| 2 | `get_workdir_contribution()` dans `AppService` | `wexample_wex_addon_app` | TODO |
+| 3 | Collecte contributions + config.yml dans `ManagedWorkdir` | `wexample_wex_addon_app` | TODO |
+| 4 | Contribution mongo (`logs/`, `mongo-keyfile`) | `wexample_wex_addon_services_db` | TODO |
+| 5 | Commande `mongo::service__setup` pour keyfile | `wexample_wex_addon_services_db` | TODO |
