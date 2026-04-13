@@ -131,7 +131,7 @@ Affiche un tableau des vars de chaque service installé :
 
 - [x] Étape 1 — Parser `vars:` dans `ServiceDefinition`
 - [x] Étape 2 — Écriture des `default:` dans `.env`
-- [ ] Étape 3 — Prompt interactif
+- [x] Étape 3 — Prompt interactif
 - [ ] Étape 4 — Validation au démarrage
 - [ ] Étape 5 — Commande `service/vars/list`
 - [ ] Étape 6 — Appliquer sur supabase
