@@ -129,8 +129,8 @@ Affiche un tableau des vars de chaque service installé :
 
 ## Statut
 
-- [ ] Étape 1 — Parser `vars:` dans `ServiceDefinition`
-- [ ] Étape 2 — Écriture des `default:` dans `.env`
+- [x] Étape 1 — Parser `vars:` dans `ServiceDefinition`
+- [x] Étape 2 — Écriture des `default:` dans `.env`
 - [ ] Étape 3 — Prompt interactif
 - [ ] Étape 4 — Validation au démarrage
 - [ ] Étape 5 — Commande `service/vars/list`
