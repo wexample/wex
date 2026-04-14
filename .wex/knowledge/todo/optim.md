@@ -1,92 +1,86 @@
 # Performance & Quality Tooling Roadmap
 
-## Command lifecycle (cross-language)
+## Décisions d'architecture
 
-Commandes universelles qui s'appliquent quel que soit le langage du projet courant.
-Chaque commande délègue à l'implémentation spécifique du langage détecté.
+- Les commandes de performance sont des **commandes wex** (`app::performance/...`), pas des options filestate
+- Les workdirs qui supportent le profiling implémentent **`WithProfilingWorkdirMixin`**
+- La commande vérifie `isinstance(workdir, WithProfilingWorkdirMixin)` — retourne "not supported" sinon
+- L'exécution se fait dans un **container Docker** (ressources fixes, reproductibilité)
+- Output JSON unifié cross-language
+
+---
+
+## Outil retenu : pytest-benchmark
+
+Parmi les candidats évalués :
+
+| Outil | Décision | Raison |
+|---|---|---|
+| **pytest-benchmark** | ✅ retenu | intégré pytest, JSON out, comparaison de runs, CI-friendly |
+| asv | plus tard | pertinent pour suivi long terme (phase 3), trop complexe pour phase 1 |
+| timeit | non | trop bas niveau, pas de workflow, absorbé par pytest-benchmark |
+| perf | non | précision marginale, complexité inutile en phase 1 |
+
+Contraintes d'environnement (CPU pinning, turbo boost) → gérées par le container Docker.
+
+---
+
+## Command lifecycle (cross-language)
 
 ### Tests & coverage
 | Commande | Rôle | Bloquant |
 |---|---|---|
-| `app::test/run` | Lance la suite de tests du projet (unittest, pytest, phpunit, jest, flutter test…) | oui (CI) |
-| `app::test/coverage` | Lance les tests avec rapport de coverage | non |
-| `app::test/watch` | Lance les tests en mode watch (dev local) | — |
+| `app::test/run` | Lance la suite de tests (pytest, phpunit, jest, flutter test…) | oui (CI) |
+| `app::test/coverage` | Tests + rapport de coverage | non |
+| `app::test/watch` | Tests en mode watch (dev local) | — |
 
 ### Qualité statique
 | Commande | Rôle | Bloquant |
 |---|---|---|
-| `app::lint/run` | Lint du code (flake8, phpcs, eslint, dart analyze…) | oui (CI) |
+| `app::lint/run` | Lint (flake8, phpcs, eslint, dart analyze…) | oui (CI) |
 | `app::lint/fix` | Correction automatique (black, phpcbf, eslint --fix…) | — |
 | `app::rectify/run` | Rectifications structurelles custom (pipeline existant) | optionnel |
 
-### Performance — rapport
+### Performance
 | Commande | Rôle | Bloquant |
 |---|---|---|
-| `app::performance/report` | Profiling + rapport humain (cProfile, Blackfire, clinic.js…). Pas de baseline requise. | non |
-| `app::performance/benchmark` | Exécute les benchmarks définis et produit des métriques (p50/p95/mémoire). Tourne dans un container Docker pour isolation. | non |
-| `app::performance/baseline` | Sauvegarde les métriques courantes comme baseline de référence | — |
-| `app::performance/compare` | Compare les métriques courantes vs la baseline. Affiche les régressions. | optionnel (CI) |
-
-### Performance — optimisation automatique
-| Commande | Rôle | Bloquant |
-|---|---|---|
-| `app::performance/rectify` | Applique les transformations automatiques connues (patterns lents → patterns rapides). S'appuie sur le pipeline rectify existant. | — |
+| `app::performance/report` | Lance pytest-benchmark, retourne JSON structuré. Python uniquement phase 1. | non |
+| `app::performance/baseline` | Sauvegarde le JSON courant comme baseline | — |
+| `app::performance/compare` | Diff vs baseline, affiche les régressions | optionnel (CI) |
 
 ### Sécurité
 | Commande | Rôle | Bloquant |
 |---|---|---|
-| `app::security/audit` | Audit des dépendances (pip-audit, composer audit, npm audit…) | optionnel (CI) |
+| `app::security/audit` | Audit dépendances (pip-audit, composer audit, npm audit…) | optionnel (CI) |
 
 ---
 
 ## Roadmap
 
-### Phase 1 — Rapport pur (pas de baseline, pas de blocage)
-Objectif : valider l'utilité réelle avant de construire l'infrastructure.
+### Phase 1 — rapport Python pur
+- [ ] `WithProfilingWorkdirMixin` dans `wex-addon-dev-python`
+  - méthode `run_profiling()` → JSON `{ tool, language, entries: [{ name, p50_ms, p95_ms, memory_mb }] }`
+  - utilise `DockerRunner` avec image Python + pytest-benchmark
+- [ ] `PythonWorkdir` hérite de `WithProfilingWorkdirMixin`
+- [ ] Dockerfile `python-profiling` (Python 3.12 + pytest + pytest-benchmark)
+- [ ] Commande `app::performance/report`
+  - récupère le workdir courant
+  - `isinstance(workdir, WithProfilingWorkdirMixin)` → sinon "not supported"
+  - appelle `run_profiling()` et retourne le résultat
 
-- [ ] Définir le format de sortie JSON unifié cross-language
-  ```json
-  {
-    "language": "python",
-    "tool": "cProfile",
-    "entries": [
-      { "name": "fn_name", "p50_ms": 12.3, "p95_ms": 45.6, "memory_mb": 23.4 }
-    ]
-  }
-  ```
-- [ ] `app::performance/report` — Python (cProfile / py-spy)
-- [ ] `app::performance/report` — PHP (Blackfire / Xdebug)
-- [ ] `app::performance/report` — JavaScript (clinic.js / 0x)
-- [ ] `app::test/run` cross-language (détection auto du runner)
-- [ ] `app::test/coverage` cross-language
+### Phase 2 — baseline & comparaison
+- [ ] Stockage baseline : fichier `.wex/performance/baseline.json` versionné
+- [ ] `app::performance/baseline`
+- [ ] `app::performance/compare` — diff % par entrée, affiche régressions
+- [ ] Intégration optionnelle dans `bin/publish` (`--no-perf`)
 
-### Phase 2 — Baseline & comparaison
-Prérequis de tout blocage CI. Sans baseline, les métriques absolues ne veulent rien dire.
+### Phase 3 — CI bloquant + autres langages
+- [ ] Seuil de régression configurable (ex: +20% p95 = fail)
+- [ ] `app::performance/compare` bloquant en CI
+- [ ] `WithProfilingWorkdirMixin` pour PHP (Blackfire/phpbench)
+- [ ] `WithProfilingWorkdirMixin` pour JavaScript (clinic.js)
+- [ ] Évaluer asv pour suivi historique long terme
 
-- [ ] Stockage de baseline (fichier JSON versionné dans le repo, par environnement)
-- [ ] `app::performance/baseline` — enregistre la baseline courante
-- [ ] `app::performance/compare` — diff vs baseline, affiche les régressions en %
-- [ ] Intégration dans `bin/publish` (optionnelle, `--no-perf` pour skip)
-
-### Phase 3 — Blocage sur régression (CI)
-- [ ] Seuil de régression configurable (ex: +20% sur p95 = fail)
-- [ ] `app::performance/compare` devient bloquant en CI
-- [ ] `app::security/audit` bloquant en CI
-
-### Phase 4 — Rectification automatique
-Seulement pour les patterns 100% déterministes et sans ambiguïté.
-
-- [ ] Identifier les patterns lents documentés par langage
-- [ ] `app::performance/rectify` — Python (ex: list comprehension vs map, slot classes…)
-- [ ] `app::performance/rectify` — PHP
-- [ ] `app::performance/rectify` — JavaScript
-- [ ] Intégration dans le pipeline rectify existant
-
----
-
-## Notes d'implémentation
-
-- Les benchmarks tournent dans un **container Docker à ressources fixes** pour éliminer la variance d'environnement (même approche que les commandes rectify existantes)
-- Le format de sortie JSON est identique quel que soit le langage — les commandes de comparaison sont language-agnostiques
-- Les commandes `app::` détectent le langage via le workdir existant (filestate)
-- Chaque phase est indépendante — ne pas sauter à la phase 4 sans avoir validé la phase 1 sur des cas réels
+### Phase 4 — rectification automatique
+- [ ] Patterns lents connus → `app::performance/rectify`
+- [ ] Intégration pipeline rectify existant
