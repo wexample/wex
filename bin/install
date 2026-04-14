@@ -57,11 +57,11 @@ echo "Cleanup..."
 rm -f "${WEX_DIR_ROOT}tmp/registry.yml"
 
 echo "Configuring..."
-WEX_ENV_PATH="${WEX_DIR_ROOT}.wex/.env"
+WEX_ENV_PATH="${WEX_DIR_ROOT}.env"
 touch "${WEX_ENV_PATH}"
-if ! grep -q "^APP_ENV=" "${WEX_ENV_PATH}"; then
-    echo "APP_ENV=prod" >> "${WEX_ENV_PATH}"
-fi
+# Ensure APP_ENV is set to prod (overwrite any existing value, e.g. "local" from dev)
+sed -i '/^APP_ENV=/d' "${WEX_ENV_PATH}"
+echo "APP_ENV=prod" >> "${WEX_ENV_PATH}"
 
 # Load env to read APP_ENV
 # shellcheck disable=SC1090
