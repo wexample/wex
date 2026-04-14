@@ -85,8 +85,10 @@ flynt==1.0.6
     # via wexample-filestate-python
 gitdb==4.0.12
     # via gitpython
-gitpython==3.1.46
-    # via wexample-helpers-git
+gitpython==3.1.45
+    # via
+    #   -r requirements.in
+    #   wexample-helpers-git
 griffe==2.0.2
     # via wexample-wex-addon-dev-python
 griffecli==2.0.2
