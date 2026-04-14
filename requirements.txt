@@ -204,11 +204,11 @@ wexample-api==0.0.85
     #   wexample-filestate-python
 wexample-app==1.0.2
     # via wexample-wex-core
-wexample-config==0.1.0
+wexample-config==0.1.1
     # via wexample-filestate
-wexample-event==0.0.81
+wexample-event==0.0.82
     # via wexample-filestate
-wexample-file==0.0.54
+wexample-file==0.0.55
     # via wexample-filestate
 wexample-filestate==1.0.2
     # via
@@ -227,7 +227,7 @@ wexample-filestate-php==0.1.0
     # via wexample-wex-addon-dev-php
 wexample-filestate-python==0.1.1
     # via wexample-wex-addon-dev-python
-wexample-helpers==0.7.0
+wexample-helpers==1.0.0
     # via
     #   wexample-api
     #   wexample-config
@@ -238,17 +238,17 @@ wexample-helpers==0.7.0
     #   wexample-migration
     #   wexample-prompt
     #   wexample-runner
-wexample-helpers-git==0.1.0
+wexample-helpers-git==0.1.1
     # via
     #   wexample-filestate-git
     #   wexample-wex-core
-wexample-helpers-yaml==0.0.115
+wexample-helpers-yaml==0.0.116
     # via
     #   wexample-app
     #   wexample-filestate
 wexample-migration==0.1.0
     # via wexample-wex-addon-app
-wexample-prompt==1.0.0
+wexample-prompt==1.0.1
     # via
     #   wexample-api
     #   wexample-filestate
@@ -256,7 +256,7 @@ wexample-runner==0.0.4
     # via
     #   wexample-filestate
     #   wexample-wex-addon-app
-wexample-wex-addon-app==1.1.0
+wexample-wex-addon-app==1.1.1
     # via
     #   -r requirements.in
     #   wexample-wex-addon-dev-css
@@ -277,17 +277,17 @@ wexample-wex-addon-dev-php==0.1.1
     # via -r requirements.in
 wexample-wex-addon-dev-python==0.1.1
     # via -r requirements.in
-wexample-wex-addon-filestate==0.1.0
+wexample-wex-addon-filestate==0.1.1
     # via -r requirements.in
-wexample-wex-addon-services-collab==0.0.3
+wexample-wex-addon-services-collab==0.0.4
     # via -r requirements.in
 wexample-wex-addon-services-db==0.0.3
     # via -r requirements.in
 wexample-wex-addon-services-monitoring==0.0.3
     # via -r requirements.in
-wexample-wex-addon-services-platform==0.0.3
+wexample-wex-addon-services-platform==0.1.1
     # via -r requirements.in
-wexample-wex-core==7.0.0
+wexample-wex-core==7.2.0
     # via
     #   -r requirements.in
     #   wexample-wex-addon-app
