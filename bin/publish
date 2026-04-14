@@ -27,7 +27,7 @@ uv pip compile "${WEX_DIR_ROOT}requirements.in" --output-file "${WEX_DIR_ROOT}re
 # Commit and push
 echo "Committing..."
 cd "${WEX_DIR_ROOT}"
-git add version.txt requirements.txt
+git add -A
 git commit -m "Release ${NEW_VERSION}"
 git push
 

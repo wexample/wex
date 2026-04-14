@@ -1,4 +1,5 @@
 tomli
+gitpython<3.1.46
 wexample-wex-core
 wexample-wex-addon-app
 wexample-wex-addon-filestate
