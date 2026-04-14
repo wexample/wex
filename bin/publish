@@ -22,7 +22,7 @@ echo "${NEW_VERSION}" > "${VERSION_FILE}"
 
 # Update requirements.txt from requirements.in
 echo "Updating requirements.txt..."
-uv pip compile "${WEX_DIR_ROOT}requirements.in" --output-file "${WEX_DIR_ROOT}requirements.txt" --upgrade
+uv pip compile "${WEX_DIR_ROOT}requirements.in" --output-file "${WEX_DIR_ROOT}requirements.txt" --upgrade --python-version 3.10
 
 # Commit and push
 echo "Committing..."
