@@ -1,141 +1,125 @@
 # Roadmap de publication — wex 6
 
-Objectif : packager wex-6 sous forme de paquet `.deb` distribué via un dépôt APT custom,
-installable sur serveurs Ubuntu/Debian et en local (mode dev, sources directes).
+Objectif : publier wex-6 via un paquet `.deb` distribué sur un dépôt APT custom,
+installable sur serveurs Ubuntu/Debian. En local, on travaille depuis les sources directement.
 
 ---
 
-## 0. Renommage des répertoires (prérequis oublié)
+## Référence : pipeline v5 (ce qui existait)
 
-wex-6 a vocation à remplacer wex. Ce renommage aurait dû être fait en premier.
-Tout le travail des étapes suivantes référence encore `wex-6` — à corriger une fois cette étape faite.
+La v5 reposait sur **3 repos GitLab distincts** qui s'enchaînaient :
 
-- [ ] Désinstaller wex-5 en local (supprimer symlink `/usr/local/bin/wex`, `/etc/bash_completion.d/wex`, venv)
-- [ ] Renommer `local/wex` → `local/wex-5-legacy`
-- [ ] Renommer `local/wex-6` → `local/wex`
-- [ ] Vérifier que `wex` en ligne de commande appelle bien le nouveau binaire (wex-6)
+```
+[wex repo]  →  merge request vers master
+                  ↓ CI (4 stages)
+               setup : installe wex depuis les sources sur le runner
+               test  : lance wex test
+               merge_addons : wex addons/deploy
+               deploy : curl → n8n webhook ?v=<version>
+                  ↓
+[n8n]  reçoit le webhook, déclenche wex-api
+                  ↓
+[wex-build repo]  build branch
+               build.py -v <version> -n wex
+               → git clone source/, debuild, .deb produit
+               → upload .deb sur GitLab Package Registry
+                  ↓
+[wex-apt-repo]  publish.sh -p <project_id> -v <version>
+               → télécharge .deb depuis GitLab Registry
+               → aptly repo add, snapshot, publish
+               → dépôt APT exposé via nginx
+                  ↓
+[n8n + Ansible]  déploiement automatique sur serveurs (le lundi suivant)
+```
 
----
-
-## 1. Prérequis fonctionnels
-
-Avant de builder le paquet, s'assurer que wex tourne correctement en local.
-
-- [x] `bin/wex` est fonctionnel (exécution depuis les sources via venv)
-- [x] `bin/install` installe correctement le venv et les dépendances (`requirements.txt`)
-- [x] Post-install : symlink `/usr/local/bin/wex`, handler autocomplete, build registry (intégré dans `bin/install`, remplace le défunt `core::core/install` de v5)
-- [x] `default::autocomplete/suggest` existe (stub vide — suggestions à implémenter, voir TODO dans le fichier)
-- [x] L'autocomplétion bash est branchée (`/etc/bash_completion.d/wex` → `bin/autocomplete-handler`)
-- [x] `version.txt` est à jour (actuellement `6.0.0`)
-
----
-
-## 2. Adaptations du script d'install pour le mode paquet
-
-Le `bin/install` actuel est conçu pour une install depuis les sources.
-Il faut le rendre compatible avec une install depuis `/usr/lib/wex/` (mode paquet apt).
-
-- [x] `bin/install` fonctionne depuis `/usr/lib/wex/bin/` (chemins résolus via `BASH_SOURCE[0]`)
-- [x] `WEX_SKIP_APT=1` : skip `apt-get update` si déjà géré par dpkg
-- [x] Root-aware : `INSTALL_USER="${SUDO_USER:-${USER:-root}}"` — fonctionne en postinst sans `$USER`
-- [x] `sudo` supprimé des appels internes (script déjà garanti root par `_init_sudo.sh`)
-- [x] `DEBIAN_FRONTEND` : skip du sourcing `~/.bashrc` en mode non-interactif
-- [x] `pip install -q` : output propre en postinst
-- [x] `bin/uninstall` créé — supprime symlink + handler ; purge le venv si appelé avec `purge`
+**Détails clés v5 :**
+- Le CI tourne sur un **runner GitLab** qui a wex installé en local
+- `wex-build` utilise une image Docker custom (`wex-build:build`) avec debhelper/devscripts
+- La distribution aptly est dérivée du numéro de version (ex: `6-0.stable` → `stable`)
+- Le `.deb` est uploadé sur le GitLab Package Registry avant d'être récupéré par wex-apt-repo
 
 ---
 
-## 3. Infrastructure de build Debian (wex-build)
+## Cible v6 : ce qu'on veut
 
-À simplifier suite à la décision de casser la compatibilité wex-5 :
-- `source/` et `templates/` remplacés directement pour v6 (plus de `-v6` suffixe)
-- Le symlink `source/` local sert uniquement aux tests de build manuels ; en CI/CD, c'est un `git clone` du repo wex depuis GitLab
-- Les params `-s` / `-t` ajoutés à `build.py` sont à retirer (surcharge inutile)
+Même schéma, adapté à v6 :
 
-**À défaire / simplifier :**
-- [ ] Retirer les args `-s` et `-t` de `build.py` — revenir à `source/` et `templates/` fixes
-- [ ] Supprimer `wex-build/source-v6` (symlink local inutile en CI/CD)
-- [ ] Supprimer `wex-build/templates-v6/` et déplacer son contenu dans `wex-build/templates/` (remplacement direct)
-- [ ] Mettre à jour `wex-build/source/` pour pointer vers le nouveau `../wex` (après renommage étape 0)
+```
+[wex repo]  →  git push sur master (ou tag)
+                  ↓ CI .gitlab-ci.yml (à créer)
+               stage build : déclenche wex-build via API GitLab / curl n8n
+                  ↓
+[wex-build repo]  build branch (existante)
+               build.py -v <version> -n wex  (simplifié, sans -s/-t)
+               image Docker wex-build:build (existante, à vérifier pour v6)
+               → git clone source/ (symlink → ../wex), debuild, .deb
+               → upload .deb sur GitLab Package Registry
+                  ↓
+[wex-apt-repo]  publish.sh -p <project_id> -v <version>
+               → même script qu'en v5, réutilisable tel quel
+                  ↓
+[n8n + Ansible]  déploiement (identique v5)
+```
 
-**Déjà fait (contenu correct, à déplacer) :**
-- [x] `debian/control` — suppression `dh-python`/`python3-setuptools`/`python3-all` (plus de setup.py en v6)
-- [x] `debian/install` — `wex/* usr/lib/wex/` + `.wex/*`, sans le `wexd.service` supprimé en v6
-- [x] `debian/rules` — `dh $@` sans `--with python3`, symlink `bin/wex` → `usr/bin/wex`, chmod sur tous les scripts `bin/`
-- [x] `debian/postinst` — appelle `bin/install` avec `WEX_SKIP_APT=1` et `DEBIAN_FRONTEND=noninteractive`
-- [x] `debian/prerm` — appelle `bin/uninstall` avant la suppression des fichiers
-- [x] `debian/postrm` — purge les fichiers hors dpkg (symlink, completion, venv) sur `purge`
-- [x] `build.py` — cleanup des artefacts dev (`.venv`, `tests/`, etc.) ; `step_set_permissions` détecte `bin/` automatiquement ; fix du tarball hardcodé `/wex` → `self.name`
-- [ ] Tester le build en local : `python3 script/build.py -v 6.0.0 -n wex` (une fois simplifié)
-
----
-
-## 4. Dépôt APT (wex-apt-repo)
-
-Le dépôt aptly existant est réutilisable tel quel pour wex-6.
-
-- [ ] Vérifier que le serveur `wex-apt-repo` est opérationnel
-- [ ] Vérifier que la clé GPG est toujours valide
-- [ ] Tester `publish.sh` avec un `.deb` wex en local
-- [ ] Valider que `apt-get install wex` depuis le dépôt installe bien la version 6
+**Différences v6 vs v5 :**
+- Plus de `setup.py` → image Docker wex-build:build à mettre à jour (retirer dh-python, python3-setuptools, python3-all)
+- `bin/install` remplace `core::core/install` (déjà fait)
+- `requirements.txt` doit pointer sur les versions PyPI publiées (pas encore fait)
+- Pas de tests wex en CI pour l'instant (backlog)
 
 ---
 
-## 5. Install locale en mode développement
+## État actuel
 
-Sur cette machine, on travaille depuis les sources (pas depuis le paquet apt).
-Le symlink `/usr/local/bin/wex` → `local/wex/bin/wex` suffit — c'est ce que fait `bin/install`.
+### Fait
+- [x] Renommage `wex-6` → `wex`, `wex` → `wex-5-legacy`
+- [x] `bin/wex` fonctionnel depuis les sources
+- [x] `bin/install` adapté : venv, symlink, autocomplete, build registry, mode local (install-dev), compatible dpkg (WEX_SKIP_APT, DEBIAN_FRONTEND, root-aware)
+- [x] `bin/uninstall` créé (prerm/postrm)
+- [x] `bin/install-dev` : utilise `.venv/bin/pip` explicitement
+- [x] `default::autocomplete/suggest` stub en place
+- [x] `debian/control` sans dh-python/python3-setuptools/python3-all
+- [x] `debian/install`, `debian/rules`, `debian/postinst`, `debian/prerm`, `debian/postrm` adaptés v6
+- [x] `build.py` : cleanup artefacts dev, détection bin/ auto, fix tarball, retrait -s/-t
+- [x] `wex-build/source/` → symlink `../wex`, `templates-v6/` → `templates/`, `source-v6` supprimé
+- [x] `/etc/wex.conf` mis à jour (`wex-6` → `wex`)
 
-- [ ] Lancer `bin/install` depuis le nouveau `local/wex` (après renommage étape 0)
-- [ ] Vérifier que les modifications de sources sont prises en compte immédiatement (sans rebuild)
-- [ ] Documenter la procédure d'install dev dans `.wex/knowledge/readme/`
+### En cours
+- [ ] Publication des packages Python sur PyPI (`app::suite/publish`)
 
----
+### À faire
 
-## 6. Tests sur VM
+**Étape A — Prérequis PyPI**
+- [ ] Vérifier que tous les packages sont bien publiés sur PyPI
+- [ ] Mettre à jour `requirements.txt` dans `local/wex/` avec les nouvelles versions publiées (`pip-compile requirements.in`)
 
-- [ ] Monter une VM Ubuntu (VirtualBox) propre
-- [ ] Configurer la VM pour pointer sur le dépôt APT wex
-- [ ] Tester `apt-get install wex` sur la VM
-- [ ] Valider que `wex` fonctionne post-install (commandes de base)
-- [ ] Tester la mise à jour : publier une version `6.0.1`, faire `apt-get upgrade`
-- [ ] Tester `apt-get remove wex` (prerm/postrm)
+**Étape B — Image Docker wex-build**
+- [ ] Mettre à jour `Dockerfile.build` : retirer `dh-python`, `python3-setuptools`, `python3-all` (inutiles sans setup.py)
+- [ ] Builder et pousser la nouvelle image `wex-build:build` sur le registry GitLab
 
----
+**Étape C — CI wex (`.gitlab-ci.yml`)**
+- [ ] Créer `.gitlab-ci.yml` dans le repo `wex`
+- [ ] Stage `build` : trigger wex-build via API GitLab (pipeline trigger) ou curl webhook n8n
+- [ ] Passer la version (`version.txt`) en paramètre
 
-## 7. Compatibilité macOS (à planifier, non bloquant)
+**Étape D — Test end-to-end**
+- [ ] Push sur master wex → CI déclenché → wex-build produit le `.deb`
+- [ ] `publish.sh` dans wex-apt-repo avec le `.deb` produit
+- [ ] `apt-get install wex` depuis le dépôt APT
+- [ ] Vérifier que `bin/install` (postinst) se déroule correctement avec les packages PyPI
 
-- [ ] Identifier les dépendances Linux-only dans `bin/install` (apt, dpkg, etc.)
-- [ ] Créer un script d'install alternatif pour macOS (Homebrew ?)
-- [ ] Tester sur une VM macOS (image VirtualBox existante)
-- [ ] Décider si on cible Homebrew Formula ou install script uniquement
-
----
-
-## 8. Tests unitaires (backlog, non bloquant)
-
-Les tests unitaires de wex-6 ne sont pas une priorité pour la première publication.
-
-- [ ] (Todo) Porter les tests unitaires de wex-5 vers wex-6
-- [ ] (Todo) Intégrer les tests dans le pipeline CI/CD
-
----
-
-## 9. Pipeline CI/CD
-
-- [ ] Créer ou adapter `.gitlab-ci.yml` pour wex (repo source)
-- [ ] Étape : bump de version (`default::version/increment` ou équivalent)
-- [ ] Étape : déclenchement du build dans `wex-build` (le CI clone `source/` depuis GitLab, pas un symlink local)
-- [ ] Étape : upload du `.deb` vers le GitLab Package Registry
-- [ ] Étape : déclenchement de la publication dans `wex-apt-repo`
-- [ ] Étape optionnelle : déploiement automatique via Ansible/n8n (comme wex-5)
+**Étape E — VM (validation finale)**
+- [ ] VM Ubuntu propre, pointer sur le dépôt APT
+- [ ] `apt-get install wex`, tester les commandes de base
+- [ ] `apt-get upgrade` après publication d'une version corrective
+- [ ] `apt-get remove wex` (prerm/postrm)
 
 ---
 
 ## Notes
 
-- Le build wex-5 uploadait sur : `https://gitlab.wexample.com/api/v4/projects/{id}/packages/generic/wex/{version}/{package}`
-- Le dépôt aptly utilise des distributions nommées (ex: `stable`, `beta`) extraites du numéro de version
-- Le répertoire `wex-build/builds/` contient les artefacts générés — ne pas committer
-- L'utilisateur `owner` est attendu par `build.py` pour le changement de propriétaire des fichiers buildés (vérifier que cet utilisateur existe sur la machine de build)
-- En CI/CD, `wex-build/source/` est alimenté par un `git clone` du repo wex depuis GitLab — le symlink local `source/` n'est utile que pour les tests de build manuels
+- Le dépôt aptly dérive la distribution du numéro de version : `6.0.0` → `stable`, `6.0.0-beta.1` → `beta`
+- Upload GitLab Registry : `PUT https://gitlab.wexample.com/api/v4/projects/{id}/packages/generic/wex/{version}/{package}`
+- `wex-apt-repo/script/publish.sh` est réutilisable tel quel, pas de modification nécessaire
+- L'image Docker `wex-build:build` est définie dans `wex-build/.wex/docker/Dockerfile.build`
+- Le runner GitLab v5 avait wex installé localement — à vérifier pour v6 (le CI v6 n'en a pas besoin si on trigger via API)
