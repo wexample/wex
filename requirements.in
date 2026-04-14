@@ -6,3 +6,7 @@ wexample-wex-addon-dev-python
 wexample-wex-addon-dev-php
 wexample-wex-addon-dev-css
 wexample-wex-addon-dev-javascript
+wexample-wex-addon-services-db
+wexample-wex-addon-services-platform
+wexample-wex-addon-services-monitoring
+wexample-wex-addon-services-collab
