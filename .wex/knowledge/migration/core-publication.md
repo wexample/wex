@@ -5,67 +5,87 @@ installable sur serveurs Ubuntu/Debian. En local, on travaille depuis les source
 
 ---
 
-## Référence : pipeline v5 (ce qui existait)
+## Référence : pipeline v5 (architecture réelle)
 
-La v5 reposait sur **3 repos GitLab distincts** qui s'enchaînaient :
+Le repo wex sur GitLab a **deux branches clés** :
+- `master` : le code source de wex
+- `build` : le tooling de build (`script/build.py`, templates debian)
+
+Localement : `local/wex-5/` = master, `local/wex-build/` = branche build du même repo.
 
 ```
-[wex repo]  →  merge request vers master
-                  ↓ CI (4 stages)
-               setup : installe wex depuis les sources sur le runner
-               test  : lance wex test
-               merge_addons : wex addons/deploy
-               deploy : curl → n8n webhook ?v=<version>
-                  ↓
-[n8n]  reçoit le webhook, déclenche wex-api
-                  ↓
-[wex-build repo]  build branch
-               build.py -v <version> -n wex
-               → git clone source/, debuild, .deb produit
-               → upload .deb sur GitLab Package Registry
-                  ↓
-[wex-apt-repo]  publish.sh -p <project_id> -v <version>
-               → télécharge .deb depuis GitLab Registry
-               → aptly repo add, snapshot, publish
-               → dépôt APT exposé via nginx
-                  ↓
-[n8n + Ansible]  déploiement automatique sur serveurs — LEGACY DEAD
+[wex repo — merge request → master]
+  stage checkup_pipeline :
+    - checkup_docker   : purge images Docker du runner
+    - checkup_remote   : vérifie que le serveur cible est prêt (via wex app::remote/available)
+
+  stage build_pipeline_images :
+    - build rc image   : image Docker wex/rc (wex installé dedans)
+    - build test-remote image
+
+  stage checkup_builds :
+    - vérifie les images, code quality, format
+
+  stage test :
+    - wex test -vvv dans l'image rc
+
+  stage build_apt  [on master only] :
+    - image : wexample-public/docker/wex:build  (debhelper/devscripts)
+    - lit version.txt → BUILD_VERSION
+    - cp -r .git /var/tmp/build && git checkout build  (branche build du même repo)
+    - ln -s ${CI_PROJECT_DIR} source
+    - python3 script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk ${WEX_BUILD_TOKEN} -v ${BUILD_VERSION}
+    → produit le .deb et l'uploade sur GitLab Package Registry
+
+  stage deploy  [on master only, after build_apt] :
+    - curl "http://wexample.com:4242/webhook/app/prod/wex-apt-repo/apt/publish?p=...&v=..."
+    → wex (serveur sur :4242) reçoit le webhook et forward vers wex-apt-repo
+    → wex-apt-repo/script/publish.sh télécharge le .deb et publie via aptly
+
+  stage checkup_install  [on master only, after deploy] :
+    - installe wex depuis apt.wexample.com dans une image Debian et Ubuntu vierge
+    - vérifie que wex hi et wex version = version attendue
+
+  stage build_docker  [on master only, after checkup_install] :
+    - trigger projet wexample-public/docker pour rebuilder l'image publique wex
 ```
 
-**Détails clés v5 :**
-- Le CI tourne sur un **runner GitLab** qui a wex installé en local
-- `wex-build` utilise une image Docker custom (`wex-build:build`) avec debhelper/devscripts
-- La distribution aptly est dérivée du numéro de version (ex: `6-0.stable` → `stable`)
-- Le `.deb` est uploadé sur le GitLab Package Registry avant d'être récupéré par wex-apt-repo
+**Points clés :**
+- `build_apt` fonctionne entièrement dans le CI de wex (pas de repo séparé déclenché)
+- Le webhook `:4242` = wex lui-même en mode serveur → **DEAD en v6** (wex-6 pas de serveur webhook)
+- n8n n'était impliqué que pour les notifications, pas dans le pipeline principal
 
 ---
 
 ## Cible v6 : ce qu'on veut
 
-Même schéma, adapté à v6 :
+Même repo wex, même branche `build`, pipeline simplifié :
 
 ```
-[wex repo]  →  git push sur master (ou tag)
-                  ↓ CI .gitlab-ci.yml (à créer)
-               stage build : déclenche wex-build via API GitLab / curl n8n
-                  ↓
-[wex-build repo]  build branch (existante)
-               build.py -v <version> -n wex  (simplifié, sans -s/-t)
-               image Docker wex-build:build (existante, à vérifier pour v6)
-               → git clone source/ (symlink → ../wex), debuild, .deb
-               → upload .deb sur GitLab Package Registry
-                  ↓
-[wex-apt-repo]  publish.sh -p <project_id> -v <version>
-               → même script qu'en v5, réutilisable tel quel
-                  ↓
-[déploiement serveurs]  manuel pour l'instant (voir étape E)
+[wex repo — push/merge → master]
+
+  stage build_apt  [on master only] :
+    - même logique que v5 : image wex:build, checkout branche build, build.py
+    - WEX_BUILD_TOKEN à créer dans les variables CI du projet
+
+  stage deploy  [on master only, after build_apt] :
+    - curl vers wex-apt-repo  →  MANUEL pour l'instant (wex-6 pas de webhook server)
+
+  stage checkup_install  [on master only, after deploy] :
+    - même que v5 : apt install wex dans image Debian/Ubuntu vierge, vérifie version
+
+  [déploiement serveurs]  →  MANUEL pour l'instant
+
+  [stage build_docker]  →  TODO (image publique wex, quand pertinent)
 ```
 
-**Différences v6 vs v5 :**
-- Plus de `setup.py` → image Docker wex-build:build à mettre à jour (retirer dh-python, python3-setuptools, python3-all)
-- `bin/install` remplace `core::core/install` (déjà fait)
-- `requirements.txt` doit pointer sur les versions PyPI publiées (pas encore fait)
-- Pas de tests wex en CI pour l'instant (backlog)
+**Ce qu'on ne fait PAS pour l'instant en v6 :**
+- Images rc/test-remote (pas de Docker dans wex-6)
+- Checkup remote (pas de wex server)
+- Webhook auto vers apt-repo (pas de webhook server dans wex-6)
+- Déploiement automatique serveurs (Ansible/n8n DEAD)
+
+**Étape F (TODO, bloquée) :** quand wex-6 aura un mode serveur webhook, brancher le deploy auto.
 
 ---
 
@@ -74,61 +94,50 @@ Même schéma, adapté à v6 :
 ### Fait
 - [x] Renommage `wex-6` → `wex`, `wex` → `wex-5-legacy`
 - [x] `bin/wex` fonctionnel depuis les sources
-- [x] `bin/install` adapté : venv, symlink, autocomplete, build registry, mode local (install-dev), compatible dpkg (WEX_SKIP_APT, DEBIAN_FRONTEND, root-aware)
-- [x] `bin/uninstall` créé (prerm/postrm)
-- [x] `bin/install-dev` : utilise `.venv/bin/pip` explicitement
+- [x] `bin/install` adapté : venv, symlink, autocomplete, build registry, mode local, compatible dpkg
+- [x] `bin/uninstall` créé
+- [x] `bin/publish` créé : bump version, pip-compile, git commit + push
 - [x] `default::autocomplete/suggest` stub en place
-- [x] `debian/control` sans dh-python/python3-setuptools/python3-all
-- [x] `debian/install`, `debian/rules`, `debian/postinst`, `debian/prerm`, `debian/postrm` adaptés v6
+- [x] Templates debian adaptés v6 (`control`, `install`, `rules`, `postinst`, `prerm`, `postrm`)
 - [x] `build.py` : cleanup artefacts dev, détection bin/ auto, fix tarball, retrait -s/-t
-- [x] `wex-build/source/` → symlink `../wex`, `templates-v6/` → `templates/`, `source-v6` supprimé
+- [x] Branche `build` : `source/` → symlink `../wex`, `templates-v6/` → `templates/`, `source-v6` supprimé
 - [x] `/etc/wex.conf` mis à jour (`wex-6` → `wex`)
-
-### En cours
-- [ ] Publication des packages Python sur PyPI (`app::suite/publish`)
+- [x] Packages Python publiés sur PyPI
+- [x] `requirements.txt` mis à jour avec les versions PyPI publiées
+- [x] Image Docker `wex-build:build` mise à jour (retrait dh-python/python3-setuptools/python3-all)
 
 ### À faire
 
-**Étape A — Prérequis PyPI**
-- [ ] Vérifier que tous les packages sont bien publiés sur PyPI
-- [ ] Mettre à jour `requirements.txt` dans `local/wex/` avec les nouvelles versions publiées (`pip-compile requirements.in`)
+**Étape A — CI wex (`.gitlab-ci.yml`)**
+- [ ] Créer `.gitlab-ci.yml` dans la branche master de wex avec le stage `build_apt`
+- [ ] Même logique que v5 : checkout branche `build`, `ln -s ${CI_PROJECT_DIR} source`, `build.py`
+- [ ] Créer la variable CI `WEX_BUILD_TOKEN` dans les settings GitLab du projet wex
+- [ ] Stage `deploy` : curl manuel vers wex-apt-repo (pas de webhook auto)
+- [ ] Stage `checkup_install` : vérifier apt install dans image Debian/Ubuntu
 
-**Étape B — Image Docker wex-build**
-- [ ] Mettre à jour `Dockerfile.build` : retirer `dh-python`, `python3-setuptools`, `python3-all` (inutiles sans setup.py)
-- [ ] Builder et pousser la nouvelle image `wex-build:build` sur le registry GitLab
+**Étape B — Test end-to-end**
+- [ ] Push sur master wex → CI déclenché → `.deb` produit et uploadé sur Registry
+- [ ] Lancer `publish.sh` manuellement sur le serveur wex-apt-repo
+- [ ] `apt-get install wex` depuis apt.wexample.com
+- [ ] Vérifier que `bin/install` (postinst) se déroule correctement
 
-**Étape C — CI wex (`.gitlab-ci.yml`)**
-- [ ] Créer `.gitlab-ci.yml` dans le repo `wex`
-- [ ] Stage `build` : trigger wex-build via API GitLab (pipeline trigger) ou curl webhook n8n
-- [ ] Passer la version (`version.txt`) en paramètre
-
-**Étape D — Test end-to-end**
-- [ ] Push sur master wex → CI déclenché → wex-build produit le `.deb`
-- [ ] `publish.sh` dans wex-apt-repo avec le `.deb` produit
-- [ ] `apt-get install wex` depuis le dépôt APT
-- [ ] Vérifier que `bin/install` (postinst) se déroule correctement avec les packages PyPI
-
-**Étape E — VM (validation finale)**
-- [ ] VM Ubuntu propre, pointer sur le dépôt APT
+**Étape C — VM (validation finale)**
+- [ ] VM Ubuntu propre, pointer sur apt.wexample.com
 - [ ] `apt-get install wex`, tester les commandes de base
 - [ ] `apt-get upgrade` après publication d'une version corrective
-- [ ] `apt-get remove wex` (prerm/postrm)
-- [ ] Déploiement manuel sur les serveurs cibles
+- [ ] `apt-get remove wex`
 
 **Étape F — Déploiement automatique (TODO, bloqué)**
-- [ ] Implémenter la réception de webhooks dans wex-6
-- [ ] Brancher le CI (étape D) pour déclencher un webhook post-publication
-- [ ] Valider le déploiement automatique end-to-end
-
-> Note : n8n et Ansible sont legacy dead. Le système cible est wex lui-même comme récepteur de webhook.
-> Bloqué tant que wex-6 ne supporte pas les webhooks.
+- [ ] Implémenter mode serveur webhook dans wex-6
+- [ ] Brancher le stage `deploy` du CI vers ce webhook
+- [ ] Déploiement automatique sur serveurs cibles
 
 ---
 
 ## Notes
 
+- `WEX_BUILD_TOKEN` : Personal Access Token GitLab avec scope `api`, à créer et stocker dans CI/CD variables du projet wex (Settings → CI/CD → Variables)
 - Le dépôt aptly dérive la distribution du numéro de version : `6.0.0` → `stable`, `6.0.0-beta.1` → `beta`
 - Upload GitLab Registry : `PUT https://gitlab.wexample.com/api/v4/projects/{id}/packages/generic/wex/{version}/{package}`
-- `wex-apt-repo/script/publish.sh` est réutilisable tel quel, pas de modification nécessaire
-- L'image Docker `wex-build:build` est définie dans `wex-build/.wex/docker/Dockerfile.build`
-- Le runner GitLab v5 avait wex installé localement — à vérifier pour v6 (le CI v6 n'en a pas besoin si on trigger via API)
+- `wex-apt-repo/script/publish.sh` est réutilisable tel quel
+- L'image `wexample-public/docker/wex:build` est dans le repo `wexample-public/docker` sur GitLab (pas dans wex-build local)
