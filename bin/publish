@@ -6,7 +6,6 @@ WEX_DIR_CLI="$(realpath "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")/"
 WEX_DIR_ROOT=$(realpath "${WEX_DIR_CLI}../")/
 
 VENV_PIP="${WEX_DIR_ROOT}.venv/bin/pip"
-VENV_PIP_COMPILE="${WEX_DIR_ROOT}.venv/bin/pip-compile"
 WEX_BIN="${WEX_DIR_CLI}wex"
 VERSION_FILE="${WEX_DIR_ROOT}version.txt"
 
@@ -23,7 +22,7 @@ echo "${NEW_VERSION}" > "${VERSION_FILE}"
 
 # Update requirements.txt from requirements.in
 echo "Updating requirements.txt..."
-"${VENV_PIP_COMPILE}" "${WEX_DIR_ROOT}requirements.in" --output-file "${WEX_DIR_ROOT}requirements.txt" --upgrade
+uv pip compile "${WEX_DIR_ROOT}requirements.in" --output-file "${WEX_DIR_ROOT}requirements.txt" --upgrade
 
 # Commit and push
 echo "Committing..."
