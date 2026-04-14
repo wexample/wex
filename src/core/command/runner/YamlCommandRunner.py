@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Optional, cast
 
 import click
 from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
-from wexample_wex_core.helpers.click_helper import click_args_convert_dict_to_args
+from src.helper.click import click_args_convert_dict_to_args
 
 from src.const.types import (
     Args,

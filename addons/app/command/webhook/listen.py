@@ -23,7 +23,7 @@ from src.helper.core import (
     core_get_daemon_service_resource_path,
     core_kernel_get_version,
 )
-from wexample_helpers.helpers.file import file_remove_file_if_exists
+from wexample_helpers.helpers.file import file_remove_if_exists
 from src.helper.process import process_kill_by_command, process_kill_by_port
 from src.helper.routing import routing_build_webhook_route_map
 from src.helper.system import (
@@ -90,7 +90,7 @@ def app__webhook__listen(
             return None
 
     # Remove old service file
-    file_remove_file_if_exists(SERVICE_DAEMON_PATH)
+    file_remove_if_exists(SERVICE_DAEMON_PATH)
 
     if asynchronous:
         use_daemon = not kernel.run_function(system__system__is_docker)

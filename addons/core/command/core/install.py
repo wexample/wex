@@ -15,7 +15,7 @@ from src.const.globals import (
 from src.core.response.AbstractResponse import AbstractResponse
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
-from wexample_helpers.helpers.file import file_remove_file_if_exists
+from wexample_helpers.helpers.file import file_remove_if_exists
 from src.helper.file import file_create_from_template
 from src.helper.user import get_sudo_username, get_user_or_sudo_user_home_data_path
 
@@ -94,7 +94,7 @@ def __core__core__install_autocomplete(kernel: "Kernel") -> None:
 
 
 def __core__core__install_symlink(kernel: "Kernel", destination: str) -> None:
-    file_remove_file_if_exists(destination)
+    file_remove_if_exists(destination)
 
     os.symlink(kernel.get_path("core.cli"), destination)
 
