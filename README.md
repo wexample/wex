@@ -54,3 +54,4 @@ tests/
 ├── integration/    # Integration tests (test component interactions)
 └── conftest.py     # Shared fixtures (create as needed)
 ```
+
