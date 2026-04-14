@@ -62,12 +62,23 @@ if [ ! -f "${WEX_ENV_PATH}" ]; then
     echo "APP_ENV=prod" > "${WEX_ENV_PATH}"
 fi
 
+# Load env to read APP_ENV
+# shellcheck disable=SC1090
+. "${WEX_ENV_PATH}"
+
 echo "Installing symlink..."
 ln -sf "${WEX_DIR_CLI}wex" /usr/local/bin/wex
 
 echo "Installing autocomplete..."
 chmod +x "${WEX_DIR_CLI}autocomplete" "${WEX_DIR_CLI}autocomplete-handler"
 echo ". ${WEX_DIR_CLI}autocomplete-handler" > /etc/bash_completion.d/wex
+
+# On dev machine, install local editable packages over the venv
+if [ "${APP_ENV}" = "local" ]; then
+    echo "Installing local dev packages..."
+    # shellcheck disable=SC1090
+    bash "${WEX_DIR_CLI}install-dev"
+fi
 
 echo "Building registry..."
 bash "${WEX_DIR_CLI}wex" default::registry/build

@@ -29,7 +29,7 @@ La v5 reposait sur **3 repos GitLab distincts** qui s'enchaînaient :
                → aptly repo add, snapshot, publish
                → dépôt APT exposé via nginx
                   ↓
-[n8n + Ansible]  déploiement automatique sur serveurs (le lundi suivant)
+[n8n + Ansible]  déploiement automatique sur serveurs — LEGACY DEAD
 ```
 
 **Détails clés v5 :**
@@ -58,7 +58,7 @@ Même schéma, adapté à v6 :
 [wex-apt-repo]  publish.sh -p <project_id> -v <version>
                → même script qu'en v5, réutilisable tel quel
                   ↓
-[n8n + Ansible]  déploiement (identique v5)
+[déploiement serveurs]  manuel pour l'instant (voir étape E)
 ```
 
 **Différences v6 vs v5 :**
@@ -113,6 +113,15 @@ Même schéma, adapté à v6 :
 - [ ] `apt-get install wex`, tester les commandes de base
 - [ ] `apt-get upgrade` après publication d'une version corrective
 - [ ] `apt-get remove wex` (prerm/postrm)
+- [ ] Déploiement manuel sur les serveurs cibles
+
+**Étape F — Déploiement automatique (TODO, bloqué)**
+- [ ] Implémenter la réception de webhooks dans wex-6
+- [ ] Brancher le CI (étape D) pour déclencher un webhook post-publication
+- [ ] Valider le déploiement automatique end-to-end
+
+> Note : n8n et Ansible sont legacy dead. Le système cible est wex lui-même comme récepteur de webhook.
+> Bloqué tant que wex-6 ne supporte pas les webhooks.
 
 ---
 

@@ -6,54 +6,237 @@
 #
 annotated-types==0.7.0
     # via pydantic
-build==1.3.0
-    # via pip-tools
-click==8.1.7
+astroid==4.0.4
+    # via pylint
+attrs==26.1.0
     # via
-    #   pip-tools
-    #   wexample-wex-core
-iniconfig==2.1.0
-    # via pytest
-packaging==25.0
-    # via
-    #   build
-    #   pytest
-pip-tools==7.5.0
-    # via wexample-wex-addon-filestate
-pluggy==1.6.0
-    # via pytest
-pydantic==2.8.2
-    # via
+    #   cattrs
+    #   wexample-api
+    #   wexample-app
+    #   wexample-config
+    #   wexample-file
+    #   wexample-filestate
+    #   wexample-filestate-git
+    #   wexample-filestate-javascript
+    #   wexample-filestate-python
+    #   wexample-helpers
+    #   wexample-helpers-git
+    #   wexample-helpers-yaml
+    #   wexample-prompt
+    #   wexample-wex-addon-app
+    #   wexample-wex-addon-dev-css
+    #   wexample-wex-addon-dev-javascript
+    #   wexample-wex-addon-dev-python
     #   wexample-wex-addon-filestate
     #   wexample-wex-core
-pydantic-core==2.20.1
+autoflake==2.3.3
+    # via wexample-filestate-python
+black==26.3.1
+    # via wexample-filestate-python
+cattrs==26.1.0
+    # via
+    #   wexample-api
+    #   wexample-app
+    #   wexample-config
+    #   wexample-file
+    #   wexample-filestate
+    #   wexample-filestate-git
+    #   wexample-filestate-javascript
+    #   wexample-filestate-python
+    #   wexample-helpers
+    #   wexample-helpers-git
+    #   wexample-helpers-yaml
+    #   wexample-prompt
+    #   wexample-wex-addon-app
+    #   wexample-wex-addon-dev-css
+    #   wexample-wex-addon-dev-javascript
+    #   wexample-wex-addon-dev-python
+    #   wexample-wex-addon-filestate
+    #   wexample-wex-core
+certifi==2026.2.25
+    # via requests
+charset-normalizer==3.4.7
+    # via requests
+click==8.3.2
+    # via
+    #   black
+    #   wexample-wex-core
+colorama==0.4.6
+    # via wexample-prompt
+dill==0.4.1
+    # via pylint
+dotenv==0.9.9
+    # via wexample-app
+flynt==1.0.6
+    # via wexample-filestate-python
+gitdb==4.0.12
+    # via gitpython
+gitpython==3.1.46
+    # via wexample-helpers-git
+idna==3.11
+    # via requests
+inquirerpy==0.3.4
+    # via wexample-prompt
+isort==8.0.1
+    # via
+    #   pylint
+    #   wexample-filestate-python
+jinja2==3.1.6
+    # via wexample-filestate
+libcst==1.8.6
+    # via wexample-filestate-python
+markupsafe==3.0.3
+    # via jinja2
+mccabe==0.7.0
+    # via pylint
+mypy-extensions==1.1.0
+    # via black
+networkx==3.6.1
+    # via wexample-wex-addon-dev-python
+nodeenv==1.10.0
+    # via pyright
+packaging==26.0
+    # via
+    #   black
+    #   wexample-filestate-python
+pathspec==1.0.4
+    # via black
+pfzy==0.3.4
+    # via inquirerpy
+platformdirs==4.9.6
+    # via
+    #   black
+    #   pylint
+prompt-toolkit==3.0.52
+    # via inquirerpy
+psutil==7.2.2
+    # via wexample-wex-core
+pydantic==2.13.0
+    # via
+    #   wexample-config
+    #   wexample-wex-addon-filestate
+pydantic-core==2.46.0
     # via pydantic
-pygments==2.19.2
-    # via pytest
-pyproject-hooks==1.2.0
+pyflakes==3.4.0
+    # via autoflake
+pylint==4.0.5
+    # via wexample-wex-addon-dev-python
+pyright==1.1.408
+    # via wexample-wex-addon-dev-python
+python-dotenv==1.2.2
     # via
-    #   build
-    #   pip-tools
-pytest==8.4.1
-    # via wexample-wex-addon-filestate
-tomli==2.2.1
-    # via -r requirements.in
-typing-extensions==4.12.2
+    #   dotenv
+    #   wexample-app
+    #   wexample-filestate
+pytokens==0.4.1
+    # via black
+pyupgrade==3.21.2
+    # via wexample-filestate-python
+pyyaml==6.0.3
     # via
+    #   libcst
+    #   wexample-helpers-yaml
+readchar==4.2.2
+    # via wexample-prompt
+requests==2.33.1
+    # via
+    #   wexample-api
+    #   wexample-filestate-git
+smmap==5.0.3
+    # via gitdb
+tokenize-rt==6.2.0
+    # via pyupgrade
+tomli==2.4.1
+    # via
+    #   -r requirements.in
+    #   wexample-filestate-python
+tomlkit==0.14.0
+    # via
+    #   pylint
+    #   wexample-filestate
+    #   wexample-wex-addon-app
+typing-extensions==4.15.0
+    # via
+    #   cattrs
     #   pydantic
     #   pydantic-core
-wexample-wex-addon-app==0.0.13
+    #   pyright
+    #   typing-inspection
+typing-inspection==0.4.2
+    # via pydantic
+urllib3==2.6.3
+    # via requests
+wcwidth==0.6.0
+    # via
+    #   prompt-toolkit
+    #   wexample-prompt
+wexample-api==0.0.84
+    # via
+    #   wexample-filestate-git
+    #   wexample-filestate-python
+wexample-app==0.0.72
+    # via wexample-wex-core
+wexample-config==0.0.98
+    # via wexample-filestate
+wexample-event==0.0.80
+    # via wexample-filestate
+wexample-file==0.0.53
+    # via wexample-filestate
+wexample-filestate==0.0.75
+    # via
+    #   wexample-app
+    #   wexample-filestate-git
+    #   wexample-filestate-javascript
+    #   wexample-filestate-python
+    #   wexample-wex-core
+wexample-filestate-git==0.0.60
+    # via wexample-wex-core
+wexample-filestate-javascript==0.0.15
+    # via wexample-wex-addon-dev-javascript
+wexample-filestate-python==0.0.59
+    # via wexample-wex-addon-dev-python
+wexample-helpers==0.0.93
+    # via
+    #   wexample-api
+    #   wexample-config
+    #   wexample-event
+    #   wexample-file
+    #   wexample-helpers-git
+    #   wexample-helpers-yaml
+    #   wexample-prompt
+wexample-helpers-git==0.0.97
+    # via
+    #   wexample-filestate-git
+    #   wexample-wex-core
+wexample-helpers-yaml==0.0.114
+    # via
+    #   wexample-app
+    #   wexample-filestate
+wexample-prompt==0.0.98
+    # via
+    #   wexample-api
+    #   wexample-filestate
+wexample-wex-addon-app==0.0.56
+    # via
+    #   -r requirements.in
+    #   wexample-wex-addon-dev-css
+    #   wexample-wex-addon-dev-javascript
+    #   wexample-wex-addon-dev-python
+wexample-wex-addon-dev-css==0.0.18
     # via -r requirements.in
-wexample-wex-addon-filestate==0.0.1
+wexample-wex-addon-dev-javascript==0.0.58
     # via -r requirements.in
-wexample-wex-core==6.0.1
+wexample-wex-addon-dev-php==0.0.39
+    # via -r requirements.in
+wexample-wex-addon-dev-python==0.0.64
+    # via -r requirements.in
+wexample-wex-addon-filestate==0.0.18
+    # via -r requirements.in
+wexample-wex-core==6.0.68
     # via
     #   -r requirements.in
     #   wexample-wex-addon-app
+    #   wexample-wex-addon-dev-php
     #   wexample-wex-addon-filestate
-wheel==0.45.1
-    # via pip-tools
-
-# The following packages are considered to be unsafe in a requirements file:
-# pip
-# setuptools
+xmltodict==1.0.4
+    # via wexample-filestate

@@ -4,9 +4,13 @@
 WEX_DIR_CLI="$(realpath "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")/"
 WEX_DIR_ROOT=$(realpath "${WEX_DIR_CLI}../")/
 
-. ${WEX_DIR_ROOT}.wex/.env
+# shellcheck disable=SC1090
+. "${WEX_DIR_ROOT}.wex/.env"
 
-# Install every local dev pip packages
-for dir in $(ls -d ${LOCAL_PIP_PACKAGES_PATH}*); do
-  pip install -e ${dir}
+# Use the venv pip explicitly so this works whether or not the venv is activated
+VENV_PIP="${WEX_DIR_ROOT}.venv/bin/pip"
+
+# Install every local dev package as editable
+for dir in $(ls -d "${LOCAL_PIP_PACKAGES_PATH}"*/); do
+    "${VENV_PIP}" install -q -e "${dir}"
 done

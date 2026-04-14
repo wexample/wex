@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+set -e
+
+WEX_DIR_CLI="$(realpath "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")/"
+WEX_DIR_ROOT=$(realpath "${WEX_DIR_CLI}../")/
+
+VENV_PIP="${WEX_DIR_ROOT}.venv/bin/pip"
+VENV_PIP_COMPILE="${WEX_DIR_ROOT}.venv/bin/pip-compile"
+WEX_BIN="${WEX_DIR_CLI}wex"
+VERSION_FILE="${WEX_DIR_ROOT}version.txt"
+
+# Read current version
+CURRENT_VERSION=$(cat "${VERSION_FILE}")
+echo "Current version: ${CURRENT_VERSION}"
+
+# Increment patch version
+NEW_VERSION=$("${WEX_BIN}" default::version/increment --version "${CURRENT_VERSION}")
+echo "New version: ${NEW_VERSION}"
+
+# Write new version
+echo "${NEW_VERSION}" > "${VERSION_FILE}"
+
+# Update requirements.txt from requirements.in
+echo "Updating requirements.txt..."
+"${VENV_PIP_COMPILE}" "${WEX_DIR_ROOT}requirements.in" --output-file "${WEX_DIR_ROOT}requirements.txt" --upgrade
+
+# Commit and push
+echo "Committing..."
+cd "${WEX_DIR_ROOT}"
+git add version.txt requirements.txt
+git commit -m "Release ${NEW_VERSION}"
+git push
+
+echo "Published ${NEW_VERSION} — trigger CI to build and deploy."
