@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+
+case "$1" in
+  remove|upgrade|deconfigure)
+    if [ -x "/usr/lib/wex/bin/uninstall" ]; then
+      bash "/usr/lib/wex/bin/uninstall"
+    fi
+    ;;
+  failed-upgrade)
+    ;;
+esac
+
+exit 0

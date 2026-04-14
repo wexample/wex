@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+
+case "$1" in
+  purge)
+    # Clean up files not tracked by dpkg (created during postinst)
+    rm -f /usr/local/bin/wex
+    rm -f /etc/bash_completion.d/wex
+    # Remove the venv created during postinst
+    rm -rf /usr/lib/wex/.venv
+    ;;
+esac
+
+exit 0
