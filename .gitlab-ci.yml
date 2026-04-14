@@ -54,9 +54,9 @@ deploy:
 checkup_install_debian:
   extends: .checkup_install
   stage: checkup_install
-  image: debian:bookworm-slim
+  image: python:3.12-slim
 
 checkup_install_ubuntu:
   extends: .checkup_install
   stage: checkup_install
-  image: ubuntu:22.04
+  image: python:3.12-slim
