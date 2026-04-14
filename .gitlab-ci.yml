@@ -40,7 +40,7 @@ deploy:
     - set -e
     - apt-get update -qq
     - apt-get install -y gnupg2 wget
-    - wget -O /etc/apt/trusted.gpg.d/wexample.gpg https://apt.wexample.com/gpg
+    - wget -O - https://apt.wexample.com/gpg | gpg --dearmor -o /etc/apt/trusted.gpg.d/wexample.gpg
     - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
     - apt-get update -qq
     - apt-get install -y wex
