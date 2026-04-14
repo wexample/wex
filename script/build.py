@@ -4,8 +4,6 @@ import argparse
 import shutil
 import subprocess
 import tarfile
-import grp
-import pwd
 import urllib.request
 import urllib.parse
 
@@ -72,8 +70,6 @@ class BuildManager:
         self.path['tarball'] = self.path['builds'] + self.build_name + '.orig.tar.gz'
 
     def step_cleanup_old_build(self):
-        self.change_owner_recursive_current(self.path['build'])
-
         self.delete_dir(self.path['build'])
         self.delete_file(self.path['tarball'])
         os.mkdir(self.path['build'])
@@ -99,14 +95,6 @@ class BuildManager:
     def step_create_tarball(self):
         with tarfile.open(self.path['tarball'], 'w:gz') as tar:
             tar.add(self.path['build'] + '/' + self.name)
-
-        self.change_owner_recursive_current(self.path['build'])
-
-    def change_owner_recursive_current(self, path):
-        if os.path.exists(path):
-            owner_uid = pwd.getpwnam('owner').pw_uid
-            owner_gid = grp.getgrnam('owner').gr_gid
-            self.change_owner_recursive(path, owner_uid, owner_gid)
 
     def step_copy_debian(self):
         shutil.copytree(
@@ -150,8 +138,6 @@ class BuildManager:
             f.write(changelog)
 
     def step_set_permissions(self):
-        self.change_owner_recursive_current(self.path['build'])
-
         # Execution permission for entry point directory (cli/ for v5, bin/ for v6)
         self.run(['chmod', '-R', '-x', self.path['build_source']])
         for entry_dir in ['cli', 'bin']:
@@ -240,16 +226,6 @@ class BuildManager:
             builds.append(file)
 
         return None
-
-    def change_owner_recursive(self, path, owner_uid, owner_gid):
-        for dir_path, dir_names, filenames in os.walk(path):
-            shutil.chown(dir_path, owner_uid, owner_gid)
-            for filename in filenames:
-                filepath = os.path.join(dir_path, filename)
-                if os.path.islink(filepath):
-                    os.lchown(filepath, owner_uid, owner_gid)
-                else:
-                    shutil.chown(filepath, owner_uid, owner_gid)
 
     def delete_file_recursive(self, file_name, start_path):
         for root, _, files in os.walk(start_path):
