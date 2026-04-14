@@ -37,22 +37,15 @@ Il faut le rendre compatible avec une install depuis `/usr/lib/wex/` (mode paque
 
 Le `wex-build` existant (wex-5) est largement réutilisable. Il faut l'adapter pour wex-6.
 
-- [ ] Créer un sous-dossier `wex-build/source-wex6/` (ou pointer `source/` vers wex-6)
-- [ ] Adapter `templates/debian/control` pour wex-6 :
-  - Nom du paquet : `wex` (identique)
-  - Dépendances système : `python3 (>= 3.10)`, `python3-pip`, `python3-venv`, `bash`, `git`, etc.
-  - Vérifier si de nouvelles dépendances sont nécessaires par rapport à wex-5
-- [ ] Adapter `templates/debian/install` (mapping de fichiers) :
-  - `bin/` → `usr/lib/wex/bin/` (wex-5 utilisait `cli/` → `usr/lib/wex/cli/`)
-  - `src/` → `usr/lib/wex/src/`
-  - `.wex/` → `usr/lib/wex/.wex/`
-  - Assets divers (logo, man page, etc.)
-- [ ] Adapter `templates/debian/rules` :
-  - Symlink `usr/lib/wex/bin/wex` → `usr/bin/wex` (au lieu de `cli/wex`)
-  - Permissions 755 sur `bin/` (au lieu de `cli/`)
-- [ ] Adapter `templates/debian/postinst` pour appeler `bin/install` (au lieu de `cli/install`)
-- [ ] Adapter `build.py` si nécessaire (chemins, nom du paquet)
-- [ ] Tester le build en local : `python3 script/build.py -v 6.0.0 -n wex`
+- [x] `wex-build/source-v6` → symlink vers `../wex-6` (clone git à la volée au build)
+- [x] `wex-build/templates-v6/debian/control` — suppression `dh-python`/`python3-setuptools`/`python3-all` (plus de setup.py en v6)
+- [x] `wex-build/templates-v6/debian/install` — `wex/* usr/lib/wex/` + `.wex/*`, sans le `wexd.service` supprimé en v6
+- [x] `wex-build/templates-v6/debian/rules` — `dh $@` sans `--with python3`, symlink `bin/wex` → `usr/bin/wex`, chmod sur tous les scripts `bin/`
+- [x] `wex-build/templates-v6/debian/postinst` — appelle `bin/install` avec `WEX_SKIP_APT=1` et `DEBIAN_FRONTEND=noninteractive`
+- [x] `wex-build/templates-v6/debian/prerm` — appelle `bin/uninstall` avant la suppression des fichiers
+- [x] `wex-build/templates-v6/debian/postrm` — purge les fichiers hors dpkg (symlink, completion, venv) sur `purge`
+- [x] `build.py` — ajout args `-s` (source dir) et `-t` (templates dir) ; cleanup des artefacts dev (`.venv`, `tests/`, etc.) ; `step_set_permissions` détecte `cli/` ou `bin/` automatiquement ; fix du tarball hardcodé `/wex` → `self.name`
+- [ ] Tester le build en local : `python3 script/build.py -v 6.0.0 -n wex -s source-v6 -t templates-v6`
 
 ---
 
