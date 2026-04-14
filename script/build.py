@@ -29,7 +29,7 @@ class BuildManager:
         )
         self.path['root'] = os.path.dirname(self.path['current']) + '/'
         self.path['builds'] = self.path['root'] + 'builds/'
-        self.path['templates'] = self.path['root'] + 'templates/'
+        # source and templates paths are set in step_init_vars after arg parsing
 
         steps = [
             self.step_init_vars,
@@ -65,6 +65,8 @@ class BuildManager:
         self.private_token = args.gtk
         self.build_name = f'{self.name}_{self.version}'
 
+        self.path['source'] = self.path['root'] + 'source'
+        self.path['templates'] = self.path['root'] + 'templates/'
         self.path['build'] = self.path['builds'] + f'{self.build_name}/'
         self.path['build_source'] = self.path['build'] + self.name + '/'
         self.path['tarball'] = self.path['builds'] + self.build_name + '.orig.tar.gz'
@@ -81,17 +83,22 @@ class BuildManager:
         self.run([
             'git',
             'clone',
-            self.path['root'] + 'source',
+            self.path['source'],
             self.path['build_source']
         ])
 
     def step_cleanup_source(self):
         self.delete_dir(self.path['build_source'] + '.git')
         self.delete_file_recursive('.gitignore', self.path['build_source'])
+        # Remove dev-only artifacts that should not land in the package
+        for dev_artifact in ['.venv', '.mypy_cache', '.pytest_cache', 'tests']:
+            self.delete_dir(self.path['build_source'] + dev_artifact)
+        for dev_file in ['pytest.ini', '.iml']:
+            self.delete_file_recursive(dev_file, self.path['build_source'])
 
     def step_create_tarball(self):
         with tarfile.open(self.path['tarball'], 'w:gz') as tar:
-            tar.add(self.path['build'] + '/wex')
+            tar.add(self.path['build'] + '/' + self.name)
 
         self.change_owner_recursive_current(self.path['build'])
 
@@ -145,9 +152,12 @@ class BuildManager:
     def step_set_permissions(self):
         self.change_owner_recursive_current(self.path['build'])
 
-        # Execution permission for cli only
+        # Execution permission for entry point directory (cli/ for v5, bin/ for v6)
         self.run(['chmod', '-R', '-x', self.path['build_source']])
-        self.run(['chmod', '-R', '+x', self.path['build_source'] + 'cli'])
+        for entry_dir in ['cli', 'bin']:
+            candidate = self.path['build_source'] + entry_dir
+            if os.path.isdir(candidate):
+                self.run(['chmod', '-R', '+x', candidate])
 
         # Execution permission for .sh files
         self.run([
