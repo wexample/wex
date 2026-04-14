@@ -62,8 +62,15 @@ if [ ! -f "${WEX_ENV_PATH}" ]; then
     echo "APP_ENV=prod" > "${WEX_ENV_PATH}"
 fi
 
-echo "Installing core..."
-bash "${WEX_DIR_CLI}wex" core::core/install
+echo "Installing symlink..."
+sudo ln -sf "${WEX_DIR_CLI}wex" /usr/local/bin/wex
+
+echo "Installing autocomplete..."
+sudo chmod +x "${WEX_DIR_CLI}autocomplete" "${WEX_DIR_CLI}autocomplete-handler"
+echo ". ${WEX_DIR_CLI}autocomplete-handler" | sudo tee /etc/bash_completion.d/wex > /dev/null
+
+echo "Building registry..."
+bash "${WEX_DIR_CLI}wex" default::registry/build
 
 echo "Reload bashrc changes..."
 # shellcheck disable=SC1090

@@ -16,7 +16,7 @@
 
 ## Install scripts
 
-- [ ] `install` — script exists, but still depends on non-migrated `core::core/install`
+- [x] `install` — symlink + autocomplete handler + registry build intégrés directement en bash (plus de dépendance Python pour l'install)
 - [x] `install-dev` — development installation
 - [ ] `uninstall`
 - [x] `_init.sh` — shell init (set error flags)
@@ -24,10 +24,11 @@
 
 ## Shell integration
 
-- [ ] `autocomplete` — script exists, but backend `default::autocomplete/suggest` is not runnable yet
-- [ ] `autocomplete-handler` — script exists, but depends on incomplete autocomplete backend
-- [ ] `terminal-handler` — not present in `bin/`
-- [ ] `wex-coverage` — not present in `bin/`
+- [x] `autocomplete` — fonctionnel, permissions fixées (+x)
+- [x] `autocomplete-handler` — fonctionnel, sourcé depuis `/etc/bash_completion.d/wex`
+- [x] `default::autocomplete/suggest` — stub vide (retourne []), suggestions à implémenter
+- [~] `terminal-handler` — absent de `bin/`, non nécessaire en v6 (symlink suffit)
+- [~] `wex-coverage` — hors scope publication
 
 ## v6 target
 

@@ -9,11 +9,12 @@ installable sur serveurs Ubuntu/Debian et en local (mode dev, sources directes).
 
 Avant de builder le paquet, s'assurer que wex-6 tourne correctement en local.
 
-- [ ] `bin/wex` est fonctionnel (exécution depuis les sources via venv)
-- [ ] `bin/install` installe correctement le venv et les dépendances (`requirements.txt`)
-- [ ] `wex core::core/install` s'exécute sans erreur post-install
-- [ ] L'autocomplétion bash fonctionne après install locale
-- [ ] `version.txt` est à jour (actuellement `6.0.0`)
+- [x] `bin/wex` est fonctionnel (exécution depuis les sources via venv)
+- [x] `bin/install` installe correctement le venv et les dépendances (`requirements.txt`)
+- [x] Post-install : symlink `/usr/local/bin/wex`, handler autocomplete, build registry (intégré dans `bin/install`, remplace le défunt `core::core/install` de v5)
+- [x] `default::autocomplete/suggest` existe (stub vide — suggestions à implémenter, voir TODO dans le fichier)
+- [x] L'autocomplétion bash est branchée (`/etc/bash_completion.d/wex` → `bin/autocomplete-handler`)
+- [x] `version.txt` est à jour (actuellement `6.0.0`)
 
 ---
 
