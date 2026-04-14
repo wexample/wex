@@ -105,15 +105,16 @@ Même repo wex, même branche `build`, pipeline simplifié :
 - [x] Packages Python publiés sur PyPI
 - [x] `requirements.txt` mis à jour avec les versions PyPI publiées
 - [x] Image Docker `wex-build:build` mise à jour (retrait dh-python/python3-setuptools/python3-all)
+- [x] `.gitlab-ci.yml` créé dans wex : stages `build_apt`, `deploy` (manuel), `checkup_install`
+- [x] `version-6.0.0-alpha` mergé dans `master`
+- [x] Doc déploiement rédigée (`wex-build/.wex/knowledge/deployment.md`)
 
 ### À faire
 
-**Étape A — CI wex (`.gitlab-ci.yml`)**
-- [ ] Créer `.gitlab-ci.yml` dans la branche master de wex avec le stage `build_apt`
-- [ ] Même logique que v5 : checkout branche `build`, `ln -s ${CI_PROJECT_DIR} source`, `build.py`
-- [ ] Créer la variable CI `WEX_BUILD_TOKEN` dans les settings GitLab du projet wex
-- [ ] Stage `deploy` : curl manuel vers wex-apt-repo (pas de webhook auto)
-- [ ] Stage `checkup_install` : vérifier apt install dans image Debian/Ubuntu
+**Étape A — Test end-to-end du pipeline**
+- [ ] Vérifier que `build_apt` passe (pipeline en cours)
+- [ ] Déclencher `deploy` manuellement → `publish.sh` sur wex-apt-repo
+- [ ] Vérifier que `checkup_install` passe (apt install wex sur Debian + Ubuntu)
 
 **Étape B — Test end-to-end**
 - [ ] Push sur master wex → CI déclenché → `.deb` produit et uploadé sur Registry
