@@ -12,8 +12,13 @@ if [ -f "${WEX_DIR_ROOT}.env" ]; then
   set +a
 fi
 
-# Publish source library first if configured
-if [ -n "${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}" ]; then
+# Publish source library first if configured (skip with --no-lib)
+SKIP_LIB=false
+for arg in "$@"; do
+  [ "${arg}" = "--no-lib" ] && SKIP_LIB=true
+done
+
+if [ "${SKIP_LIB}" = false ] && [ -n "${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}" ]; then
   echo "Publishing source library at ${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}..."
   (cd "${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}" && .wex/bin/app-manager app::suite/publish --yes)
 fi
