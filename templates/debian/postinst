@@ -9,14 +9,14 @@ set -e
 
 case "$1" in
   configure)
-    if [ -x "/usr/lib/wex/cli/install" ]; then
+    if [ -x "/usr/lib/wex/bin/install" ]; then
       # Avoid any interactive prompts and apt calls during dpkg configuration.
       export DEBIAN_FRONTEND=noninteractive
       export WEX_SKIP_APT=1
       # Ensure scripts are executable
-      chmod 0755 /usr/lib/wex/cli/install
+      chmod 0755 /usr/lib/wex/bin/install
       # Run installer to create Python venv and finalize setup
-      bash "/usr/lib/wex/cli/install"
+      bash "/usr/lib/wex/bin/install"
     fi
     ;;
 esac

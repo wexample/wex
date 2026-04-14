@@ -1,19 +1,19 @@
 #!/usr/bin/make -f
 
 %:
-	dh $@ --with python3
+	dh $@
 
 override_dh_auto_install:
 	dh_auto_install
 	mkdir -p debian/wex/usr/bin
-	ln -s ../lib/wex/cli/wex debian/wex/usr/bin/wex
+	ln -s ../lib/wex/bin/wex debian/wex/usr/bin/wex
 
 override_dh_fixperms:
 	dh_fixperms
-	# Ensure the CLI entrypoint is executable in the final package
-	chmod 0755 debian/wex/usr/lib/wex/cli/wex
-	# Ensure installer scripts are executable
-	chmod 0755 debian/wex/usr/lib/wex/cli/install || true
-	# Ensure directories are traversable
-	chmod 0755 debian/wex/usr/lib/wex/cli || true
+	chmod 0755 debian/wex/usr/lib/wex/bin/wex
+	chmod 0755 debian/wex/usr/lib/wex/bin/install
+	chmod 0755 debian/wex/usr/lib/wex/bin/uninstall
+	chmod 0755 debian/wex/usr/lib/wex/bin/autocomplete
+	chmod 0755 debian/wex/usr/lib/wex/bin/autocomplete-handler
+	chmod 0755 debian/wex/usr/lib/wex/bin || true
 	chmod 0755 debian/wex/usr/lib/wex || true

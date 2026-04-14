@@ -7,6 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install Debian packaging toolchain required by build.py
 # Note: git and sudo are installed because the CI script uses them.
+# dh-python, python3-setuptools, python3-all removed — wex-6 has no setup.py
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
@@ -14,9 +15,6 @@ RUN set -eux; \
         debhelper \
         devscripts \
         dh-make \
-        dh-python \
-        python3-setuptools \
-        python3-all \
         git \
         sudo \
         fakeroot; \
