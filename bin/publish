@@ -5,6 +5,19 @@ set -e
 WEX_DIR_CLI="$(realpath "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")/"
 WEX_DIR_ROOT=$(realpath "${WEX_DIR_CLI}../")/
 
+# Load .env if present
+if [ -f "${WEX_DIR_ROOT}.env" ]; then
+  set -a
+  source "${WEX_DIR_ROOT}.env"
+  set +a
+fi
+
+# Publish source library first if configured
+if [ -n "${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}" ]; then
+  echo "Publishing source library at ${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}..."
+  (cd "${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}" && .wex/bin/app-manager app::suite/publish --yes)
+fi
+
 VENV_PIP="${WEX_DIR_ROOT}.venv/bin/pip"
 WEX_BIN="${WEX_DIR_CLI}wex"
 VERSION_FILE="${WEX_DIR_ROOT}version.txt"
