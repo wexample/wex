@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# Find the current file directory, supporting symlinks
+WEX_DIR_CLI="$(realpath "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")/"
+
+# Source initialization scripts
+. "${WEX_DIR_CLI}/_init.sh"
+. "${WEX_DIR_CLI}/_init_sudo.sh"
+
+# Set WEX_DIR_ROOT
+WEX_DIR_ROOT=$(realpath "${WEX_DIR_CLI}../")/
+
+echo "Removing symlink..."
+rm -f /usr/local/bin/wex
+
+echo "Removing autocomplete handler..."
+rm -f /etc/bash_completion.d/wex
+
+# On purge: remove the venv and generated files
+# dpkg calls postrm with "purge" as first argument
+if [ "${1}" = "purge" ]; then
+    echo "Purging virtual environment..."
+    rm -rf "${WEX_DIR_ROOT}.venv"
+
+    echo "Purging generated files..."
+    rm -f "${WEX_DIR_ROOT}.wex/.env"
+    rm -f "${WEX_DIR_ROOT}tmp/registry.yml"
+fi
+
+echo "Uninstall complete!"

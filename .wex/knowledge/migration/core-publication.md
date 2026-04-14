@@ -23,11 +23,13 @@ Avant de builder le paquet, s'assurer que wex-6 tourne correctement en local.
 Le `bin/install` actuel est conçu pour une install depuis les sources.
 Il faut le rendre compatible avec une install depuis `/usr/lib/wex/` (mode paquet apt).
 
-- [ ] Créer un `bin/postinst` (ou adapter `bin/install`) qui fonctionne quand les sources sont dans `/usr/lib/wex/`
-- [ ] Le script doit passer `WEX_SKIP_APT=1` (les dépendances apt sont déjà installées par dpkg)
-- [ ] Le script doit éviter de demander sudo si déjà root (contexte postinst)
-- [ ] Créer/adapter `bin/uninstall` pour le `postrm` Debian
-- [ ] Vérifier que `DEBIAN_FRONTEND=noninteractive` est supporté (pas de prompt interactif pendant install)
+- [x] `bin/install` fonctionne depuis `/usr/lib/wex/bin/` (chemins résolus via `BASH_SOURCE[0]`)
+- [x] `WEX_SKIP_APT=1` : skip `apt-get update` si déjà géré par dpkg
+- [x] Root-aware : `INSTALL_USER="${SUDO_USER:-${USER:-root}}"` — fonctionne en postinst sans `$USER`
+- [x] `sudo` supprimé des appels internes (script déjà garanti root par `_init_sudo.sh`)
+- [x] `DEBIAN_FRONTEND` : skip du sourcing `~/.bashrc` en mode non-interactif
+- [x] `pip install -q` : output propre en postinst
+- [x] `bin/uninstall` créé — supprime symlink + handler ; purge le venv si appelé avec `purge`
 
 ---
 
