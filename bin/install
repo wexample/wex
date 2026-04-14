@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+
+# Find the current file directory, supporting symlinks
+WEX_DIR_CLI="$(realpath "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")/"
+
+# Source initialization scripts
+. "${WEX_DIR_CLI}/_init.sh"
+. "${WEX_DIR_CLI}/_init_sudo.sh"
+
+# Set WEX_DIR_ROOT
+WEX_DIR_ROOT=$(realpath "${WEX_DIR_CLI}../")/
+
+echo "Checking Python requirements..."
+
+# Determine the real user (SUDO_USER when invoked via sudo, else USER, else root)
+INSTALL_USER="${SUDO_USER:-${USER:-root}}"
+
+# Update package list — skip when apt deps are already handled (e.g. dpkg postinst)
+if [ -z "${WEX_SKIP_APT}" ]; then
+    echo "Updating package list..."
+    apt-get update
+fi
+
+# Setup Python virtual environment
+echo "Setting up Python virtual environment..."
+
+# Standard venv path at project root
+VENV_PATH="${WEX_DIR_ROOT}.venv"
+
+# Remove existing venv if present
+if [ -d "$VENV_PATH" ]; then
+    echo "Removing existing virtual environment..."
+    rm -rf "$VENV_PATH"
+fi
+
+# Create new virtual environment with copied binaries (not symlinks)
+echo "Creating new virtual environment..."
+python3 -m venv "$VENV_PATH" --clear --copies
+
+# Fix permissions
+echo "Fixing virtual environment permissions..."
+chown -R "${INSTALL_USER}:${INSTALL_USER}" "$VENV_PATH"
+
+# Activate virtual environment
+echo "Activating virtual environment..."
+# shellcheck disable=SC1090
+. "${VENV_PATH}/bin/activate"
+
+# Upgrade pip and setuptools
+echo "Upgrading pip and setuptools..."
+pip install -q --upgrade pip setuptools wheel
+
+echo "Installing Python requirements..."
+pip install -q -r "${WEX_DIR_ROOT}requirements.txt"
+
+echo "Cleanup..."
+rm -f "${WEX_DIR_ROOT}tmp/registry.yml"
+
+echo "Configuring..."
+WEX_ENV_PATH="${WEX_DIR_ROOT}.wex/.env"
+if [ ! -f "${WEX_ENV_PATH}" ]; then
+    echo "APP_ENV=prod" > "${WEX_ENV_PATH}"
+fi
+
+# Load env to read APP_ENV
+# shellcheck disable=SC1090
+. "${WEX_ENV_PATH}"
+
+echo "Installing symlink..."
+ln -sf "${WEX_DIR_CLI}wex" /usr/local/bin/wex
+
+echo "Installing autocomplete..."
+chmod +x "${WEX_DIR_CLI}autocomplete" "${WEX_DIR_CLI}autocomplete-handler"
+echo ". ${WEX_DIR_CLI}autocomplete-handler" > /etc/bash_completion.d/wex
+
+# On dev machine, install local editable packages over the venv
+if [ "${APP_ENV}" = "local" ]; then
+    echo "Installing local dev packages..."
+    # shellcheck disable=SC1090
+    bash "${WEX_DIR_CLI}install-dev"
+fi
+
+echo "Building registry..."
+bash "${WEX_DIR_CLI}wex" default::registry/build
+
+# Reload bashrc — only in interactive sessions, not during dpkg postinst
+if [ -z "${DEBIAN_FRONTEND}" ] && [ -f ~/.bashrc ]; then
+    echo "Reload bashrc changes..."
+    # shellcheck disable=SC1090
+    . ~/.bashrc
+fi
+
+echo "Installation complete!"

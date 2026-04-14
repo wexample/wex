@@ -1,5 +1,0 @@
-services:
-  gitlab:
-    extends:
-      file: ${RUNTIME_SERVICE_GITLAB_YML_ENV}
-      service: gitlab

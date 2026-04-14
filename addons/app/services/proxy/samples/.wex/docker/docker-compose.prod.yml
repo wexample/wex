@@ -1,9 +1,0 @@
-services:
-  proxy:
-    extends:
-      file: ${RUNTIME_SERVICE_PROXY_YML_ENV}
-      service: proxy
-  certs:
-    extends:
-      file: ${RUNTIME_SERVICE_PROXY_YML_ENV}
-      service: certs

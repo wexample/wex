@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_REAL="$(readlink -f "${BASH_SOURCE[0]}")"
+WEX_ROOT="$(cd "$(dirname "$SCRIPT_REAL")/../.." && pwd)"
+
+APP_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+AM_DIR="$APP_ROOT/.wex/python/app_manager"
+WEX_TASK_ID="$(date '+%Y%m%d-%H%M%S-%N')-$$"
+
+export APP_ROOT
+
+if [[ "${1-}" == "checkup" ]]; then
+  echo "Install"
+  exit 0
+fi
+
+exec "$WEX_ROOT/.venv/bin/python" "$AM_DIR/__main__.py" "${WEX_TASK_ID}" "${@}"

@@ -1,0 +1,85 @@
+from __future__ import annotations
+
+from pathlib import Path
+from typing import TYPE_CHECKING
+
+from wexample_helpers.decorator.base_class import base_class
+from wexample_wex_core.common.kernel import Kernel
+
+if TYPE_CHECKING:
+    from src.workdir.wex_workdir import WexWorkdir
+
+_ASSETS_DIR = Path(__file__).parent.parent.parent / "assets"
+
+
+@base_class
+class Wex(Kernel):
+    def get_logo(self) -> str | None:
+        import importlib.util
+
+        logo_py = _ASSETS_DIR / "logo.py"
+        if not logo_py.exists():
+            return None
+
+        spec = importlib.util.spec_from_file_location("wex_logo", logo_py)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)  # type: ignore[union-attr]
+        return mod.get_logo(self)
+
+    def _get_workdir_state_manager_class(self) -> type[WexWorkdir]:
+        from src.workdir.wex_workdir import WexWorkdir
+        return WexWorkdir
+
+    def exec(self):
+        try:
+            from wexample_wex_addon_dev_php.php_addon_manager import (
+                PhpAddonManager,
+            )
+            from wexample_wex_addon_dev_javascript.javascript_addon_manager import (
+                JavascriptAddonManager,
+            )
+            from wexample_wex_addon_dev_python.python_addon_manager import (
+                PythonAddonManager,
+            )
+            from wexample_wex_core.addons.default.default_addon_manager import (
+                DefaultAddonManager,
+            )
+            from wexample_wex_core.addons.demo.demo_addon_manager import DemoAddonManager
+            from wexample_wex_core.addons.docker.docker_addon_manager import DockerAddonManager
+            from wexample_wex_core.addons.system.system_addon_manager import SystemAddonManager
+            from wexample_wex_addon_services_db.services_db_addon_manager import (
+                ServicesDbAddonManager,
+            )
+            from wexample_wex_addon_services_platform.services_platform_addon_manager import (
+                ServicesPlatformAddonManager,
+            )
+            from wexample_wex_addon_services_monitoring.services_monitoring_addon_manager import (
+                ServicesMonitoringAddonManager,
+            )
+            from wexample_wex_addon_services_collab.services_collab_addon_manager import (
+                ServicesCollabAddonManager,
+            )
+            from wexample_wex_core.common.kernel import Kernel
+            from wexample_wex_addon_filestate.filestate_addon_manager import FilestateAddonManager
+            from wexample_wex_addon_app.app_addon_manager import AppAddonManager
+
+            self.setup(addons=[
+                AppAddonManager,
+                DefaultAddonManager,
+                DemoAddonManager,
+                DockerAddonManager,
+                ServicesDbAddonManager,
+                ServicesPlatformAddonManager,
+                ServicesMonitoringAddonManager,
+                ServicesCollabAddonManager,
+                SystemAddonManager,
+                FilestateAddonManager,
+                JavascriptAddonManager,
+                PhpAddonManager,
+                PythonAddonManager,
+            ]).exec_argv()
+
+        except Exception as e:
+            from wexample_app.helpers.debug import debug_handle_app_error
+
+            debug_handle_app_error(e)

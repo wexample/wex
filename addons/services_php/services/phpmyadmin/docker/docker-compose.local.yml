@@ -1,8 +1,0 @@
-services:
-  phpmyadmin:
-    extends:
-      file: ${RUNTIME_SERVICE_PHPMYADMIN_YML_BASE}
-      service: phpmyadmin
-    environment:
-      - PMA_USER=${RUNTIME_SERVICE_PHPMYADMIN_DB_USER}
-      - PMA_PASSWORD=${RUNTIME_SERVICE_PHPMYADMIN_DB_PASSWORD}

@@ -1,3 +1,0 @@
-[db]
-# Local posgres is not SSL by default
-ssl_mode = "disable"

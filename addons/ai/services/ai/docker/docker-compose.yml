@@ -1,9 +1,0 @@
-services:
-  ai:
-    image: ollama/ollama:0.1.22
-    container_name: ${RUNTIME_NAME}_ai
-    volumes:
-      # Models storage dir
-      - ${RUNTIME_PATH_APP}ollama/:/root/.ollama/models/
-    ports:
-      - ${PORT_PUBLIC:-11434}:11434

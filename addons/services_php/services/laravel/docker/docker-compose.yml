@@ -1,6 +1,0 @@
-services:
-    laravel:
-        container_name: ${RUNTIME_NAME}_laravel
-        extends:
-            file: ${RUNTIME_SERVICE_PHP_YML_ENV}
-            service: php

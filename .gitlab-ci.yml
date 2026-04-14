@@ -1,31 +1,62 @@
 stages:
-  - checkup_pipeline
-  - build_pipeline_images
-  - checkup_builds
-  - test
+  - build_apt
   - deploy
   - checkup_install
-  - build_docker
 
-variables:
-  MAIN_BRANCH_NAME: "master"
-
-include:
-  - local: '.wex/ci/stages/.gitlab-ci.stage.checkup-pipeline.yml'
-  - local: '.wex/ci/stages/.gitlab-ci.stage.build-pipeline-images.yml'
-  - local: '.wex/ci/stages/.gitlab-ci.stage.checkup-builds.yml'
-  - local: '.wex/ci/stages/.gitlab-ci.stage.test.yml'
-  - local: '.wex/ci/stages/.gitlab-ci.stage.deploy.yml'
-  - local: '.wex/ci/stages/.gitlab-ci.stage.checkup-install.yml'
-
-# Rebuild public image
-build_docker:
-  stage: build_docker
+.on_master:
   only:
     - master
+
+build_apt:
+  stage: build_apt
+  image: gitlab-docker.wexample.com/wexample/wex/wex-build:build
+  extends: [ .on_master ]
+  script:
+    - BUILD_VERSION=$(cat version.txt)
+    - mkdir -p /var/tmp/build
+    - cp -r .git /var/tmp/build
+    - cd /var/tmp/build
+    - git fetch && git checkout build
+    - ln -s ${CI_PROJECT_DIR} source
+    - sudo python3 /var/tmp/build/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk ${WEX_BUILD_TOKEN} -v ${BUILD_VERSION}
+
+deploy:
+  stage: deploy
+  image: curlimages/curl
+  extends: [ .on_master ]
   needs:
-    - checkup-install:debian
-    - checkup-install:ubuntu:22
-  trigger:
-    project: wexample-public/docker
-    branch: main
+    - build_apt
+  # Manual until wex-6 has a webhook server
+  when: manual
+  script:
+    - BUILD_VERSION=$(cat version.txt)
+    - curl "http://wexample.com:4242/webhook/app/prod/wex-apt-repo/apt/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
+
+.checkup_install:
+  extends: [ .on_master ]
+  needs:
+    - deploy
+  script:
+    - set -e
+    - apt-get update -qq
+    - apt-get install -y gnupg2 wget
+    - wget -O - https://apt.wexample.com/gpg | apt-key add -
+    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
+    - apt-get update -qq
+    - apt-get install -y wex
+    - wex hi
+    - BUILD_VERSION=$(cat version.txt)
+    - INSTALLED_VERSION=$(wex version)
+    - echo "Expected ${BUILD_VERSION}, got ${INSTALLED_VERSION}"
+    - test "${BUILD_VERSION}" = "${INSTALLED_VERSION}"
+    - apt-get remove -y wex
+
+checkup_install_debian:
+  extends: .checkup_install
+  stage: checkup_install
+  image: debian:bookworm-slim
+
+checkup_install_ubuntu:
+  extends: .checkup_install
+  stage: checkup_install
+  image: ubuntu:22.04

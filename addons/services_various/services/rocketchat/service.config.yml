@@ -1,3 +1,0 @@
-dependencies:
-  - mongo
-require_proxy: true

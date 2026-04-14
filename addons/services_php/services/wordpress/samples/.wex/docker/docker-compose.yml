@@ -1,5 +1,0 @@
-services:
-  wordpress:
-    extends:
-      file: ${RUNTIME_SERVICE_WORDPRESS_YML_ENV}
-      service: wordpress

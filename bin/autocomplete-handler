@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+WEX_DIR_ROOT="$(dirname "${BASH_SOURCE[0]}")/../"
+
+_wexAutocomplete() {
+  . "${WEX_DIR_ROOT}bin/autocomplete"
+}
+
+complete -o nospace -F _wexAutocomplete wex

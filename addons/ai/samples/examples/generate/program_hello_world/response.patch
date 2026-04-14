@@ -1,4 +1,0 @@
-# PATCH_START
-+def print_hello_world() -> str:
-+    return 'Hello World!'
-# DESCRIPTION: I have created a Python function that prints "Hello World"

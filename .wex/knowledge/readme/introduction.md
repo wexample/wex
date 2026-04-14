@@ -1,12 +1,3 @@
-# wex
-
-Version: 6.0.0
-
-## Table of Contents
-
-- [Introduction](#introduction)
-- [Testing](#testing)
-
 ## Check Wex Installation
 
 Test if the core command works using these methods:
@@ -38,19 +29,4 @@ pytest
 
 # Or using Python module
 python -m pytest
-```
-
-## Testing
-
-This project uses pytest for unit and integration testing. You can run tests using either the built-in WEX command or
-pytest directly.
-
-## Test Structure
-
-```
-tests/
-├── unit/           # Unit tests (test individual components)
-│   └── test_example.py
-├── integration/    # Integration tests (test component interactions)
-└── conftest.py     # Shared fixtures (create as needed)
 ```

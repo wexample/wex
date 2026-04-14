@@ -1,5 +1,0 @@
-services:
-  onlyoffice:
-    extends:
-      file: ${RUNTIME_SERVICE_ONLYOFFICE_YML_ENV}
-      service: onlyoffice

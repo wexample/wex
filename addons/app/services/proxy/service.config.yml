@@ -1,3 +1,0 @@
-main: true
-docker:
-  create_network: true

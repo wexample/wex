@@ -1,8 +1,0 @@
-db:
-  dump_extension: sql
-dependencies:
-  - phpmyadmin
-tags:
-  - db
-test:
-  exec_command: "SELECT * FROM mysql.user LIMIT 0,1"

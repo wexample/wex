@@ -1,0 +1,38 @@
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[project]
+name = "wex"
+version = "6.0.0"
+description = "A friendly CLI"
+authors = [
+    { name = "weeger", email = "contact@wexample.com" },
+]
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.license]
+text = "MIT"
+
+[project.urls]
+homepage = "https://github.com/wexample/wex"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+]
+
+[tool.pdm.build]
+package-dir = "src"
+

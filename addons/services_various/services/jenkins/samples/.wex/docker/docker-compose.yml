@@ -1,5 +1,0 @@
-services:
-  jenkins:
-    extends:
-      file: ${RUNTIME_SERVICE_JENKINS_YML_ENV}
-      service: jenkins
