@@ -35,13 +35,27 @@ Affiché directement par `webhook/status`.
 
 **Phase 2 — Sécurité**
 - `webhook/token_store.py` — stockage YAML (`webhook_tokens.yml` dans workdir)
-- `decorator/webhook.py` — `@webhook()` marque une commande comme accessible
+- `decorator/webhook.py` — `@webhook()` / `webhook: bool` sur `CommandMethodWrapper`
 - Commandes : `token_show`, `token_rotate`
 - Handler : `Authorization: Bearer` ou `?_token`, `hmac.compare_digest`, 401 + log des échecs
 
 ---
 
-## Phase 3 — Robustesse et observabilité
+## Phase 3 — Mise en production (priorité immédiate)
+
+Objectif : wex-apt-repo répond à un webhook depuis l'extérieur, en wex 6.
+
+- [ ] **Déployer wex 6** sur le serveur (package apt)
+- [ ] **Stopper le daemon wex 5** (sans doute périmé)
+- [ ] **Installer wex 6** à la place de wex 5 — les apps wex 5 continuent de tourner
+- [ ] **Démarrer le daemon wex 6** (`wex default::webhook/listen --asynchronous`)
+- [ ] **Push wex-apt-repo en wex 6** — migration appliquée, commandes converties
+- [ ] **Trigger le webhook depuis l'extérieur** — vérifier token, log, réponse
+- [ ] **Boucler le CI/CD** — wex 6 se publie lui-même via webhook (wex-apt-repo déclenché depuis GitLab/GitHub)
+
+---
+
+## Phase 4 — Robustesse et observabilité
 
 - [ ] Timeout par worker configurable (`--worker-timeout`, défaut 30s)
 - [ ] Signal handling propre : `SIGTERM` → `server.shutdown()` gracieux
@@ -53,7 +67,7 @@ Affiché directement par `webhook/status`.
 
 ---
 
-## Phase 4 — Dot-commands (`.group/command` via webhook)
+## Phase 5 — Dot-commands (`.group/command` via webhook)
 
 > Nécessite de valider `AppCommandResolver` en contexte daemon.
 

@@ -131,7 +131,7 @@ def my__group__command(context: ExecutionContext) -> None:
     ...
 ```
 
-Le décorateur `@webhook()` pose un attribut `_wex_webhook = True` sur la fonction.
+Le décorateur `@webhook()` pose `webhook = True` sur le `CommandMethodWrapper`.
 Le token doit ensuite être explicitement généré via `webhook/token-show`.
 
 ---
