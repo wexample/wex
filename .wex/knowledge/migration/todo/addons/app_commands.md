@@ -39,21 +39,10 @@ Ce concept est mort. Supprimer la classe et tous ses imports.
 
 ---
 
-### C3 — Nettoyer les `app_manager/` dans les repos wex (12 repos)
+### ~~C3~~ → fusionné dans M2 (`migration_wex_6_0_16`)
 
-Supprimer manuellement dans chaque repo addon :
-```
-wex-addon-app, wex-addon-dev-css, wex-addon-dev-flutter, wex-addon-dev-javascript,
-wex-addon-dev-php, wex-addon-dev-python, wex-addon-filestate, wex-addon-services-*,
-wex-core
-```
-
-Dans chacun, supprimer :
-- `.wex/python/app_manager/__main__.py`
-- `.wex/python/app_manager/pyproject.toml`
-- `.wex/python/app_manager/requirements.txt`
-
-Garder `app_workdir.py` si présent. Supprimer le dossier s'il est vide.
+La règle est la même partout : tous les `.wex/` ont le même rôle. La migration 6.0.16 couvre
+indistinctement les repos addon et les apps utilisateur.
 
 ---
 
@@ -100,9 +89,9 @@ La migration doit aussi supprimer le symlink cassé si présent avant de réécr
 
 ---
 
-### M2 — Nettoyage `app_manager` dans les apps utilisateur
+### M2 — Nettoyage `app_manager` (✅ `migration_wex_6_0_16`)
 
-**Cible :** Toutes les apps ayant un `.wex/python/app_manager/`
+**Cible :** Tout repo ayant un `.wex/python/app_manager/` (apps utilisateur **et** repos addon wex)
 
 **Actions :**
 1. Supprimer `__main__.py` si présent
@@ -114,7 +103,7 @@ La migration doit aussi supprimer le symlink cassé si présent avant de réécr
 
 ---
 
-### M3 — Renommer `.wex/command/` → `.wex/commands/` + réécriture YAML v5→v6
+### M3 — Renommer `.wex/command/` → `.wex/commands/` + réécriture YAML v5→v6 (✅ `migration_wex_6_0_17`)
 
 **Cible :** Toutes les apps ayant encore un `.wex/command/`
 
@@ -150,12 +139,12 @@ La migration doit aussi supprimer le symlink cassé si présent avant de réécr
 |----------|------|------|------|--------|
 | 1 | C1 — Simplifier `app-manager.sh` | Code | wex-addon-app | Trivial |
 | 2 | C2 — Supprimer `AppManagerKernel` | Code | wex-core | Petit |
-| 3 | C3 — Nettoyer `app_manager/` dans les 12 repos addons | Code | multi | Petit |
+| 3 | ~~C3~~ → M2 — Nettoyage `app_manager` (tous repos) | ✅ Migration 6.0.16 | wex-addon-app | — |
 | 4 | M1 — Fix migration 6.0.0 | Migration | wex-addon-app | Petit |
-| 5 | M2 — Nettoyage `app_manager` apps utilisateur | Migration | wex-addon-app | Petit |
+| 5 | ~~M2~~ fusionné dans 6.0.16 | — | — | — |
 | 6 | C4/Y1 — `title:` sur les steps | Code | wex-core | Trivial |
 | 7 | C4/Y2 — Bare string steps | Code | wex-core | Trivial |
-| 8 | M3 — `command` → `commands` + YAML rewriting | Migration | wex-addon-app | Moyen |
+| 8 | ~~M3~~ — `command` → `commands` + YAML rewriting | ✅ Migration 6.0.17 | wex-addon-app | — |
 | 9 | C4/Y6 — `webhook:` dans le YAML | Code | wex-core | Petit |
 | 10 | C4/Y3 — Runner `exec` générique | Code | wex-core | Moyen |
 | 11 | C4/Y4 — `sync: false` | Code | wex-core | Petit |
