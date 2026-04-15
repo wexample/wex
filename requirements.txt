@@ -204,13 +204,13 @@ wexample-api==0.0.86
     #   wexample-filestate-python
 wexample-app==1.0.2
     # via wexample-wex-core
-wexample-config==0.1.1
+wexample-config==0.3.0
     # via wexample-filestate
 wexample-event==0.0.82
     # via wexample-filestate
 wexample-file==0.0.55
     # via wexample-filestate
-wexample-filestate==1.0.2
+wexample-filestate==1.1.0
     # via
     #   wexample-app
     #   wexample-filestate-git
@@ -219,7 +219,7 @@ wexample-filestate==1.0.2
     #   wexample-filestate-python
     #   wexample-migration
     #   wexample-wex-core
-wexample-filestate-git==0.2.0
+wexample-filestate-git==0.3.0
     # via wexample-wex-core
 wexample-filestate-javascript==0.1.0
     # via wexample-wex-addon-dev-javascript
@@ -227,7 +227,7 @@ wexample-filestate-php==0.1.0
     # via wexample-wex-addon-dev-php
 wexample-filestate-python==0.1.1
     # via wexample-wex-addon-dev-python
-wexample-helpers==1.0.0
+wexample-helpers==1.1.0
     # via
     #   wexample-api
     #   wexample-config
@@ -248,7 +248,7 @@ wexample-helpers-yaml==0.0.116
     #   wexample-filestate
 wexample-migration==0.1.1
     # via wexample-wex-addon-app
-wexample-prompt==1.0.1
+wexample-prompt==2.0.0
     # via
     #   wexample-api
     #   wexample-filestate
