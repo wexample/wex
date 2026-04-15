@@ -4,30 +4,26 @@ build-backend = "pdm.backend"
 
 [project]
 name = "wex"
-version = "6.0.0"
+version = "6.0.24"
 description = "A friendly CLI"
 authors = [
     { name = "weeger", email = "contact@wexample.com" },
 ]
 requires-python = ">=3.10"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-]
+classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent"]
 dependencies = [
     "tomli",
-    "wexample-wex-core",
     "wexample-wex-addon-app",
-    "wexample-wex-addon-filestate",
-    "wexample-wex-addon-dev-python",
-    "wexample-wex-addon-dev-php",
     "wexample-wex-addon-dev-css",
     "wexample-wex-addon-dev-javascript",
-    "wexample-wex-addon-services-db",
-    "wexample-wex-addon-services-platform",
-    "wexample-wex-addon-services-monitoring",
+    "wexample-wex-addon-dev-php",
+    "wexample-wex-addon-dev-python",
+    "wexample-wex-addon-filestate",
     "wexample-wex-addon-services-collab",
+    "wexample-wex-addon-services-db",
+    "wexample-wex-addon-services-monitoring",
+    "wexample-wex-addon-services-platform",
+    "wexample-wex-core",
 ]
 
 [project.readme]
@@ -43,8 +39,30 @@ homepage = "https://github.com/wexample/wex"
 [project.optional-dependencies]
 dev = [
     "pytest",
+    "pytest-cov",
 ]
+
+[tool.setuptools.packages.find]
+include = ["*"]
+exclude = ["wex.testing*"]
+
+[tool.pdm]
+distribution = true
 
 [tool.pdm.build]
 package-dir = "src"
 
+[[tool.pdm.build.packages]]
+include = "wex"
+from = "src"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.coverage.run]
+source = ["wex"]
+omit = ["*/tests/*", "*/.venv/*", "*/venv/*"]
+
+[tool.coverage.report]
+exclude_lines = ["pragma: no cover", "def __repr__", "raise AssertionError", "raise NotImplementedError", "if __name__ == .__main__.:", "if TYPE_CHECKING:", "@abstractmethod"]
