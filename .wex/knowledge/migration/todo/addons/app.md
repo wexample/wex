@@ -84,16 +84,14 @@
 
 ### Webhooks et commandes distantes
 
-- [ ] `webhook/exec`
-- [ ] `webhook/listen`
-- [ ] `webhook/status`
-- [ ] `webhook/status_process`
-- [ ] `webhook/stop`
-- [ ] `remote/exec`
-- [ ] `remote/push`
-- [ ] `remote/go`
-- [ ] `remote/available`
-- [ ] `remote/push_receive`
+> Chantier distinct avec roadmap complète : voir [`webhook.md`](webhook.md)
+> Documentation de design : [`../../../../readme/webhooks.md`](../../../../readme/webhooks.md)
+
+- [ ] Phase 1 — webhook-core (daemon, routes, exec, listen, stop, status)
+- [ ] Phase 2 — tokens d'authentification
+- [ ] Phase 3 — robustesse (threading, watchdog) + observabilité (health, metrics)
+- [ ] Phase 4 — `remote/*` (push_receive, exec, go, available, push)
+- [ ] Phase 5 — dot-commands via webhook
 
 ## Notes
 
@@ -102,7 +100,7 @@
 - `container/list` existe maintenant en rendu compact orienté app Wex, plus lisible que `docker ps`.
 - En v5, `code/check` et `code/format` étaient des placeholders sans logique addon effective.
 - Ils ne sont donc pas à migrer tels quels en v6 ; le besoin de rectification passe déjà par `app::file_state/rectify`.
-- La partie webhook reste un chantier distinct si elle doit revenir en v6.
+- La partie webhook est confirmée en v6 avec améliorations (tokens, threading, observabilité) — roadmap dans `webhook.md`.
 - `notification/notify` n'est pas traité comme une dette bloquante : le besoin existe peut-être, mais le bon design sera probablement redéfini plus tard autour des workflows distants / déploiement / automation.
 - Le sujet `version/new*` n'est plus traité comme une migration 1:1 ; il est désormais requalifié en pipeline `app::app/publish`.
 - Le premier `app::app/publish` successful a été validé en local en fin de journée.

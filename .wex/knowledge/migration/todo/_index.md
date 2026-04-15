@@ -15,3 +15,4 @@ Unit and functional tests are intentionally excluded from this view.
 - [addons/core.md](addons/core.md) — core addon remaining commands
 - [addons/app.md](addons/app.md) — app-side remaining flows
 - [addons/db.md](addons/db.md) — remote DB push/restore
+- [addons/webhook.md](addons/webhook.md) — webhook daemon + tokens + remote commands (5 phases)
