@@ -1,0 +1,15 @@
+description: "Publish source suite before publishing wex (when PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH is set)"
+decorators:
+  - name: attach
+    args:
+      position: before
+      command: app::app/publish
+scripts:
+  - runner: bash
+    script: |
+      if [ -z "${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH:-}" ]; then
+        exit 0
+      fi
+      echo "Publishing source suite at ${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}..."
+      cd "${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}"
+      .wex/bin/app-manager app::suite/publish --yes
