@@ -17,3 +17,4 @@ Unit and functional tests are intentionally excluded from this view.
 - [addons/db.md](addons/db.md) — remote DB push/restore
 - [addons/webhook.md](addons/webhook.md) — webhook daemon + tokens + remote commands (5 phases)
 - [addons/app_commands.md](addons/app_commands.md) — YAML features manquantes, migrations v5→v6, app-manager
+- [addons/async.md](addons/async.md) — async step (sync: false) + décorateur async commande
