@@ -1,4 +1,4 @@
-# Roadmap migration : Webhooks (`wex-addon-app`)
+# Roadmap migration : Webhooks
 
 > Référence comportementale : `wex-5-legacy/addons/app/` (commandes `webhook/*` et `remote/*`)
 > Documentation de design : `../../../../readme/webhooks.md`
@@ -6,61 +6,87 @@
 
 ---
 
-## Périmètre
+## Décisions architecturales
 
-Le système webhook permet d'exposer des commandes wex via HTTP pour un déclenchement distant.
-La v6 reprend le principe de v5 avec des améliorations ciblées sur : sécurité (tokens),
-stabilité du daemon (threading + watchdog), et observabilité (health + metrics).
+### Placement : `wex-core` et non `wex-addon-app`
+
+Le daemon HTTP + le dispatcher sont des mécanismes génériques indépendants du concept d'app.
+Un ping webhook, un hook système, doivent fonctionner sans `AppMiddleware`.
+
+- **`wex-core`** : daemon, handler HTTP, routing, `@webhook` decorator, commandes `webhook/*`
+- **`wex-addon-app`** : routes spécifiques app, commandes `remote/*`, intégration AppMiddleware
+
+### Types de commandes supportés
+
+Trois types d'URL supportés (dans l'ordre de priorité d'usage) :
+
+| URL | Type | Commande exécutée |
+|-----|------|-------------------|
+| `/webhook/app/remote/push_receive` | app | `.remote/push_receive` |
+| `/webhook/addon/app/info/show` | addon | `app::info/show` |
+| `/webhook/service/nginx/status` | service | `@nginx::status` |
+
+Le type `app` est le cas d'usage principal (dot-commands contextuelles).
+Le type `addon` couvre les utilitaires globaux (ping, disk, etc.).
+
+### Logs
+
+Problème v5 : les logs étaient dans des fichiers task temporaires introuvables en cas d'incident.
+En v6 : **un fichier de log fixe et connu**, affiché directement par `webhook/status`.
+
+- Path fixe : `.wex/logs/webhook.log` (dans le workdir wex, pas dans /tmp)
+- Format : une ligne JSON par requête (timestamp, ip, path, command, status, duration_ms)
+- `webhook/status` affiche les 20 dernières entrées par défaut
+- Rotation : 5 fichiers × 1 Mo max (via `RotatingFileHandler`)
+
+### Daemon process
+
+- Subprocess async uniquement pour Phase 1 (pas de systemd)
+- systemd : évalué plus tard selon le besoin (auto-restart au reboot serveur)
+- `ThreadingHTTPServer` dès Phase 1 pour éviter le blocage v5
 
 ---
 
-## Phase 1 — Infrastructure de base (webhook-core)
+## Phase 1 — Infrastructure de base
 
-Objectif : avoir un daemon HTTP fonctionnel en v6 avec le même comportement qu'en v5.
+Objectif : daemon HTTP fonctionnel, routing vers addon + app + service commands.
 
-### 1.1 Décorateur et marquage
+### 1.1 Core : daemon et routing (`wex-core`)
 
-- [ ] Créer `@webhook()` dans `wexample_wex_addon_app/decorator/webhook.py`
-  - Enregistre la commande comme webhook-accessible (`set_extra_value("webhook")`)
-  - Support équivalent en YAML (`webhook: true`)
-- [ ] Ajouter le scan des commandes marquées dans `AppAddonManager`
+- [ ] `webhook/const.py` — port défaut 6543, patterns de routes, regex query params
+- [ ] `webhook/routing.py`
+  - `routing_get_route_name(path)` — match URL → nom de route
+  - `routing_is_allowed_route(path)` — validation route + query params (whitelist regex)
+  - `routing_build_command(command_type, command_path, query_args)` → string commande wex
+- [ ] `webhook/handler.py`
+  - `ThreadingHTTPServer` (ThreadingMixIn + TCPServer)
+  - `WebhookHttpRequestHandler(BaseHTTPRequestHandler)`
+  - `do_GET` : valide → subprocess `wex app::webhook/exec` → JSON response
+  - Log fixe : `.wex/logs/webhook.log` (JSON line par requête)
+  - Endpoint `/health` → `{"status": "ok"}`
 
-### 1.2 Routes map et routing
-
-- [ ] Porter `const/webhook.py` → routes map v6 (pattern + is_async + script_command)
-- [ ] Porter `src/helper/routing.py` → `helpers/webhook_routing.py` dans wex-addon-app
-  - `routing_build_webhook_route_map()`
-  - `routing_get_route_name()` / `routing_get_route_info()`
-  - `routing_is_allowed_route()` avec validation regex query params
-
-### 1.3 Handler HTTP
-
-- [ ] Porter `WebhookHttpRequestHandler` → v6
-  - Remplacer `HTTPServer` par `ThreadingHTTPServer` (stabilité)
-  - Conserver le pattern : sync/async selon `is_async` de la route
-  - Ajouter endpoint `/health` → `{"status": "ok", "uptime_seconds": N}`
-  - Ajouter logging structuré par requête (timestamp, command, status, duration, IP)
-
-### 1.4 Commandes webhook
+### 1.2 Core : commandes webhook (`wex-core`)
 
 - [ ] `app::webhook/listen` — démarrer le daemon
-  - Options : `--port` (défaut 6543), `--dry-run`, `--asynchronous`, `--force`
-  - Modes : sync / subprocess async / systemd daemon (hors Docker)
-  - Healthcheck du port avant démarrage
-- [ ] `app::webhook/stop` — arrêt propre (SIGTERM → kill, systemd disable si applicable)
-- [ ] `app::webhook/status` — état daemon + table des enfants (pid, command, timestamp, status)
-- [ ] `app::webhook/exec` — dispatcher interne appelé par le daemon
-  - Parse URL pattern `/webhook/{type}/{path}?args`
-  - Validation des query params (regex whitelist)
-  - Délègue au resolver de commandes correspondant (`command_type`)
+  - Options : `--port` (défaut 6543), `--asynchronous`, `--force`, `--dry-run`
+  - Mode sync (blocking, pour tests) et async (subprocess background)
+  - Vérifie si port déjà occupé avant démarrage
+- [ ] `app::webhook/stop` — tuer le process par port (via psutil)
+- [ ] `app::webhook/status` — état daemon (psutil) + dernières lignes du log fixe
+- [ ] `app::webhook/exec` — dispatcher interne
+  - Parse URL → command_type + command_path + query args
+  - Construit la commande wex selon le type (addon/app/service)
+  - Exécute via kernel (`execute_kernel_command`)
+  - Log le résultat
 
-### 1.5 Tests
+### 1.3 Tests Phase 1
 
-- [ ] Porter `AbstractWebhookTestCase` → v6
-- [ ] Test listen/stop cycle
-- [ ] Test requête sync (status endpoint)
-- [ ] Test requête async (exec endpoint)
+- [ ] Test listen/stop cycle (port occupé → stop → relance)
+- [ ] Test `/health` → 200
+- [ ] Test `exec` addon command
+- [ ] Test `exec` app command
 - [ ] Test query params invalides → 404
+- [ ] Test route inconnue → 404
 
 ---
 
@@ -68,64 +94,37 @@ Objectif : avoir un daemon HTTP fonctionnel en v6 avec le même comportement qu'
 
 Objectif : aucune commande webhook ne s'exécute sans token valide.
 
-### 2.1 Génération et stockage
-
-- [ ] À la registration d'une commande `@webhook`, générer un token via `secrets.token_urlsafe(32)`
-- [ ] Stocker dans `.wex/config` : `webhooks.<command_path>.token = <token>`
-- [ ] Commande `app::webhook/token/show <command>` — afficher le token d'une commande
-- [ ] Commande `app::webhook/token/rotate <command>` — régénérer le token
-
-### 2.2 Validation au moment de la requête
-
-- [ ] Dans `WebhookHttpRequestHandler.do_GET` : extraire token depuis
-  - Header `Authorization: Bearer <token>`, **ou**
-  - Query param `_token=<token>`
-- [ ] Comparer en temps constant (`hmac.compare_digest`) avec le token stocké
-- [ ] Si absent ou invalide → 401 JSON `{"error": "UNAUTHORIZED"}`
-- [ ] Logger les tentatives invalides (IP + path) avec un rate-limit warning
-
-### 2.3 Tests sécurité
-
-- [ ] Test requête sans token → 401
-- [ ] Test requête avec token invalide → 401
-- [ ] Test requête avec token valide → 200
-- [ ] Test rotation token → ancien token refusé, nouveau accepté
+- [ ] `@webhook()` decorator — marque une commande comme webhook-accessible
+  - S'il n'existe pas de token pour cette commande → en génère un (`secrets.token_urlsafe(32)`)
+  - Stocke dans `.wex/config` : `webhooks.<command_path>.token`
+- [ ] Support YAML : `decorators: [{name: webhook}]`
+- [ ] `app::webhook/token/show <command>` — afficher le token
+- [ ] `app::webhook/token/rotate <command>` — régénérer
+- [ ] Validation dans le handler : `Authorization: Bearer <token>` ou `?_token=<token>`
+  - Comparaison en temps constant (`hmac.compare_digest`)
+  - Absent ou invalide → 401 `{"error": "UNAUTHORIZED"}`
+  - Logguer les tentatives invalides (IP + path)
+- [ ] Tests : sans token → 401, token invalide → 401, token valide → 200, rotation
 
 ---
 
 ## Phase 3 — Robustesse et observabilité
 
-Objectif : le daemon ne se bloque plus silencieusement ; son état est monitorable.
-
-### 3.1 Stabilité daemon
-
-- [ ] `ThreadingHTTPServer` + timeout par worker configurable (`--worker-timeout`, défaut 30s)
+- [ ] Timeout par worker configurable (`--worker-timeout`, défaut 30s)
 - [ ] Signal handling propre : `SIGTERM` → `server.shutdown()` gracieux
-- [ ] Watchdog optionnel : thread superviseur détecte les workers bloqués et les relance
-- [ ] Option `--log-level` pour contrôler verbosité (debug/info/warning)
-
-### 3.2 Métriques
-
-- [ ] Endpoint `/metrics` → format texte Prometheus-compatible
-  - `webhook_requests_total{command, status}` counter
-  - `webhook_request_duration_seconds{command}` histogram
+- [ ] Option `--log-level` (debug/info/warning)
+- [ ] Endpoint `/metrics` → format Prometheus-compatible
+  - `webhook_requests_total{command_type, status}` counter
+  - `webhook_request_duration_seconds` histogram
   - `webhook_daemon_uptime_seconds` gauge
-- [ ] Endpoint `/status` → JSON structuré machine-readable (pour healthcheck externe)
-
-### 3.3 Tests observabilité
-
-- [ ] Test `/health` retourne 200 quand daemon actif
-- [ ] Test `/metrics` retourne du texte valide
-- [ ] Test `/status` retourne JSON structuré
 
 ---
 
-## Phase 4 — Commandes distantes (`remote/*`)
+## Phase 4 — Commandes distantes (`remote/*`, dans `wex-addon-app`)
 
-> Ces commandes sont les premiers consommateurs du webhook-core. Elles constituent un
-> chantier distinct, débloqué après Phase 1.
+> Débloqué après Phase 1. Premiers consommateurs réels du webhook-core.
 
-- [ ] `app::remote/push_receive` — recoit un push git distant (décorée `@webhook`)
+- [ ] `app::remote/push_receive` — reçoit un push git distant
 - [ ] `app::remote/exec` — exécuter une commande à distance via webhook
 - [ ] `app::remote/go` — ouvrir un shell distant
 - [ ] `app::remote/available` — vérifier disponibilité remote
@@ -133,36 +132,31 @@ Objectif : le daemon ne se bloque plus silencieusement ; son état est monitorab
 
 ---
 
-## Phase 5 — Commandes locales contextuelles (dot-commands)
+## Phase 5 — Dot-commands (`.group/command` via webhook)
 
-- [ ] Vérifier que `AppCommandResolver` v6 dispatche correctement les commandes préfixées `.`
-  - Via `wex .groupe/commande` depuis le dossier d'une app
-  - Via `wex .groupe/commande` depuis un sous-dossier de l'app
-- [ ] Exposer les dot-commands via webhook (URL `/webhook/app/.groupe/commande`)
-- [ ] Tests de résolution contextuelle
+> Débloqué après Phase 1. Nécessite de valider AppCommandResolver en contexte daemon.
 
----
-
-## Dépendances inter-phases
-
-```
-Phase 1 (core)
-    └── Phase 2 (tokens)
-    └── Phase 3 (robustesse)
-            └── Phase 4 (remote/*)
-            └── Phase 5 (dot-commands)
-```
-
-Phases 2 et 3 peuvent être traitées en parallèle après Phase 1.
+- [ ] Vérifier résolution contextuelle de `.group/command` depuis le workdir daemon
+- [ ] Passer le `app_path` comme argument si nécessaire
+- [ ] Tests de résolution app-level depuis un daemon hors workdir
 
 ---
 
-## Notes et décisions
+## Dépendances
 
-- Le port par défaut reste **6543** (compatibilité v5)
-- L'authentification par token remplace la validation regex seule — c'est un breaking change
-  assumé (v6 n'est pas rétrocompatible avec les clients v5)
-- Le HTTPS reste délégué au reverse proxy en amont (nginx/caddy) — pas de TLS natif prévu
-- `status_process` peut être absorbé dans `status` en v6 (simplification)
-- systemd daemon : conserver la logique v5 (copie service file + enable/start)
-- En Docker (pas de systemd) : subprocess async comme en v5
+```
+Phase 1 (core daemon)
+    ├── Phase 2 (tokens)       ← en parallèle
+    ├── Phase 3 (robustesse)   ← en parallèle
+    ├── Phase 4 (remote/*)     ← débloqué après 1
+    └── Phase 5 (dot-commands) ← débloqué après 1
+```
+
+---
+
+## Notes
+
+- Port par défaut : **6543** (compatibilité v5)
+- HTTPS délégué au reverse proxy — pas de TLS natif prévu
+- `status_process` de v5 absorbé dans `status` (simplification)
+- Phase 1 sans token = dangereux en prod — à documenter clairement

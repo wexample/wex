@@ -128,6 +128,14 @@ WEBHOOK_LISTENER_ROUTES_MAP = {
 
 ## Design cible v6
 
+### Placement dans le code
+
+Le mécanisme webhook est **générique** — il n'a pas besoin du concept d'app pour fonctionner.
+Un ping webhook, un hook système, doivent marcher sans `AppMiddleware`.
+
+- **`wex-core`** : daemon HTTP, handler, routing, `@webhook` decorator, commandes `webhook/*`
+- **`wex-addon-app`** : commandes `remote/*`, intégration AppMiddleware, routes app-spécifiques
+
 ### Sécurité — tokens d'accès
 
 Chaque commande marquée `@webhook` reçoit un **token** généré à la registration.
@@ -150,6 +158,11 @@ Génération : `secrets.token_urlsafe(32)` — renouvelable via `app::webhook/to
 - Métriques exposées sur `/metrics` (format texte Prometheus-compatible)
 - Chaque requête webhook loguée avec : timestamp, command, status, duration, source IP
 - Endpoint `/status` retourne JSON structuré prêt pour healthcheck externe
+
+### Logs
+
+Problème v5 : logs dans des fichiers task temporaires introuvables en cas d'incident.
+En v6 : **chemin fixe `.wex/logs/webhook.log`**, JSON line par requête, affiché par `webhook/status`.
 
 ### Commandes locales contextuelles (`.command`)
 
