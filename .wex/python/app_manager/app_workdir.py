@@ -27,3 +27,8 @@ class AppWorkdir(PythonWorkdir):
 
     def get_package_name(self) -> str:
         return "wex"
+
+    def bump(self, interactive: bool = False, force: bool = False, **kwargs) -> bool:
+        # wex changes are driven by its packages (separate repos), so git change
+        # detection on the wex directory alone would miss them — always force bump.
+        return super().bump(interactive=interactive, force=True, **kwargs)
