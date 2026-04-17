@@ -7,7 +7,6 @@
 - `merge_to_main()` : deux `shell_run(["git", "merge"])` → `self.git_run()`
 - Grep exhaustif `shell_run.*"git"` → seul résultat : `git_run()` elle-même ✅
 
-## ⬜ Reste (bloqué sur ssh-auth-unified)
+- `_git_resolve_ssh_env()` supprimé, `git_run()` utilise `SshAgentResolver` ✅
 
-- Supprimer `_git_resolve_ssh_env()` de `git.py:362-386` une fois `SshAgentResolver` en place
-- Retirer son appel dans `git_run()`, remplacer par `SshAgentResolver`
+## ✅ Complet

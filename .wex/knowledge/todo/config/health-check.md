@@ -44,7 +44,7 @@ La commande health s'y place naturellement : `default__check__health` → `defau
 - [x] Créer `wex/wex-core/src/wexample_wex_core/addons/default/commands/check/health.py`
 - [x] Format de sortie : `[OK]` / `[WARN]` / `[FAIL]` par item avec message explicatif
 - [x] Env vars : s'appuyer sur `HasEnvKeys.get_expected_env_keys()` et `_get_missing_env_keys()` (déjà disponibles via la hiérarchie du kernel)
-- [ ] SSH (bloqué sur `ssh-auth-unified.md` + `HasSshCheck` mixin)
+- [x] SSH : warning actionnable via `SshAgentResolver` (voir `ssh-auth-unified.md`)
 - [ ] Optionnel : intégrer filestate en dry run pour détecter ce que filestate corrigerait sans modifier les fichiers — `FileStateDryRunResult._apply_single_operation()` retourne `True` sans écrire, c'est déjà le bon mécanisme. À affiner selon l'utilité réelle dans un health check.
 
 ### Health check à l'installation

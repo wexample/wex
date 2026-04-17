@@ -17,63 +17,37 @@ un système unifié, cross-platform, avec feedback clair et résolution guidée.
 
 ## Tâches
 
-### Extraire et refactorer en `SshAgentResolver`
+## ✅ Fait
 
-- [ ] Créer `packages/helpers-git/src/wexample_helpers_git/service/ssh_agent_resolver.py`
-- [ ] Classe `SshAgentResolver` avec méthode `resolve() -> str | None`
-  - Retourne le path du socket valide trouvé, ou `None`
-- [ ] Liste de candidats cross-platform dans l'ordre de priorité :
-  ```python
-  SOCKET_CANDIDATES = [
-      # Linux — GNOME Keyring
-      "/run/user/{uid}/keyring/ssh",
-      # Linux — GnuPG Agent
-      "/run/user/{uid}/gnupg/S.gpg-agent.ssh",
-      # Linux — XDG fallback
-      "{XDG_RUNTIME_DIR}/keyring/ssh",
-      # Linux — systemd user session
-      "/run/user/{uid}/ssh-agent.socket",
-      # macOS — Keychain / launchd
-      "/private/tmp/com.apple.launchd.*/Listeners",  # glob
-      # Generic — SSH_AUTH_SOCK from env (priorité 1, vérif socket)
-      # Agent standard démarré manuellement
-      "{HOME}/.ssh/agent.sock",
-      "{TMPDIR}/ssh-*/agent.*",  # glob
-  ]
-  ```
-- [ ] Vérifier que le fichier existe ET est un socket Unix valide (`stat.S_ISSOCK`)
-- [ ] Support des patterns glob pour macOS / agents dynamiques
+### `SshAgentResolver`
 
-### Stratégie de fallback quand aucun agent n'est trouvé
+- [x] Créé `packages/helpers-git/src/wexample_helpers_git/service/ssh_agent_resolver.py`
+- [x] `resolve() -> str | None` — retourne le path du socket valide ou `None`
+- [x] Candidats cross-platform : GNOME Keyring, GnuPG Agent, XDG, systemd, macOS launchd, `~/.ssh/agent.sock`, `TMPDIR/ssh-*/agent.*`
+- [x] Vérification `stat.S_ISSOCK` — socket Unix valide
+- [x] Support des patterns glob pour macOS / agents dynamiques
+- [x] `SSH_AUTH_SOCK` depuis l'env — priorité 1
+- [x] Session-level caching + `invalidate_cache()`
 
-- [ ] Option 1 — Warning non-bloquant avec instruction corrective :
-  ```
-  [WARN] SSH agent not found. Git push/pull via SSH may fail.
-  Fix: eval $(ssh-agent) && ssh-add ~/.ssh/id_rsa
-  Or set SSH_AUTH_SOCK in .wex/local/env.yaml
-  ```
-- [ ] Option 2 — Prompt TTY interactif si la commande est interactive :
-  - Demander le chemin du socket ou lancer `ssh-agent` automatiquement
-  - Stocker le résultat pour la durée de la session (singleton)
+### Intégration dans `git_run()`
+
+- [x] `_git_resolve_ssh_env()` supprimé
+- [x] `git_run()` utilise `SshAgentResolver().resolve()`
+- [x] `GIT_SSH_COMMANDS` — resolver appelé uniquement pour push/pull/fetch/clone/ls-remote
+- [x] Commandes locales (add, commit, diff…) non impactées
+
+### Health check
+
+- [x] `default::check/health` affiche le statut SSH via `SshAgentResolver`
+- [x] Warning actionnable si aucun socket trouvé
+
+## ⬜ Reste
+
+### Stratégie de fallback configurable
+
+- [ ] Option 2 — Prompt TTY interactif si la commande est interactive
 - [ ] Option 3 — Lever `SshAgentNotFoundError` si `get_ssh_check_required()` est `True`
-- [ ] Configurer le comportement via `.wex/local/env.yaml` : `SSH_FAIL_STRATEGY: warn|prompt|fail`
-
-### Intégrer `SshAgentResolver` dans `git_run()`
-
-- [ ] Remplacer l'appel à `_git_resolve_ssh_env()` par `SshAgentResolver().resolve()`
-- [ ] Supprimer `_git_resolve_ssh_env()` une fois la migration validée
-- [ ] `git_run()` ne doit pas crasher si le resolver retourne `None` pour des commandes locales (add, commit, diff)
-
-### Distinguer commandes git SSH vs locales
-
-- [ ] Créer `GIT_SSH_COMMANDS = {"push", "pull", "fetch", "clone", "ls-remote"}`
-- [ ] `git_run()` n'appelle `SshAgentResolver` que si la commande est dans `GIT_SSH_COMMANDS`
-- [ ] Cela évite un warning SSH lors d'un simple `git status` ou `git log`
-
-### Session-level caching
-
-- [ ] `SshAgentResolver` est un singleton de session (résout une fois, réutilise)
-- [ ] Invalider le cache si `SSH_AUTH_SOCK` change dans l'env entre deux appels
+- [ ] Configurer via `.wex/local/env.yaml` : `SSH_FAIL_STRATEGY: warn|prompt|fail`
 
 ---
 
