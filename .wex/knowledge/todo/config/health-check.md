@@ -41,10 +41,10 @@ La convention de nommage wex est `addon__group__command` → invoqué `addon::gr
 Le groupe `check` existe déjà dans `wex-core/addons/default/commands/check/` (voir `check/hi.py`).
 La commande health s'y place naturellement : `default__check__health` → `default::check/health`.
 
-- [ ] Créer `wex/wex-core/src/wexample_wex_core/addons/default/commands/check/health.py`
-- [ ] Format de sortie : `[OK]` / `[WARN]` / `[FAIL]` par item avec message explicatif
-- [ ] Items à vérifier dans ce premier fichier : SSH (voir ci-dessus), env vars requises
-- [ ] Env vars : s'appuyer sur `HasEnvKeys.get_expected_env_keys()` et `_get_missing_env_keys()` (déjà disponibles via la hiérarchie du kernel) plutôt que réécrire la logique
+- [x] Créer `wex/wex-core/src/wexample_wex_core/addons/default/commands/check/health.py`
+- [x] Format de sortie : `[OK]` / `[WARN]` / `[FAIL]` par item avec message explicatif
+- [x] Env vars : s'appuyer sur `HasEnvKeys.get_expected_env_keys()` et `_get_missing_env_keys()` (déjà disponibles via la hiérarchie du kernel)
+- [ ] SSH (bloqué sur `ssh-auth-unified.md` + `HasSshCheck` mixin)
 - [ ] Optionnel : intégrer filestate en dry run pour détecter ce que filestate corrigerait sans modifier les fichiers — `FileStateDryRunResult._apply_single_operation()` retourne `True` sans écrire, c'est déjà le bon mécanisme. À affiner selon l'utilité réelle dans un health check.
 
 ### Health check à l'installation
