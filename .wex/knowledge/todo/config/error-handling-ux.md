@@ -128,15 +128,9 @@ Ctrl+C → Python affiche une stacktrace + `KeyboardInterrupt`. C'est inutile et
 
 ### Solution
 
-- [ ] Dans `exec_argv()`, ajouter :
-  ```python
-  except KeyboardInterrupt:
-      self.io.log(message="\nInterrupted.")
-      sys.exit(130)  # convention POSIX pour Ctrl+C
-  ```
-- [ ] `sys.exit(130)` → exit code standard pour signal INT, compatible avec les scripts shell parent
-- [ ] S'assurer que le signal est aussi géré dans la boucle `execute_kernel_command_and_print()`
-  si une commande longue est en cours
+- [x] `except KeyboardInterrupt` dans `exec_argv()` → `self.io.log("\nInterrupted.")` + `sys.exit(130)`
+- [x] `sys.exit(130)` → exit code standard pour signal INT, compatible avec les scripts shell parent
+- [x] La boucle `execute_kernel_command_and_print()` est désormais dans le même try/except
 
 ---
 
