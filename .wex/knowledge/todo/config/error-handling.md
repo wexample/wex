@@ -26,7 +26,7 @@ sans créer une dépendance circulaire `helpers → app`.
 - [ ] `AppRuntimeException` étend `AbstractDisplayException` (au lieu de `UndefinedException` directement)
 - [ ] `MissingRequiredEnvVarError` étend `AbstractDisplayException`
 - [ ] `KeyNotFoundError` étend `AbstractDisplayException`
-- [ ] `ShellCommandFailedException` (voir `06-error-handling-ux.md`) étend `AbstractDisplayException`
+- [ ] `ShellCommandFailedException` (voir `error-handling-ux.md`) étend `AbstractDisplayException`
 
 ### Brancher le handler sur `AbstractDisplayException`
 
@@ -44,7 +44,7 @@ sans créer une dépendance circulaire `helpers → app`.
 ### Enrichir `MissingRequiredEnvVarError`
 
 - [ ] Message actuel : liste brute des clés manquantes
-- [ ] Cible (couplé à `EnvVarSpec` de `02-env-var-system.md`) :
+- [ ] Cible (couplé à `EnvVarSpec` de `env-var-system.md`) :
   ```
   [MISSING_ENV_VAR] Required environment variable not set: APP_ENV
     Description: Application environment (local, staging, prod)
@@ -68,5 +68,5 @@ sans créer une dépendance circulaire `helpers → app`.
 
 ## Dépendances
 
-- Bloque partiellement `06-error-handling-ux.md` (`ShellCommandFailedException` a besoin de cette base)
-- Bloque partiellement `02-env-var-system.md` (enrichissement du message `MissingRequiredEnvVarError`)
+- Bloque partiellement `error-handling-ux.md` (`ShellCommandFailedException` a besoin de cette base)
+- Bloque partiellement `env-var-system.md` (enrichissement du message `MissingRequiredEnvVarError`)

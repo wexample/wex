@@ -50,7 +50,7 @@ donc le handler général ne la traite pas proprement.
       stdout: str | None
   ```
   > Note : ne peut pas hériter de `AppRuntimeException` (helpers ne dépend pas de app).
-  > Voir `05-error-handling.md` pour la base commune à créer.
+  > Voir `error-handling.md` pour la base commune à créer.
 
 - [ ] Dans `shell_run()` au `except subprocess.CalledProcessError`, wrap en `ShellCommandFailedException` avant de re-raise
 - [ ] `AppRuntimeException` handler dans `exec_argv()` / `command_request.execute()` doit aussi catcher `ShellCommandFailedException`
