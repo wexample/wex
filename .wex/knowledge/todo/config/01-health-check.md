@@ -35,18 +35,24 @@ Pas de "Permission denied (publickey)" au fond d'une stacktrace.
 - [ ] Appel dans `Kernel.setup()` après `_init_env_file()` et avant `_init_workdir()`
 - [ ] Ne pas mettre la logique SSH dans `abstract_kernel.py` (trop bas niveau)
 
-### Commande `wex health`
+### Commande `default::check/health`
 
-- [ ] Créer la commande `health` dans `wex-core` (elle n'existe pas encore)
-- [ ] Ajouter un check SSH dans le rapport de santé
-- [ ] Format de sortie : `[OK]` / `[WARN]` / `[FAIL]` avec message explicatif
+La convention de nommage wex est `addon__group__command` → invoqué `addon::group/command`.
+Le groupe `check` existe déjà dans `wex-core/addons/default/commands/check/` (voir `check/hi.py`).
+La commande health s'y place naturellement : `default__check__health` → `default::check/health`.
+
+- [ ] Créer `wex/wex-core/src/wexample_wex_core/addons/default/commands/check/health.py`
+- [ ] Format de sortie : `[OK]` / `[WARN]` / `[FAIL]` par item avec message explicatif
+- [ ] Items à vérifier dans ce premier fichier : SSH (voir ci-dessus), env vars requises
+- [ ] Env vars : s'appuyer sur `HasEnvKeys.get_expected_env_keys()` et `_get_missing_env_keys()` (déjà disponibles via la hiérarchie du kernel) plutôt que réécrire la logique
+- [ ] Optionnel : intégrer filestate en dry run pour détecter ce que filestate corrigerait sans modifier les fichiers — `FileStateDryRunResult._apply_single_operation()` retourne `True` sans écrire, c'est déjà le bon mécanisme. À affiner selon l'utilité réelle dans un health check.
 
 ### Health check à l'installation
 
 - [ ] Identifier le point d'entrée de l'installation de wex (APT post-install hook ou script dédié)
-- [ ] Appeler le health check SSH à la fin de l'installation
+- [ ] Appeler `default::check/health` à la fin de l'installation (ou une version allégée)
 - [ ] Afficher un résumé lisible : ce qui est OK, ce qui manque, comment corriger
-- [ ] L'installation ne doit pas échouer si SSH n'est pas configuré (warn, pas fail) — l'utilisateur peut configurer SSH après
+- [ ] L'installation ne doit pas échouer si SSH n'est pas configuré (warn, pas fail)
 
 ---
 
