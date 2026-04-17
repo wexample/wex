@@ -33,31 +33,22 @@ Audit complet effectué. Résultat :
 
 ## Tâches
 
-### Migration des appels dans `repo.py`
+### Migration de `repo.py`
 
-- [ ] `packages/helpers/src/wexample_helpers/helpers/repo.py:18`
-  - Remplacer `shell_run(["git", "rev-parse", "HEAD"], cwd=cwd)` par `git_run(["rev-parse", "HEAD"], cwd=cwd)`
-  - Ajouter l'import de `git_run` depuis `wexample_helpers_git`
-  - **Attention** : `helpers` ne doit pas dépendre de `helpers-git` si l'import circulaire est un risque — vérifier la hiérarchie des dépendances
-- [ ] `packages/helpers/src/wexample_helpers/helpers/repo.py:21`
-  - Remplacer `shell_run(["git", "diff"], cwd=cwd)` par `git_run(["diff"], cwd=cwd)`
-
-> Si `helpers` ne peut pas dépendre de `helpers-git` (dépendance circulaire),
-> déplacer `repo.py` dans `helpers-git` ou créer un package `helpers-git-repo`.
+- [x] Déplacé `packages/helpers/.../helpers/repo.py` → `packages/helpers-git/.../helpers/repo.py`
+  - Migré `shell_run(["git", ...])` → `git_run([...])` pour les deux appels
+  - Aucun consommateur existant, suppression directe sans shim
 
 ### Migration des appels dans `git.py`
 
-- [ ] `packages/helpers-git/.../helpers/git.py:35`
+- [x] `packages/helpers-git/.../helpers/git.py:35`
   - `git_commit_all_with_message()` : remplacer `shell_run(["git", "add", "-A"], ...)` par `git_run(["add", "-A"], ...)`
-- [ ] `packages/helpers-git/.../helpers/git.py:36-40`
+- [x] `packages/helpers-git/.../helpers/git.py:36-40`
   - Remplacer `shell_run(["git", "commit", "-m", message], ...)` par `git_run(["commit", "-m", message], ...)`
 
 ### Migration des appels dans `code_base_workdir.py`
 
-- [ ] `wex/wex-addon-app/.../workdir/code_base_workdir.py:206-217` — première `git merge` dans `merge_to_main()`
-  - Remplacer par `git_run(["merge", ...], cwd=...)`
-- [ ] `wex/wex-addon-app/.../workdir/code_base_workdir.py:225-236` — deuxième `git merge` dans `merge_to_main()`
-  - Remplacer par `git_run(["merge", ...], cwd=...)`
+- [x] `wex/wex-addon-app/.../workdir/code_base_workdir.py` — deux `git merge` dans `merge_to_main()` → `self.git_run(["merge", ...])`
 
 ### Vérifier la cohérence des retries et messages d'erreur
 
