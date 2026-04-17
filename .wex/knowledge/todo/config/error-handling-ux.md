@@ -146,18 +146,14 @@ ou, si on préfère par projet :
 
 ### Implémentation
 
-- [ ] Créer `wex/wex-core/src/wexample_wex_core/helpers/crash_report.py`
+- [x] Créer `packages/app/src/wexample_app/helpers/crash_report.py`
   - `write_crash_report(exception, kernel) -> Path`
   - Écrit : timestamp, commande exécutée, traceback complet, env (filtré des secrets)
-- [ ] Dans le `except Exception` de `exec_argv()` :
-  ```python
-  except Exception as e:
-      path = write_crash_report(exception=e, kernel=self)
-      self.io.error(message=f"Unexpected error. Full report: {path}")
-      sys.exit(1)
-  ```
-- [ ] Rotation des logs : garder les 50 derniers fichiers, supprimer les plus vieux
-- [ ] Ne pas logger `SSH_AUTH_SOCK`, `*_PASSWORD`, `*_TOKEN`, `*_SECRET` dans l'env dump
+- [x] Dans le `except Exception` de `exec_argv()` : appel `write_crash_report` + message avec le chemin
+- [x] Rotation des logs : garder les 50 derniers fichiers, supprimer les plus vieux
+- [x] Ne pas logger `SSH_AUTH_SOCK`, `*_PASSWORD`, `*_TOKEN`, `*_SECRET` dans l'env dump
+- [x] `logs/errors/` ajouté dans `KernelWorkdir.prepare_value()` → `tmp/logs/errors/`
+- [x] `_get_crash_report_dir()` : default `~/.wex/logs/errors/`, override wex-core → `workdir/tmp/logs/errors/`
 
 ### Message terminal
 
