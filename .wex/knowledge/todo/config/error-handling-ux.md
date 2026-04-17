@@ -6,29 +6,11 @@ subprocess, chaîne A→B→C, Ctrl+C, et d'ajouter un fichier de crash report.
 
 ---
 
-## État actuel
+## État actuel (mis à jour)
 
-### Ce qui marche déjà
+`exec_argv()` gère maintenant : `KeyboardInterrupt` ✅, `AppRuntimeException` ✅, `ShellCommandFailedException` ✅, `Exception` → crash report ✅.
 
-`exec_argv()` dans `command_line_kernel.py:48` :
-```python
-try:
-    command_requests = self._build_command_requests_from_arguments(...)
-except AppRuntimeException as e:
-    e.format_error_with_kernel(kernel=self)   # message propre, no traceback
-    return
-except Exception as e:
-    self.io.error(exception=e, fatal=True)    # traceback brut
-    return
-```
-
-`CommandTypeNotFoundException`, `CommandRunnerNotFoundException`, etc. → tous propres.
-
-### Ce qui plante en brut
-
-- `CalledProcessError` levée par `shell.py:115` → tombe dans `except Exception` → stacktrace Python complète
-- `KeyboardInterrupt` (Ctrl+C) → pas catchée → stacktrace Python complète
-- Subprocess chain A→B→C → double (ou triple) trace, racine enfouie en bas
+Reste : chaîne A→B→C (Cas 2).
 
 ---
 
@@ -136,13 +118,9 @@ plutôt que de la déverser sur le terminal.
 ### Emplacement
 
 ```
-~/.wex/logs/errors/YYYY-MM-DD_HH-MM-SS_<command>.log
+{app_workdir}/tmp/logs/errors/YYYY-MM-DD_HH-MM-SS_<command>.log
 ```
-ou, si on préfère par projet :
-```
-{project}/.wex/tmp/logs/error/YYYY-MM-DD_HH-MM-SS.log
-```
-→ Préférer `~/.wex/logs/` (global, toujours accessible même si le projet n'est pas init)
+→ `_get_crash_report_dir()` dans `command_line_kernel.py` (default générique via `workdir/tmp/logs/errors`), déclaré dans `KernelWorkdir.prepare_value()`.
 
 ### Implémentation
 
@@ -165,21 +143,6 @@ Run with -vvv to see the traceback directly in the terminal.
 
 ---
 
-## Récapitulatif des fichiers à créer / modifier
+## Reste à faire
 
-| Fichier | Action |
-|---|---|
-| `packages/helpers/src/wexample_helpers/exception/shell_command_failed_exception.py` | Nouveau — wrapper de `CalledProcessError` |
-| `packages/helpers/src/wexample_helpers/helpers/shell.py:115` | Wrap `CalledProcessError` → `ShellCommandFailedException` |
-| `packages/app/src/wexample_app/common/mixins/command_line_kernel.py:48` | Catcher `ShellCommandFailedException` + `KeyboardInterrupt` |
-| `packages/app/src/wexample_app/common/command_request.py:124` | Idem dans `execute()` |
-| `wex/wex-core/src/wexample_wex_core/helpers/crash_report.py` | Nouveau — écriture fichier de crash |
-
----
-
-## Ordre d'implémentation suggéré
-
-1. `KeyboardInterrupt` → 5 lignes, gain immédiat, risque zéro
-2. `ShellCommandFailedException` → élimine 80% des stacktraces visibles
-3. Crash report file → confort pour le debug des cas restants
-4. Chaîne A→B→C → le plus complexe, dépend des deux précédents
+- Cas 2 — Chaîne A→B→C (le plus complexe, dépend des précédents)
