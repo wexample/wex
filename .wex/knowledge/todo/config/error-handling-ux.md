@@ -41,19 +41,11 @@ donc le handler général ne la traite pas proprement.
 
 ### Solution : `ShellCommandFailedException`
 
-- [ ] Créer `packages/helpers/src/wexample_helpers/exception/shell_command_failed_exception.py`
-  ```python
-  class ShellCommandFailedException(Exception):
-      cmd: list[str] | str
-      returncode: int
-      stderr: str | None
-      stdout: str | None
-  ```
-  > Note : ne peut pas hériter de `AppRuntimeException` (helpers ne dépend pas de app).
-  > Voir `error-handling.md` pour la base commune à créer.
+- [x] Créer `packages/helpers/src/wexample_helpers/exception/shell_command_failed_exception.py`
+  > Hérite de `UndefinedException` (helpers ne dépend pas de app). Stocke cmd, returncode, stderr, stdout.
 
-- [ ] Dans `shell_run()` au `except subprocess.CalledProcessError`, wrap en `ShellCommandFailedException` avant de re-raise
-- [ ] `AppRuntimeException` handler dans `exec_argv()` / `command_request.execute()` doit aussi catcher `ShellCommandFailedException`
+- [x] Dans `shell_run()`, `shell_run_async()`, `shell_stream_async()` : wrap `CalledProcessError` → `ShellCommandFailedException`
+- [x] Handler dans `exec_argv()` et `command_request.execute()` : affiche message propre + "To retry manually"
 
 ### Format de sortie souhaité
 
@@ -66,9 +58,9 @@ To retry manually:
   git push -u origin version-0.3.11
 ```
 
-- [ ] Afficher la commande en version copy-pasteable (`shlex.join(cmd)` si list)
-- [ ] Afficher stderr si disponible et non vide
-- [ ] Bloc "To retry manually" avec la commande formatée
+- [x] Afficher la commande en version copy-pasteable (`shlex.join(cmd)` si list)
+- [x] Afficher stderr si disponible et non vide
+- [x] Bloc "To retry manually" avec la commande formatée
 
 ---
 
