@@ -29,25 +29,15 @@ un système unifié, cross-platform, avec feedback clair et résolution guidée.
 - [x] `SSH_AUTH_SOCK` depuis l'env — priorité 1
 - [x] Session-level caching + `invalidate_cache()`
 
-### Intégration dans `git_run()`
+### Solution retenue (simplifiée)
 
-- [x] `_git_resolve_ssh_env()` supprimé
-- [x] `git_run()` utilise `SshAgentResolver().resolve()`
-- [x] `GIT_SSH_COMMANDS` — resolver appelé uniquement pour push/pull/fetch/clone/ls-remote
-- [x] Commandes locales (add, commit, diff…) non impactées
+- [x] `_git_resolve_ssh_env()` supprimé, `SshAgentResolver` supprimé (YAGNI)
+- [x] `git_run()` simplifié : juste `shell_run(["git"] + cmd)`, pas de logique SSH
+- [x] `_init_env_file_yaml()` injecte maintenant dans `os.environ` — les subprocesses héritent
+- [x] `Kernel._init_local_env()` charge `.wex/local/env.yml` dans `os.environ` + `env_config`
+- [x] `default::check/health` vérifie `SSH_AUTH_SOCK` directement dans `os.environ`
 
-### Health check
-
-- [x] `default::check/health` affiche le statut SSH via `SshAgentResolver`
-- [x] Warning actionnable si aucun socket trouvé
-
-## ⬜ Reste
-
-### Stratégie de fallback configurable
-
-- [ ] Option 2 — Prompt TTY interactif si la commande est interactive
-- [ ] Option 3 — Lever `SshAgentNotFoundError` si `get_ssh_check_required()` est `True`
-- [ ] Configurer via `.wex/local/env.yaml` : `SSH_FAIL_STRATEGY: warn|prompt|fail`
+## ✅ Complet
 
 ---
 

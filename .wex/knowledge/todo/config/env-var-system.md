@@ -16,51 +16,16 @@ Le système existe déjà mais est rudimentaire :
 
 ---
 
-## Tâches
+## ✅ Fait
 
-### Étendre le pattern de déclaration des env vars
+- `_init_env_file_yaml()` injecte dans `os.environ` (les subprocesses héritent maintenant)
+- `Kernel._init_local_env()` charge `.wex/local/env.yml` dans `os.environ` + `env_config`
 
-- [ ] Créer une dataclass `EnvVarSpec` dans `packages/helpers/src/wexample_helpers/const/env.py`
-  - Champs : `key: str`, `description: str`, `required: bool = True`, `default: str | None = None`
-- [ ] Modifier `get_expected_env_keys()` → accepter optionnellement une liste de `EnvVarSpec` (compatibilité rétrograde avec `list[str]`)
-- [ ] Modifier `_validate_env_keys()` → utiliser `EnvVarSpec` pour afficher description + valeur par défaut si disponible
+## ⬜ YAGNI — supprimé du scope
 
-### Permettre aux addons de déclarer leurs env vars
-
-- [ ] Créer un mixin `HasAddonEnvKeys` pour les addons wex
-  - Méthode `get_addon_expected_env_keys()` → `list[EnvVarSpec]`
-- [ ] Le kernel collecte les déclarations de tous les addons chargés au boot
-  - Dans `Kernel._init_addons()` ou un nouveau `_collect_env_requirements()`
-- [ ] Fusionner et valider l'ensemble des déclarations
-
-### Support de la config locale `.wex/local/`
-
-- [ ] Définir le format : `.wex/local/env.yaml` (par machine, gitignored)
-  ```yaml
-  SSH_AUTH_SOCK: /run/user/1000/keyring/ssh
-  MY_CUSTOM_VAR: value
-  ```
-- [ ] Charger `.wex/local/env.yaml` dans `AbstractKernel.setup()` après les autres env files
-- [ ] Les valeurs de `.wex/local/env.yaml` peuvent satisfaire les `EnvVarSpec` requis
-
-### Déclaration SSH dans `helpers-git`
-
-- [ ] Créer `packages/helpers-git/src/wexample_helpers_git/const/env.py`
-  ```python
-  SSH_AUTH_SOCK_SPEC = EnvVarSpec(
-      key="SSH_AUTH_SOCK",
-      description="Path to SSH agent socket. Required for git push/pull via SSH.",
-      required=False,  # warn seulement, auto-détection possible
-  )
-  ```
-- [ ] `HasSshCheck` (niveau 1) déclare `SSH_AUTH_SOCK_SPEC` via `get_addon_expected_env_keys()`
-
-### Documentation et guidage utilisateur
-
-- [ ] Message d'erreur enrichi quand une var est manquante :
-  - Afficher description de la var
-  - Afficher commande pour la setter dans `.wex/local/env.yaml`
-  - Afficher valeur détectée automatiquement si applicable
+- `EnvVarSpec` dataclass — aucun addon ne déclare de vars aujourd'hui
+- `HasAddonEnvKeys` mixin — idem
+- Collecte des env vars des addons au boot
 
 ---
 
