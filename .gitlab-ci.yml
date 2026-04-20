@@ -26,11 +26,9 @@ deploy:
   extends: [ .on_master ]
   needs:
     - build_apt
-  # Manual until wex-6 has a webhook server
-  when: manual
   script:
     - BUILD_VERSION=$(cat version.txt)
-    - curl "http://wexample.com:4242/webhook/app/prod/wex-apt-repo/apt/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
+    - curl "http://151.80.23.108:6543/webhook/app/prod/wex-apt-repo/apt/publish?_token=${WEX_WEBHOOK_TOKEN}&project=${CI_PROJECT_ID}&version=${BUILD_VERSION}"
 
 .checkup_install:
   extends: [ .on_master ]
