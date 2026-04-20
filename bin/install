@@ -36,9 +36,15 @@ fi
 
 # Create new virtual environment with copied binaries (not symlinks)
 echo "Creating new virtual environment..."
-PYTHON_BIN=$(command -v python3 2>/dev/null)
-if [ -z "$PYTHON_BIN" ] || ! "$PYTHON_BIN" -c "import sys; sys.exit(0 if sys.version_info >= (3, 11) else 1)" 2>/dev/null; then
-    echo "Error: Python 3.11+ is required but not found" >&2
+PYTHON_BIN=""
+for py in python3.13 python3.12 python3.11; do
+    if command -v "$py" >/dev/null 2>&1; then
+        PYTHON_BIN=$(command -v "$py")
+        break
+    fi
+done
+if [ -z "$PYTHON_BIN" ]; then
+    echo "Error: python3.11+ is required but not found (tried python3.13, python3.12, python3.11)" >&2
     exit 1
 fi
 echo "Using $PYTHON_BIN"
