@@ -35,7 +35,7 @@ fi
 
 # Create new virtual environment with copied binaries (not symlinks)
 echo "Creating new virtual environment..."
-python3 -m venv "$VENV_PATH" --clear --copies
+python3.11 -m venv "$VENV_PATH" --clear --copies
 
 # Fix permissions
 echo "Fixing virtual environment permissions..."
