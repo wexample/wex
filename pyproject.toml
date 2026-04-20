@@ -4,7 +4,7 @@ build-backend = "pdm.backend"
 
 [project]
 name = "wex"
-version = "6.0.32"
+version = "6.0.33"
 description = "A friendly CLI"
 authors = [
     { name = "weeger", email = "contact@wexample.com" },
