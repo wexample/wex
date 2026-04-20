@@ -8,5 +8,5 @@ Homepage: https://wexample.com
 
 Package: wex
 Architecture: all
-Depends: ${misc:Depends}, bash, bash-completion, git, python3.12, python3.12-venv, python3-pip, procps, sshpass, sudo, ca-certificates
+Depends: ${misc:Depends}, bash, bash-completion, git, python3, python3-venv, python3-pip, procps, sshpass, sudo, ca-certificates
 Description: wex 6 - modular server and project management toolkit
