@@ -5,7 +5,8 @@ decorators:
       position: before
       command: app::app/publish
 scripts:
-  - runner: bash
+  - name: Execute main publish method
+    runner: bash
     script: |
       if [ -z "${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH:-}" ]; then
         exit 0
@@ -13,3 +14,11 @@ scripts:
       echo "Publishing source suite at ${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}..."
       cd "${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}"
       .wex/bin/app-manager app::suite/publish --yes
+  - name: Sync library versions into wex requirements
+    runner: bash
+    script: |
+      if [ -z "${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH:-}" ]; then
+        exit 0
+      fi
+      echo "Syncing library versions..."
+      wex app::libraries/sync
