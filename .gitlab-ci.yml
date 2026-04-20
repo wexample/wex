@@ -52,7 +52,7 @@ deploy:
 checkup_install_debian:
   extends: .checkup_install
   stage: checkup_install
-  image: debian:trixie
+  image: debian:bookworm
 
 checkup_install_ubuntu:
   extends: .checkup_install

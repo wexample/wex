@@ -1,3 +1,4 @@
+
 #!/usr/bin/env bash
 
 # Find the current file directory, supporting symlinks
@@ -35,7 +36,13 @@ fi
 
 # Create new virtual environment with copied binaries (not symlinks)
 echo "Creating new virtual environment..."
-python3.12 -m venv "$VENV_PATH" --clear --copies
+PYTHON_BIN=$(command -v python3 2>/dev/null)
+if [ -z "$PYTHON_BIN" ] || ! "$PYTHON_BIN" -c "import sys; sys.exit(0 if sys.version_info >= (3, 11) else 1)" 2>/dev/null; then
+    echo "Error: Python 3.11+ is required but not found" >&2
+    exit 1
+fi
+echo "Using $PYTHON_BIN"
+"$PYTHON_BIN" -m venv "$VENV_PATH" --clear --copies
 
 # Fix permissions
 echo "Fixing virtual environment permissions..."
