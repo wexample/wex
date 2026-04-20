@@ -64,3 +64,6 @@ coverage-*.json
 coverage*.lcov
 *.pid
 *.pid.lock
+.pdm-python
+.python-version
+/coverage.json
