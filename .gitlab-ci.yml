@@ -60,3 +60,4 @@ checkup_install_ubuntu:
   extends: .checkup_install
   stage: checkup_install
   image: python:3.12-slim
+
