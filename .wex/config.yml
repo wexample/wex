@@ -1,5 +1,5 @@
 global:
   name: wex
-  version: 6.0.40
+  version: 6.0.41
 libraries:
 - ${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}
