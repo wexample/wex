@@ -4,7 +4,7 @@ build-backend = "pdm.backend"
 
 [project]
 name = "wex"
-version = "6.0.47"
+version = "6.0.48"
 description = "A friendly CLI"
 authors = [
     { name = "weeger", email = "contact@wexample.com" },
@@ -13,17 +13,17 @@ requires-python = ">=3.10"
 classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent"]
 dependencies = [
     "tomli",
-    "wexample-wex-addon-app>=9.3.3",
+    "wexample-wex-addon-app>=9.4.0",
     "wexample-wex-addon-dev-css>=6.0.23",
-    "wexample-wex-addon-dev-javascript>=7.0.3",
+    "wexample-wex-addon-dev-javascript>=7.1.0",
     "wexample-wex-addon-dev-php>=7.0.3",
     "wexample-wex-addon-dev-python>=7.2.0",
     "wexample-wex-addon-filestate>=6.0.23",
     "wexample-wex-addon-services-collab>=7.0.6",
     "wexample-wex-addon-services-db>=7.1.5",
     "wexample-wex-addon-services-monitoring>=7.0.6",
-    "wexample-wex-addon-services-platform>=7.0.6",
-    "wexample-wex-core>=15.3.0",
+    "wexample-wex-addon-services-platform>=7.1.0",
+    "wexample-wex-core>=15.3.1",
 ]
 
 [project.readme]
