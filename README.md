@@ -1,6 +1,6 @@
 # wex
 
-Version: 6.0.48
+Version: 6.0.49
 
 ## Table of Contents
 
