@@ -62,9 +62,11 @@ class Wex(Kernel):
             from wexample_wex_core.common.kernel import Kernel
             from wexample_wex_addon_filestate.filestate_addon_manager import FilestateAddonManager
             from wexample_wex_addon_app.app_addon_manager import AppAddonManager
+            from wexample_wex_addon_package.package_addon_manager import PackageAddonManager
 
             self.setup(addons=[
                 AppAddonManager,
+                PackageAddonManager,
                 CoreAddonManager,
                 DemoAddonManager,
                 DockerAddonManager,
