@@ -15,5 +15,6 @@ override_dh_fixperms:
 	chmod 0755 debian/wex/usr/lib/wex/bin/uninstall
 	chmod 0755 debian/wex/usr/lib/wex/bin/autocomplete
 	chmod 0755 debian/wex/usr/lib/wex/bin/autocomplete-handler
+	chmod 0755 debian/wex/usr/lib/wex/bin/autocomplete-suggest
 	chmod 0755 debian/wex/usr/lib/wex/bin || true
 	chmod 0755 debian/wex/usr/lib/wex || true
