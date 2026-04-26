@@ -133,7 +133,7 @@ Minimum validation:
 2. install the package in `wex-6/.venv` if renamed or newly created
 3. verify the package is wired in `wex.py`
 4. if possible, test:
-   `service/install -> config/write -> app start -> service/ready`
+   `service/install -> config/build -> app start -> service/ready`
 
 Runtime validation is preferred, but compile validation is the minimum accepted step.
 

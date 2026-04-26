@@ -26,7 +26,7 @@
 - [x] `app::suite/packages`
 - [x] `app::test/run`
 - [x] `app::version/propagate`
-- [x] `app::registry/write`
+- [x] `app::registry/build`
 - [x] `app::setup/install`
 - [x] `app::info/show`
 
@@ -41,7 +41,7 @@
 - [x] `app::app/exec`
 - [x] `app::config/get`
 - [x] `app::config/set`
-- [x] `app::config/write`
+- [x] `app::config/build`
 - [x] `app::container/list`
 - [x] `app::db/dump`
 - [x] `app::db/exec`

@@ -90,8 +90,9 @@ Le concept : rectifier des fichiers selon un état attendu.
 **`info/show` en double** (`app` et `core`) — résolu par le renommage de l'addon :
 - [x] `core::info/show` — ok tel quel, plus de doublon depuis que l'addon s'appelle `core`
 
-**Vocabulaire `registry` incohérent** — `build` vs `write` pour la même idée :
-- [ ] `app::registry/write` → `app::registry/build`
+**Vocabulaire `registry` et `config` incohérent** — `write` remplacé par `build` :
+- [x] `app::registry/write` → `app::registry/build`
+- [x] `app::config/write` → `app::config/build`
 
 **`check/hi` dans core** — ping de vitalité de wex, alias `hi` :
 - [ ] `core::check/hi` → `core::wex/ping`
