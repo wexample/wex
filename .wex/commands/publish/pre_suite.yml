@@ -21,4 +21,4 @@ scripts:
         exit 0
       fi
       echo "Syncing library versions..."
-      wex app::libraries/sync
+      wex app::library/sync

@@ -12,10 +12,10 @@
 
 ### Workflow packages / suites
 
-- [x] `app::dependencies/check`
-- [x] `app::dependencies/publish`
+- [x] `app::dependency/check`
+- [x] `app::dependency/publish`
 - [x] `app::file_state/rectify`
-- [x] `app::libraries/sync`
+- [x] `app::library/sync`
 - [x] `app::package/bump`
 - [x] `app::package/publish`
 - [x] `app::package/publish_bumped`
@@ -53,11 +53,11 @@
 - [x] `app::env/set`
 - [x] `app::helper/start`
 - [x] `app::helper/stop`
-- [x] `app::hosts/update`
+- [x] `app::host/update`
 - [x] `app::logs/follow`
 - [x] `app::service/install`
 - [x] `app::service/used`
-- [x] `app::services/exec`
+- [x] `app::service/exec`
 
 ## Fermé ou absorbé
 

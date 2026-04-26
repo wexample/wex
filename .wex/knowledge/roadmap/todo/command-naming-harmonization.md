@@ -14,13 +14,13 @@ Réorganisation du naming pour cohérence, lisibilité et maintenabilité.
 
 Actuellement mélangé (`container/list` vs `hosts/clean`, `services/exec` vs `service/install`).
 
-- [ ] `app::apps/list` → `app::app/list`
-- [ ] `app::dependencies/check` → `app::dependency/check`
-- [ ] `app::dependencies/publish` → `app::dependency/publish`
-- [ ] `app::hosts/clean` → `app::host/clean`
-- [ ] `app::hosts/update` → `app::host/update`
-- [ ] `app::libraries/sync` → `app::library/sync`
-- [ ] `app::services/exec` → `app::service/exec`
+- [x] `app::apps/list` → `app::app/list`
+- [x] `app::dependencies/check` → `app::dependency/check`
+- [x] `app::dependencies/publish` → `app::dependency/publish`
+- [x] `app::hosts/clean` → `app::host/clean`
+- [x] `app::hosts/update` → `app::host/update`
+- [x] `app::libraries/sync` → `app::library/sync`
+- [x] `app::services/exec` → `app::service/exec`
 
 ---
 
