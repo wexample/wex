@@ -46,7 +46,7 @@ Le concept : rectifier des fichiers selon un état attendu.
 
 ## Phase 4 — Simplifier les actions verbeuses ou ambiguës
 
-- [ ] `app::package/commit_and_push` → `app::package/push`
+- [ ] `app::package/push` → `app::package/push`
   (le commit est implicite dans le push d'un package)
 - [ ] `app::package/publish_bumped` → `app::package/release`
   (bump + publish = release ; mot plus expressif)

@@ -4,7 +4,7 @@
 
 ```
 A (wex app::suite/publish)
-  → shell_run(.wex/bin/app-manager app::package/commit-and-push)   # B
+  → shell_run(.wex/bin/app-manager app::package/push)   # B
       → shell_run(git push -u origin ...)                           # C — root cause
 ```
 

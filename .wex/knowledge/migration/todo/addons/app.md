@@ -71,7 +71,7 @@
 ### Publication / versioning app
 
 - [x] `version/new` — absorbé par `app::package/bump` + `app::app/publish`
-- [x] `version/new_commit` — absorbé par `app::package/commit_and_push` + `app::app/publish`
+- [x] `version/new_commit` — absorbé par `app::package/push` + `app::app/publish`
 - [x] `version/new_write` — absorbé par `app::state/rectify` + `app::app/publish`
 - [x] `app::app/publish` — orchestrateur de publication d'application validé en réel
 
