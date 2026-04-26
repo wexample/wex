@@ -60,44 +60,45 @@ Le concept : rectifier des fichiers selon un état attendu.
 `default` est un détail d'implémentation sans sens métier. `core` dit ce que c'est : les commandes fondamentales de wex. Toutes les commandes `core::*` deviennent `core::*`.
 
 **Fichiers et classes à renommer dans `wex-core` :**
-- [ ] Dossier `addons/core/` → `addons/core/`
-- [ ] Fichier `core_addon_manager.py` → `core_addon_manager.py`
-- [ ] Classe `CoreAddonManager` → `CoreAddonManager`
-- [ ] Import dans `wex.py` : `from ...addons.default.core_addon_manager import CoreAddonManager`
+- [x] Dossier `addons/default/` → `addons/core/`
+- [x] Fichier `default_addon_manager.py` → `core_addon_manager.py`
+- [x] Classe `DefaultAddonManager` → `CoreAddonManager`
+- [x] Import dans `wex.py` mis à jour
 
 **Noms de fonctions** — `default__*__*` → `core__*__*` dans tous les fichiers de commandes :
-- [ ] `default__autocomplete__suggest` → `core__autocomplete__suggest`
-- [ ] `default__check__hi` → `core__check__hi`
-- [ ] `default__command__create` → `core__command__create`
-- [ ] `default__env__configure` → `core__env__configure`
-- [ ] `default__health__check` → `core__health__check`
-- [ ] `default__info__show` → `core__info__show`
-- [ ] `default__logo__show` → `core__logo__show`
-- [ ] `default__registry__build` → `core__registry__build`
-- [ ] `default__self__upgrade` → `core__self__upgrade`
-- [ ] `default__version__get` → `core__version__get`
-- [ ] `default__version__increment` → `core__version__increment`
-- [ ] `default__webhook__*` → `core__webhook__*` (6 commandes)
+- [x] `default__autocomplete__suggest` → `core__autocomplete__suggest`
+- [x] `default__check__hi` → `core__check__hi`
+- [x] `default__command__create` → `core__command__create`
+- [x] `default__env__configure` → `core__env__configure`
+- [x] `default__health__check` → `core__health__check`
+- [x] `default__info__show` → `core__info__show`
+- [x] `default__logo__show` → `core__logo__show`
+- [x] `default__registry__build` → `core__registry__build`
+- [x] `default__self__upgrade` → `core__self__upgrade`
+- [x] `default__version__get` → `core__version__get`
+- [x] `default__version__increment` → `core__version__increment`
+- [x] `default__webhook__*` → `core__webhook__*` (6 commandes)
 
 **Références string** — partout où `"default"` désigne l'addon (docs, YMLs, code) :
-- [ ] `core::` → `core::` dans tous les `.md`, `.yml`, `.py`
-- [ ] Vérifier les appels par string comme dans `app_should_run_step_guard.py`
+- [x] `default::` → `core::` dans tous les `.md`, `.yml`, `.py`
+- [x] Appels string vérifiés (webhook/listen.py, webhook/handler.py, webhook_tokens.yml)
 
 ---
 
 ## Phase 5.2 — Résoudre doublons et ambiguïtés restants
 
-**`info/show` en double** (`app` et `core`) — deux commandes différentes, noms identiques :
-- [ ] `core::info/show` → `core::info/show` (à préciser : décrit wex lui-même, pas une app — ok tel quel une fois l'addon renommé)
+**`info/show` en double** (`app` et `core`) — résolu par le renommage de l'addon :
+- [x] `core::info/show` — ok tel quel, plus de doublon depuis que l'addon s'appelle `core`
 
 **Vocabulaire `registry` incohérent** — `build` vs `write` pour la même idée :
 - [ ] `app::registry/write` → `app::registry/build`
 
-**`check/hi` dans core** — nom cryptique :
-- [ ] `core::check/hi` → à clarifier (test de connectivité ? ping ?)
+**`check/hi` dans core** — ping de vitalité de wex, alias `hi` :
+- [ ] `core::check/hi` → `core::wex/ping`
 
-**`helper/start` et `helper/stop`** — "helper" est vague :
-- [ ] Renommer selon la nature réelle : `proxy/start`, `sidecar/start`, ou `worker/start`
+**`helper/start` et `helper/stop`** — app compagnon pré-configurée (ex: proxy) lancée en sidecar :
+- [ ] `app::helper/start` → `app::sidecar/start`
+- [ ] `app::helper/stop` → `app::sidecar/stop`
 
 ---
 
