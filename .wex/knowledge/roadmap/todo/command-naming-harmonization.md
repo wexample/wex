@@ -28,10 +28,10 @@ Actuellement mélangé (`container/list` vs `hosts/clean`, `services/exec` vs `s
 
 Le groupe ne doit pas répéter le nom de l'addon.
 
-- [ ] `docker::docker/ip` → `docker::network/ip`
-- [ ] `docker::docker/stop_all` → `docker::container/stop_all`
-- [ ] `system::system/ip` → `system::network/ip`
-- [ ] `system::system/is_docker` → `system::runtime/is_docker`
+- [x] `docker::docker/ip` → `docker::network/ip`
+- [x] `docker::docker/stop_all` → `docker::container/stop_all`
+- [x] `system::system/ip` → `system::network/ip`
+- [x] `system::system/is_docker` → `system::runtime/is_docker`
 
 ---
 
