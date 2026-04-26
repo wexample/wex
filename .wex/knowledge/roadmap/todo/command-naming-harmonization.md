@@ -94,12 +94,16 @@ Le concept : rectifier des fichiers selon un état attendu.
 - [x] `app::registry/write` → `app::registry/build`
 - [x] `app::config/write` → `app::config/build`
 
-**`check/hi` dans core** — ping de vitalité de wex, alias `hi` :
-- [ ] `core::check/hi` → `core::wex/ping`
+**`check/hi` dans core** — ping de vitalité de wex, alias `hi` conservé :
+- [x] `core::check/hi` → `core::ping/hi`
 
-**`helper/start` et `helper/stop`** — app compagnon pré-configurée (ex: proxy) lancée en sidecar :
-- [ ] `app::helper/start` → `app::sidecar/start`
-- [ ] `app::helper/stop` → `app::sidecar/stop`
+**`helper` → `sidecar`** — renommage complet du concept, pas seulement les commandes :
+- [x] Commandes : `commands/helper/` → `commands/sidecar/`, fonctions `app__helper__*` → `app__sidecar__*`
+- [x] Constantes : `HELPER_APP_PROXY_SHORT_NAME` → `SIDECAR_PROXY_NAME`, `HELPER_APPS_LIST` → `SIDECAR_LIST` dans `const/app.py`
+- [x] Méthode `app_addon_manager.py` : `get_helper_app_path()` → `get_sidecar_path()`
+- [x] Fonction `helpers/app.py` : `get_helper_app_path()` → `get_sidecar_path()`
+- [x] Clé de config app : `helper.proxy` → `sidecar.proxy` — migration `6.0.22` créée
+- [x] Toutes les références internes (imports, variables locales, commentaires)
 
 ---
 
