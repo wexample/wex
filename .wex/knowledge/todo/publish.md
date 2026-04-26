@@ -5,7 +5,7 @@
 `bin/publish` est un script bash spécifique à wex qui :
 1. Publie optionnellement une lib source (`PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH`)
 2. Lit la version depuis `version.txt`
-3. Incrémente la version via `wex default::version/increment`
+3. Incrémente la version via `wex core::version/increment`
 4. Compilait `requirements.in → requirements.txt` via `uv pip compile` ← **supprimé**
 5. Commit "Release {version}" + `git push`
 

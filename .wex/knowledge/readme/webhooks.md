@@ -13,19 +13,19 @@ ou tout outil capable de faire une requête GET.
 
 ```bash
 # En arrière-plan
-wex default::webhook/listen --asynchronous
+wex core::webhook/listen --asynchronous
 
 # En avant-plan (pour débugger)
-wex default::webhook/listen
+wex core::webhook/listen
 
 # Forcer le redémarrage si le port est déjà occupé
-wex default::webhook/listen --asynchronous --force
+wex core::webhook/listen --asynchronous --force
 ```
 
 ### 2. Vérifier que le daemon tourne
 
 ```bash
-wex default::webhook/status
+wex core::webhook/status
 
 # Ou directement via HTTP (pas d'auth sur /health)
 curl http://localhost:6543/health
@@ -35,7 +35,7 @@ curl http://localhost:6543/health
 ### 3. Obtenir le token d'une commande
 
 ```bash
-wex default::webhook/token-show --command-name "app::info/show"
+wex core::webhook/token-show --command-name "app::info/show"
 # → affiche le token, le génère s'il n'existe pas encore
 ```
 
@@ -57,7 +57,7 @@ curl "http://localhost:6543/webhook/addon/app/info/show?_token=<token>&env=prod"
 
 ```bash
 # Dernières requêtes (20 par défaut)
-wex default::webhook/status
+wex core::webhook/status
 
 # Log brut (JSON, une ligne par requête)
 tail -f {workdir}/logs/webhook.log
@@ -66,14 +66,14 @@ tail -f {workdir}/logs/webhook.log
 ### 6. Renouveler un token
 
 ```bash
-wex default::webhook/token-rotate --command-name "app::info/show"
+wex core::webhook/token-rotate --command-name "app::info/show"
 # → affiche le nouveau token — l'ancien est immédiatement invalide
 ```
 
 ### 7. Arrêter le daemon
 
 ```bash
-wex default::webhook/stop
+wex core::webhook/stop
 ```
 
 ---
@@ -140,9 +140,9 @@ Le token doit ensuite être explicitement généré via `webhook/token-show`.
 
 | Commande | Rôle |
 |----------|------|
-| `default::webhook/listen` | Démarrer le daemon |
-| `default::webhook/stop` | Arrêter le daemon |
-| `default::webhook/status` | État + dernières lignes de log |
-| `default::webhook/exec` | Dispatcher interne (appelé par le daemon) |
-| `default::webhook/token-show` | Afficher / générer le token d'une commande |
-| `default::webhook/token-rotate` | Régénérer le token d'une commande |
+| `core::webhook/listen` | Démarrer le daemon |
+| `core::webhook/stop` | Arrêter le daemon |
+| `core::webhook/status` | État + dernières lignes de log |
+| `core::webhook/exec` | Dispatcher interne (appelé par le daemon) |
+| `core::webhook/token-show` | Afficher / générer le token d'une commande |
+| `core::webhook/token-rotate` | Régénérer le token d'une commande |

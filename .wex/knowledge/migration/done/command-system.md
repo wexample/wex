@@ -11,7 +11,7 @@
 
 - Entry point: `__main__.py` → `exec_argv()`
 - Resolvers initialized in `AbstractKernel._init_resolvers()`
-- Addon command format: `addon::group/command` (e.g. `default::info/show`)
+- Addon command format: `addon::group/command` (e.g. `core::info/show`)
 - Addon locations: `{package}/wexample_wex_core/addons/`
 
 ## Status

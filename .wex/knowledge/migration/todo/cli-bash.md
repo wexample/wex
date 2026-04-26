@@ -26,7 +26,7 @@
 
 - [x] `autocomplete` — fonctionnel, permissions fixées (+x)
 - [x] `autocomplete-handler` — fonctionnel, sourcé depuis `/etc/bash_completion.d/wex`
-- [x] `default::autocomplete/suggest` — stub vide (retourne []), suggestions à implémenter
+- [x] `core::autocomplete/suggest` — stub vide (retourne []), suggestions à implémenter
 - [~] `terminal-handler` — absent de `bin/`, non nécessaire en v6 (symlink suffit)
 - [~] `wex-coverage` — hors scope publication
 

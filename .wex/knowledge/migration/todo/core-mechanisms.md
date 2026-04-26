@@ -96,7 +96,7 @@ v5 reference: `registry/build` + `KernelRegistryFileStructure` + `AddonCommandRe
 
 ### Infrastructure
 
-- [x] `default::registry/build` — scans all addons, persists to `{workdir}/.wex/tmp/registry.yml`
+- [x] `core::registry/build` — scans all addons, persists to `{workdir}/.wex/tmp/registry.yml`
 - [x] Registry built at kernel startup if file is empty (`_init_registry()`)
 - [x] `KernelRegistry.hydrate()` loads full resolver data from file
 - [x] `KernelRegistry.get_addon_commands()` accessor

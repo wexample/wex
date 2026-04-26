@@ -48,7 +48,7 @@ Objectif : wex-apt-repo répond à un webhook depuis l'extérieur, en wex 6.
 - [ ] **Déployer wex 6** sur le serveur (package apt)
 - [ ] **Stopper le daemon wex 5** (sans doute périmé)
 - [ ] **Installer wex 6** à la place de wex 5 — les apps wex 5 continuent de tourner
-- [ ] **Démarrer le daemon wex 6** (`wex default::webhook/listen --asynchronous`)
+- [ ] **Démarrer le daemon wex 6** (`wex core::webhook/listen --asynchronous`)
 - [ ] **Push wex-apt-repo en wex 6** — migration appliquée, commandes converties
 - [ ] **Trigger le webhook depuis l'extérieur** — vérifier token, log, réponse
 - [ ] **Boucler le CI/CD** — wex 6 se publie lui-même via webhook (wex-apt-repo déclenché depuis GitLab/GitHub)

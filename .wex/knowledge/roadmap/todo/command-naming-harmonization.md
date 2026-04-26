@@ -50,20 +50,20 @@ Le concept : rectifier des fichiers selon un état attendu.
 - [x] `app::package/publish-bumped` → `app::package/release`
 - [x] `app::suite/exec-command` → `app::suite/run`
 - [x] `app::suite/exec-shell` → `app::suite/shell`
-- [x] `default::configure/env` → `default::env/configure`
-- [x] `default::check/health` → `default::health/check`
+- [x] `core::configure/env` → `core::env/configure`
+- [x] `core::check/health` → `core::health/check`
 
 ---
 
 ## Phase 5 — Renommer l'addon `default` en `core`
 
-`default` est un détail d'implémentation sans sens métier. `core` dit ce que c'est : les commandes fondamentales de wex. Toutes les commandes `default::*` deviennent `core::*`.
+`default` est un détail d'implémentation sans sens métier. `core` dit ce que c'est : les commandes fondamentales de wex. Toutes les commandes `core::*` deviennent `core::*`.
 
 **Fichiers et classes à renommer dans `wex-core` :**
-- [ ] Dossier `addons/default/` → `addons/core/`
-- [ ] Fichier `default_addon_manager.py` → `core_addon_manager.py`
-- [ ] Classe `DefaultAddonManager` → `CoreAddonManager`
-- [ ] Import dans `wex.py` : `from ...addons.default.default_addon_manager import DefaultAddonManager`
+- [ ] Dossier `addons/core/` → `addons/core/`
+- [ ] Fichier `core_addon_manager.py` → `core_addon_manager.py`
+- [ ] Classe `CoreAddonManager` → `CoreAddonManager`
+- [ ] Import dans `wex.py` : `from ...addons.default.core_addon_manager import CoreAddonManager`
 
 **Noms de fonctions** — `default__*__*` → `core__*__*` dans tous les fichiers de commandes :
 - [ ] `default__autocomplete__suggest` → `core__autocomplete__suggest`
@@ -80,7 +80,7 @@ Le concept : rectifier des fichiers selon un état attendu.
 - [ ] `default__webhook__*` → `core__webhook__*` (6 commandes)
 
 **Références string** — partout où `"default"` désigne l'addon (docs, YMLs, code) :
-- [ ] `default::` → `core::` dans tous les `.md`, `.yml`, `.py`
+- [ ] `core::` → `core::` dans tous les `.md`, `.yml`, `.py`
 - [ ] Vérifier les appels par string comme dans `app_should_run_step_guard.py`
 
 ---

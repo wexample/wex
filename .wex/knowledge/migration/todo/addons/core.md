@@ -6,7 +6,7 @@
 
 ## Already covered
 
-- [x] `version/increment` — `default::version/increment` in wex-core
+- [x] `version/increment` — `core::version/increment` in wex-core
 - [x] `logo/show` — display wex logo
 - [x] `check/hi` — health check (wex hi)
 - [x] `command/create` — generate new command scaffold
