@@ -107,12 +107,24 @@ Le concept : rectifier des fichiers selon un état attendu.
 
 ---
 
-## Phase 6 — Réflexion sur le découpage de l'addon `app`
+## Phase 6 — Découpage de l'addon `app` en sous-addons
 
-L'addon `app` concentre ~55 commandes sur des domaines distincts (lifecycle, infra, packages, migrations, tests…).
-À évaluer avant d'implémenter — ne découper que si le couplage est faible.
+**Décision :** le découpage est techniquement faisable et architecturalement sain.
+Le couplage est élevé (toutes les commandes utilisent `app_workdir`) mais ce n'est pas un obstacle — le mécanisme middleware gère ça proprement.
 
-- [ ] Évaluer l'extraction d'un addon `pkg` : `package/*` + `suite/*` + `dependency/*` + `library/*`
-- [ ] Évaluer l'extraction d'un addon `infra` : `container/*` + `image/*` + `runtime/*` + `performance/*`
+**Les 4 ingrédients pour créer un sous-addon :**
+1. `pip dependency` sur `wexample-wex-addon-app`
+2. `XxxAddonManager(AppAddonManager)` — héritage pour avoir `create_app_workdir()` et les resolvers
+3. `from_kernel()` avec `type(addon) is cls` — déjà corrigé dans `AppAddonManager`
+4. `@middleware(middleware=AppMiddleware)` sur chaque commande qui a besoin de `app_workdir` — explicite, comme dans `app`
+
+**POC validé :** `wexample-wex-addon-package` créé avec `PackageAddonManager(AppAddonManager)`,
+commande `package::info/show` reçoit `app_workdir` injecté correctement. ✓
+
+**Bonus :** `python_install_dependency_in_venv` forcé en `--no-cache-dir` quand `editable=True`
+pour éviter que pip utilise une wheel cachée périmée lors des installs locaux.
+
+**À implémenter :**
+- [ ] Migrer `package/*` + `suite/*` + `dependency/*` + `library/*` dans `wexample-wex-addon-package`
+- [ ] Évaluer un addon `infra` : `container/*` + `image/*` + `runtime/*` + `performance/*`
 - [ ] Garder `app` pour le pur lifecycle : `start`, `stop`, `restart`, `init`, `go`, `setup`, `perms`, `publish`
-- [ ] Ne pas découper si les commandes partagent fortement le contexte app (services, config, env)
