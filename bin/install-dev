@@ -1,16 +1,20 @@
 #!/usr/bin/env bash
 
-# Find the current file directory, supporting symlinks
+# Alias for: wex app::setup/install --env local
+# Use this when wex itself is broken and cannot be invoked directly.
+
 WEX_DIR_CLI="$(realpath "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")/"
 WEX_DIR_ROOT=$(realpath "${WEX_DIR_CLI}../")/
 
-# shellcheck disable=SC1090
-. "${WEX_DIR_ROOT}.wex/.env"
-
-# Use the venv pip explicitly so this works whether or not the venv is activated
 VENV_PIP="${WEX_DIR_ROOT}.venv/bin/pip"
+VENV_PYTHON="${WEX_DIR_ROOT}.venv/bin/python"
 
-# Install every local dev package as editable
-for dir in $(ls -d "${LOCAL_PIP_PACKAGES_PATH}"*/); do
-    "${VENV_PIP}" install -q -e "${dir}"
-done
+if "${VENV_PYTHON}" -c "import wexample_wex_addon_app" 2>/dev/null; then
+    wex app::setup/install --env local
+else
+    # wex itself is broken — emergency editable install of all local packages
+    . "${WEX_DIR_ROOT}.wex/.env"
+    for dir in $(ls -d "${LOCAL_PIP_PACKAGES_PATH}"*/); do
+        "${VENV_PIP}" install --no-cache-dir -q -e "${dir}" --no-deps
+    done
+fi
