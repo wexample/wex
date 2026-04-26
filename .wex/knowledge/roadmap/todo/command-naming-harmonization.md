@@ -55,18 +55,48 @@ Le concept : rectifier des fichiers selon un état attendu.
 
 ---
 
-## Phase 5 — Résoudre doublons et ambiguïtés
+## Phase 5 — Renommer l'addon `default` en `core`
 
-**`info/show` en double** (`app` et `default`) — deux commandes différentes, noms identiques :
-- [ ] `default::info/show` → `default::wex/info` (info sur wex lui-même, pas sur une app)
+`default` est un détail d'implémentation sans sens métier. `core` dit ce que c'est : les commandes fondamentales de wex. Toutes les commandes `default::*` deviennent `core::*`.
+
+**Fichiers et classes à renommer dans `wex-core` :**
+- [ ] Dossier `addons/default/` → `addons/core/`
+- [ ] Fichier `default_addon_manager.py` → `core_addon_manager.py`
+- [ ] Classe `DefaultAddonManager` → `CoreAddonManager`
+- [ ] Import dans `wex.py` : `from ...addons.default.default_addon_manager import DefaultAddonManager`
+
+**Noms de fonctions** — `default__*__*` → `core__*__*` dans tous les fichiers de commandes :
+- [ ] `default__autocomplete__suggest` → `core__autocomplete__suggest`
+- [ ] `default__check__hi` → `core__check__hi`
+- [ ] `default__command__create` → `core__command__create`
+- [ ] `default__env__configure` → `core__env__configure`
+- [ ] `default__health__check` → `core__health__check`
+- [ ] `default__info__show` → `core__info__show`
+- [ ] `default__logo__show` → `core__logo__show`
+- [ ] `default__registry__build` → `core__registry__build`
+- [ ] `default__self__upgrade` → `core__self__upgrade`
+- [ ] `default__version__get` → `core__version__get`
+- [ ] `default__version__increment` → `core__version__increment`
+- [ ] `default__webhook__*` → `core__webhook__*` (6 commandes)
+
+**Références string** — partout où `"default"` désigne l'addon (docs, YMLs, code) :
+- [ ] `default::` → `core::` dans tous les `.md`, `.yml`, `.py`
+- [ ] Vérifier les appels par string comme dans `app_should_run_step_guard.py`
+
+---
+
+## Phase 5.2 — Résoudre doublons et ambiguïtés restants
+
+**`info/show` en double** (`app` et `core`) — deux commandes différentes, noms identiques :
+- [ ] `core::info/show` → `core::info/show` (à préciser : décrit wex lui-même, pas une app — ok tel quel une fois l'addon renommé)
 
 **Vocabulaire `registry` incohérent** — `build` vs `write` pour la même idée :
 - [ ] `app::registry/write` → `app::registry/build`
 
-**`check/hi` dans default** — nom cryptique, symétrie avec `demo::ping/pong` manquée :
-- [ ] `default::check/hi` → `default::ping/pong` (ou `default::wex/ping`)
+**`check/hi` dans core** — nom cryptique :
+- [ ] `core::check/hi` → à clarifier (test de connectivité ? ping ?)
 
-**`helper/start` et `helper/stop`** — "helper" est vague, à clarifier selon ce que ça désigne :
+**`helper/start` et `helper/stop`** — "helper" est vague :
 - [ ] Renommer selon la nature réelle : `proxy/start`, `sidecar/start`, ou `worker/start`
 
 ---
