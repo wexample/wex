@@ -48,7 +48,7 @@ Le concept : rectifier des fichiers selon un état attendu.
 
 - [ ] `app::package/push` → `app::package/push`
   (le commit est implicite dans le push d'un package)
-- [ ] `app::package/publish_bumped` → `app::package/release`
+- [ ] `app::package/release` → `app::package/release`
   (bump + publish = release ; mot plus expressif)
 - [ ] `app::suite/exec_command` → `app::suite/run`
 - [ ] `app::suite/exec_shell` → `app::suite/shell`

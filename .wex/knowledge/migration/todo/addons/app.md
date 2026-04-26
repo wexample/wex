@@ -18,7 +18,7 @@
 - [x] `app::library/sync`
 - [x] `app::package/bump`
 - [x] `app::package/publish`
-- [x] `app::package/publish_bumped`
+- [x] `app::package/release`
 - [x] `app::suite/status`
 - [x] `app::suite/publish`
 - [x] `app::suite/exec_command`
