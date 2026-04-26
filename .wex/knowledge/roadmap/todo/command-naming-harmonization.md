@@ -40,7 +40,7 @@ Le groupe ne doit pas répéter le nom de l'addon.
 `file_state` est trop technique et utilise un underscore au lieu d'un `/`.
 Le concept : rectifier des fichiers selon un état attendu.
 
-- [ ] `app::file_state/rectify` → `app::file/rectify`
+- [x] `app::file-state/rectify` → `app::file/rectify`
 
 ---
 
