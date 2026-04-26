@@ -46,16 +46,12 @@ Le concept : rectifier des fichiers selon un état attendu.
 
 ## Phase 4 — Simplifier les actions verbeuses ou ambiguës
 
-- [ ] `app::package/push` → `app::package/push`
-  (le commit est implicite dans le push d'un package)
-- [ ] `app::package/release` → `app::package/release`
-  (bump + publish = release ; mot plus expressif)
-- [ ] `app::suite/exec_command` → `app::suite/run`
-- [ ] `app::suite/exec_shell` → `app::suite/shell`
-- [ ] `default::configure/env` → `default::env/configure`
-  (inversion : groupe = ressource, action = verbe)
-- [ ] `default::check/health` → `default::health/check`
-  (même raison)
+- [x] `app::package/commit-and-push` → `app::package/push`
+- [x] `app::package/publish-bumped` → `app::package/release`
+- [x] `app::suite/exec-command` → `app::suite/run`
+- [x] `app::suite/exec-shell` → `app::suite/shell`
+- [x] `default::configure/env` → `default::env/configure`
+- [x] `default::check/health` → `default::health/check`
 
 ---
 

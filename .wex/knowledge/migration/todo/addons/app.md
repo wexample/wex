@@ -21,8 +21,8 @@
 - [x] `app::package/release`
 - [x] `app::suite/status`
 - [x] `app::suite/publish`
-- [x] `app::suite/exec_command`
-- [x] `app::suite/exec_shell`
+- [x] `app::suite/run`
+- [x] `app::suite/shell`
 - [x] `app::suite/packages`
 - [x] `app::test/run`
 - [x] `app::version/propagate`
