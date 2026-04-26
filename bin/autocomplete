@@ -26,8 +26,10 @@ autocomplete() {
     local ARGS_CURSOR=0
 
     if [[ "${MATCH}" =~ ^@ ]]; then
-      # service: @service::group/command
-      ARGS_CURSOR=4
+      # service: @service::group/command — don't add space on partials ending with ":"
+      if [[ "${MATCH}" != *":" ]]; then
+        ARGS_CURSOR=4
+      fi
     elif [[ "${MATCH}" =~ ^'~' ]]; then
       # user: ~group/command
       ARGS_CURSOR=1
@@ -51,6 +53,9 @@ autocomplete() {
 
   if [[ "${AUTOCOMPLETE_DEBUG}" = "true" ]]; then
     echo "____________"
+    echo "COMP_WORDS   : ${COMP_WORDS[*]@Q}"
+    echo "COMP_CWORD   : ${COMP_CWORD}"
+    echo "WORDBREAKS   : ${COMP_WORDBREAKS@Q}"
     echo "CURSOR       : ${CURSOR}"
     echo "SEARCH       : ${SEARCH}"
     echo "SUGGESTIONS  : ${SUGGESTIONS[*]}"
