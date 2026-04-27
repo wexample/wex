@@ -96,7 +96,7 @@ if [ "${APP_ENV}" = "local" ]; then
 fi
 
 echo "Building registry..."
-bash "${WEX_DIR_CLI}wex" default::registry/build
+bash "${WEX_DIR_CLI}wex" core::registry/build
 
 # Reload bashrc — only in interactive sessions, not during dpkg postinst
 if [ -z "${DEBIAN_FRONTEND}" ] && [ -f ~/.bashrc ]; then
