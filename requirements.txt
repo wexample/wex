@@ -263,6 +263,7 @@ wexample-wex-addon-app==10.0.0
     #   wexample-wex-addon-dev-javascript
     #   wexample-wex-addon-dev-php
     #   wexample-wex-addon-dev-python
+    #   wexample-wex-addon-package
     #   wexample-wex-addon-services-collab
     #   wexample-wex-addon-services-db
     #   wexample-wex-addon-services-monitoring
@@ -278,6 +279,8 @@ wexample-wex-addon-dev-php==7.0.4
 wexample-wex-addon-dev-python==7.3.0
     # via wex (pyproject.toml)
 wexample-wex-addon-filestate==6.0.24
+    # via wex (pyproject.toml)
+wexample-wex-addon-package==0.0.2
     # via wex (pyproject.toml)
 wexample-wex-addon-services-collab==7.0.7
     # via wex (pyproject.toml)
