@@ -26,5 +26,5 @@
 
 ## v6 target
 
-- Templates -> `wex-core/src/wexample_wex_core/addons/default/commands/command/templates/`
+- Templates -> `wex-core/src/wexample_wex_core/addons/core/commands/command/templates/`
 - Remaining assets -> `wex-core` resources or local `wex-6` resources if reintroduced

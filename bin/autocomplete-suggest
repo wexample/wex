@@ -1,0 +1,122 @@
+#!/usr/bin/env python3
+"""Fast autocomplete suggestions — reads cache only, no kernel init."""
+from __future__ import annotations
+
+import json
+import os
+import sys
+from pathlib import Path
+
+_CACHE = Path(__file__).resolve().parent.parent / "tmp" / "autocomplete.json"
+_SEP = "::"
+_CHAR_USER = "~"
+_CHAR_APP = "."
+
+
+def _parse_args() -> tuple[str, int]:
+    search, cursor = "", 0
+    args = sys.argv[1:]
+    i = 0
+    while i < len(args):
+        if args[i] == "-s" and i + 1 < len(args):
+            search = args[i + 1]
+            i += 2
+        elif args[i] == "-c" and i + 1 < len(args):
+            cursor = int(args[i + 1])
+            i += 2
+        else:
+            i += 1
+    return search, cursor
+
+
+def _scan_commands(base: Path, prefix: str) -> list[str]:
+    if not base.is_dir():
+        return []
+    cmds = []
+    for group in base.iterdir():
+        if not group.is_dir() or group.name.startswith("_"):
+            continue
+        for f in group.iterdir():
+            if f.suffix in (".py", ".yml") and not f.name.startswith("_"):
+                cmds.append(f"{prefix}{group.name}/{f.stem}")
+    return cmds
+
+
+def _scan_user_commands() -> list[str]:
+    return _scan_commands(Path.home() / ".wex" / "commands", _CHAR_USER)
+
+
+def _scan_app_commands() -> list[str]:
+    current = Path(os.getcwd())
+    while True:
+        candidate = current / ".wex" / "commands"
+        if candidate.is_dir():
+            return _scan_commands(candidate, _CHAR_APP)
+        parent = current.parent
+        if parent == current:
+            return []
+        current = parent
+
+
+def suggest(search: str, cursor: int) -> str:
+    if not _CACHE.exists():
+        return ""
+
+    with open(_CACHE) as f:
+        cache = json.load(f)
+
+    commands: list[str] = cache.get("commands", [])
+    aliases: list[str] = cache.get("aliases", [])
+
+    search_split = search.split() if search.strip() else [""]
+    sep_idx = next((i for i, s in enumerate(search_split) if s == _SEP), None)
+
+    if sep_idx is not None:
+        # Cursor is on or after "::" — return post-separator parts for the matched prefix
+        prefix_full = "".join(search_split[:sep_idx]) + _SEP
+        post = search_split[cursor] if cursor < len(search_split) else ""
+        matches = sorted({
+            c[len(prefix_full):]
+            for c in commands
+            if c.startswith(prefix_full) and c[len(prefix_full):].startswith(post)
+        })
+        return " ".join(matches)
+
+    # Before "::" — suggest "prefix::" or full commands/aliases
+    # Reconstruct typed token (handles bash splitting e.g. "@" from service name)
+    typed = "".join(search_split[: cursor + 1])
+
+    results: list[str] = []
+
+    # Extract unique "prefix::" from all cached commands
+    seen: set[str] = set()
+    for cmd in commands:
+        if _SEP in cmd:
+            prefix_with_sep = cmd[: cmd.index(_SEP) + len(_SEP)]
+            if prefix_with_sep not in seen and prefix_with_sep.startswith(typed):
+                seen.add(prefix_with_sep)
+                results.append(prefix_with_sep)
+
+    # Aliases
+    for a in aliases:
+        if a.startswith(typed):
+            results.append(a)
+
+    # User commands (~) — dynamic, filesystem scan
+    if not typed or typed[0] == _CHAR_USER:
+        for cmd in _scan_user_commands():
+            if cmd.startswith(typed):
+                results.append(cmd)
+
+    # App commands (.) — dynamic, filesystem scan
+    if not typed or typed[0] == _CHAR_APP:
+        for cmd in _scan_app_commands():
+            if cmd.startswith(typed):
+                results.append(cmd)
+
+    return " ".join(sorted(set(results)))
+
+
+if __name__ == "__main__":
+    search, cursor = _parse_args()
+    print(suggest(search, cursor))

@@ -97,7 +97,7 @@ Même repo wex, même branche `build`, pipeline simplifié :
 - [x] `bin/install` adapté : venv, symlink, autocomplete, build registry, mode local, compatible dpkg
 - [x] `bin/uninstall` créé
 - [x] `bin/publish` créé : bump version, pip-compile, git commit + push
-- [x] `default::autocomplete/suggest` stub en place
+- [x] `core::autocomplete/suggest` stub en place
 - [x] Templates debian adaptés v6 (`control`, `install`, `rules`, `postinst`, `prerm`, `postrm`)
 - [x] `build.py` : cleanup artefacts dev, détection bin/ auto, fix tarball, retrait -s/-t
 - [x] Branche `build` : `source/` → symlink `../wex`, `templates-v6/` → `templates/`, `source-v6` supprimé

@@ -6,22 +6,61 @@ autocomplete() {
   local CURSOR=$((COMP_CWORD - 1))
 
   local SUGGESTIONS
-  SUGGESTIONS=($(wex default::autocomplete/suggest -s "${SEARCH}" -c "${CURSOR}" 2>/dev/null))
+  SUGGESTIONS=($(${WEX_DIR_ROOT}bin/autocomplete-suggest -s "${SEARCH}" -c "${CURSOR}" 2>/dev/null))
 
   # "::" is a word separator in bash — clear CURRENT to allow suggestions through
   if [ "${CURRENT}" == "::" ]; then
     CURRENT=""
   fi
 
+  # "@" may be treated as a word separator in bash — restore it for service commands
+  if [[ "${SEARCH}" =~ ^@ ]] && [[ "${CURRENT}" != "@" ]] && [[ "${CURSOR}" -eq 1 ]]; then
+    CURRENT="@${CURRENT}"
+  fi
+
   COMPREPLY=($(compgen -W "${SUGGESTIONS[*]}" -- "${CURRENT}"))
 
-  # Add trailing space when there is a single unambiguous match
-  if [[ "${#COMPREPLY[@]}" -eq 1 ]]; then
+  # Add trailing space when there is a single unambiguous complete command
+  if [[ "${COMPREPLY[*]}" != "" ]] && ! [[ "${COMPREPLY[*]}" =~ [[:space:]] ]]; then
     local MATCH="${COMPREPLY[0]}"
-    # Only add space if the match is a complete command (not a partial like "demo::")
-    if [[ "${MATCH}" != *":" ]]; then
-      COMPREPLY[0]="${MATCH} "
+    local ARGS_CURSOR=0
+
+    if [[ "${MATCH}" =~ ^@ ]]; then
+      # service: @service::group/command — don't add space on partials ending with ":"
+      if [[ "${MATCH}" != *":" ]]; then
+        ARGS_CURSOR=4
+      fi
+    elif [[ "${MATCH}" =~ ^'~' ]]; then
+      # user: ~group/command
+      ARGS_CURSOR=1
+    elif [[ " ${COMPREPLY[*]}" = *"::"* ]] || [[ " ${COMPREPLY[*]}" = *"/"* ]]; then
+      # addon: addon::group/command — don't add space on partials ending with ":"
+      if [[ " ${COMPREPLY[*]}" != *":" ]]; then
+        ARGS_CURSOR=3
+      fi
+    else
+      local TRIMMED
+      TRIMMED=$(echo "${COMPREPLY[*]}" | xargs)
+      if [[ "${TRIMMED}" =~ ^[a-z\-]+$ ]]; then
+        ARGS_CURSOR=1
+      fi
     fi
+
+    if [[ "${ARGS_CURSOR}" -gt 0 ]]; then
+      COMPREPLY+=" "
+    fi
+  fi
+
+  if [[ "${AUTOCOMPLETE_DEBUG}" = "true" ]]; then
+    echo "____________"
+    echo "COMP_WORDS   : ${COMP_WORDS[*]@Q}"
+    echo "COMP_CWORD   : ${COMP_CWORD}"
+    echo "WORDBREAKS   : ${COMP_WORDBREAKS@Q}"
+    echo "CURSOR       : ${CURSOR}"
+    echo "SEARCH       : ${SEARCH}"
+    echo "SUGGESTIONS  : ${SUGGESTIONS[*]}"
+    echo "CURRENT      : ${CURRENT}"
+    echo "COMPREPLY    : ${COMPREPLY[*]}"
   fi
 }
 

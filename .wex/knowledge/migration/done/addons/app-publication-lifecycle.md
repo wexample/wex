@@ -85,7 +85,7 @@ def syrtis_mirror_clients():
     # update registry version
 ```
 
-**Principe :** c'est la commande qui se déclare, pas l'orchestrateur qui cherche. Les points d'ancrage sont les commandes réelles du pipeline (`app::app/publish`, `app::package/bump`, `app::file_state/rectify`...). Aucune convention de nommage à respecter.
+**Principe :** c'est la commande qui se déclare, pas l'orchestrateur qui cherche. Les points d'ancrage sont les commandes réelles du pipeline (`app::app/publish`, `app::package/bump`, `app::state/rectify`...). Aucune convention de nommage à respecter.
 
 ---
 
@@ -133,7 +133,7 @@ La logique git est entièrement fournie par `CodeBaseWorkdir` (bump avec branche
 | v5 | v6 |
 |----|----|
 | `version/new` | `bump()` dans `CodeBaseWorkdir` via `app::app/publish` |
-| `version/new_write` | `app::file_state/rectify` |
+| `version/new_write` | `app::state/rectify` |
 | `version/new_commit` | `commit_changes()` + `push_to_deployment_remote()` |
 | orchestration | `app::app/publish` ✓ |
 
@@ -170,7 +170,7 @@ Une fois l'orchestrateur en place, `build.sh` de Syrtis peut se réécrire en co
 
 ### Étape optionnelle — `app::app/publish-suite`
 
-Si plusieurs apps d'un projet doivent publier ensemble (ex: api + manager), étendre `app::suite/publish` ou créer un orchestrateur de niveau projet.
+Si plusieurs apps d'un projet doivent publier ensemble (ex: api + manager), étendre `package::suite/publish` ou créer un orchestrateur de niveau projet.
 
 ---
 

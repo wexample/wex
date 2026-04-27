@@ -12,21 +12,21 @@
 
 ### Workflow packages / suites
 
-- [x] `app::dependencies/check`
-- [x] `app::dependencies/publish`
-- [x] `app::file_state/rectify`
-- [x] `app::libraries/sync`
+- [x] `app::dependency/check`
+- [x] `app::dependency/publish`
+- [x] `app::state/rectify`
+- [x] `app::library/sync`
 - [x] `app::package/bump`
 - [x] `app::package/publish`
-- [x] `app::package/publish_bumped`
+- [x] `app::package/release`
 - [x] `app::suite/status`
-- [x] `app::suite/publish`
-- [x] `app::suite/exec_command`
-- [x] `app::suite/exec_shell`
+- [x] `package::suite/publish`
+- [x] `app::suite/run`
+- [x] `app::suite/shell`
 - [x] `app::suite/packages`
 - [x] `app::test/run`
 - [x] `app::version/propagate`
-- [x] `app::registry/write`
+- [x] `app::registry/build`
 - [x] `app::setup/install`
 - [x] `app::info/show`
 
@@ -41,7 +41,7 @@
 - [x] `app::app/exec`
 - [x] `app::config/get`
 - [x] `app::config/set`
-- [x] `app::config/write`
+- [x] `app::config/build`
 - [x] `app::container/list`
 - [x] `app::db/dump`
 - [x] `app::db/exec`
@@ -53,11 +53,11 @@
 - [x] `app::env/set`
 - [x] `app::helper/start`
 - [x] `app::helper/stop`
-- [x] `app::hosts/update`
+- [x] `app::host/update`
 - [x] `app::logs/follow`
 - [x] `app::service/install`
 - [x] `app::service/used`
-- [x] `app::services/exec`
+- [x] `app::service/exec`
 
 ## Fermé ou absorbé
 
@@ -71,8 +71,8 @@
 ### Publication / versioning app
 
 - [x] `version/new` — absorbé par `app::package/bump` + `app::app/publish`
-- [x] `version/new_commit` — absorbé par `app::package/commit_and_push` + `app::app/publish`
-- [x] `version/new_write` — absorbé par `app::file_state/rectify` + `app::app/publish`
+- [x] `version/new_commit` — absorbé par `app::package/push` + `app::app/publish`
+- [x] `version/new_write` — absorbé par `app::state/rectify` + `app::app/publish`
 - [x] `app::app/publish` — orchestrateur de publication d'application validé en réel
 
 ### À clarifier / faible priorité
@@ -99,7 +99,7 @@
 - `samples/` redevient la source de vérité des fichiers copiés lors de l'installation d'un service.
 - `container/list` existe maintenant en rendu compact orienté app Wex, plus lisible que `docker ps`.
 - En v5, `code/check` et `code/format` étaient des placeholders sans logique addon effective.
-- Ils ne sont donc pas à migrer tels quels en v6 ; le besoin de rectification passe déjà par `app::file_state/rectify`.
+- Ils ne sont donc pas à migrer tels quels en v6 ; le besoin de rectification passe déjà par `app::state/rectify`.
 - La partie webhook est confirmée en v6 avec améliorations (tokens, threading, observabilité) — roadmap dans `webhook.md`.
 - `notification/notify` n'est pas traité comme une dette bloquante : le besoin existe peut-être, mais le bon design sera probablement redéfini plus tard autour des workflows distants / déploiement / automation.
 - Le sujet `version/new*` n'est plus traité comme une migration 1:1 ; il est désormais requalifié en pipeline `app::app/publish`.

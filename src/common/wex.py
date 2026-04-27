@@ -41,8 +41,8 @@ class Wex(Kernel):
             from wexample_wex_addon_dev_python.python_addon_manager import (
                 PythonAddonManager,
             )
-            from wexample_wex_core.addons.default.default_addon_manager import (
-                DefaultAddonManager,
+            from wexample_wex_core.addons.core.core_addon_manager import (
+                CoreAddonManager,
             )
             from wexample_wex_core.addons.demo.demo_addon_manager import DemoAddonManager
             from wexample_wex_core.addons.docker.docker_addon_manager import DockerAddonManager
@@ -62,10 +62,12 @@ class Wex(Kernel):
             from wexample_wex_core.common.kernel import Kernel
             from wexample_wex_addon_filestate.filestate_addon_manager import FilestateAddonManager
             from wexample_wex_addon_app.app_addon_manager import AppAddonManager
+            from wexample_wex_addon_package.package_addon_manager import PackageAddonManager
 
             self.setup(addons=[
                 AppAddonManager,
-                DefaultAddonManager,
+                PackageAddonManager,
+                CoreAddonManager,
                 DemoAddonManager,
                 DockerAddonManager,
                 ServicesDbAddonManager,

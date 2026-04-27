@@ -19,7 +19,7 @@ qui garde la liste de toutes les apps actives, comme le faisait le proxy en v5.
 ## Nettoyage
 
 - [x] Au démarrage de `hosts/update`, purger les entrées dont les containers ne tournent plus
-- [x] Commande `app::hosts/clean` pour forcer ce nettoyage manuellement
+- [x] Commande `app::host/clean` pour forcer ce nettoyage manuellement
 
 ## Migration
 

@@ -32,7 +32,7 @@
 
 ### Config app
 
-- [x] `config/write`
+- [x] `config/build`
 - [x] `config/get`
 - [x] `config/set`
 
@@ -63,7 +63,7 @@
 
 - Le helper proxy est bien créé dans `/var/www/{env}/wex-proxy`
 - Les samples proxy sont bien copiés dans l'app helper
-- `config/write` génère un `docker-compose.runtime.yml` valide pour le helper
+- `config/build` génère un `docker-compose.runtime.yml` valide pour le helper
 - Le container proxy démarre correctement via le flux v6 restauré
 
 ## À surveiller

@@ -13,7 +13,7 @@ scripts:
       fi
       echo "Publishing source suite at ${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}..."
       cd "${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}"
-      .wex/bin/app-manager app::suite/publish --yes
+      .wex/bin/app-manager package::suite/publish --yes
   - name: Sync library versions into wex requirements
     runner: bash
     script: |
@@ -21,4 +21,4 @@ scripts:
         exit 0
       fi
       echo "Syncing library versions..."
-      wex app::libraries/sync
+      wex app::library/sync
