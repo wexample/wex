@@ -170,7 +170,7 @@ Une fois l'orchestrateur en place, `build.sh` de Syrtis peut se réécrire en co
 
 ### Étape optionnelle — `app::app/publish-suite`
 
-Si plusieurs apps d'un projet doivent publier ensemble (ex: api + manager), étendre `app::suite/publish` ou créer un orchestrateur de niveau projet.
+Si plusieurs apps d'un projet doivent publier ensemble (ex: api + manager), étendre `package::suite/publish` ou créer un orchestrateur de niveau projet.
 
 ---
 

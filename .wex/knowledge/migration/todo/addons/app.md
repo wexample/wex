@@ -20,7 +20,7 @@
 - [x] `app::package/publish`
 - [x] `app::package/release`
 - [x] `app::suite/status`
-- [x] `app::suite/publish`
+- [x] `package::suite/publish`
 - [x] `app::suite/run`
 - [x] `app::suite/shell`
 - [x] `app::suite/packages`
