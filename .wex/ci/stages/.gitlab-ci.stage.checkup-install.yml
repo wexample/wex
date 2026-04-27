@@ -1,0 +1,33 @@
+.checkup-install:
+  only:
+    - master
+  script:
+    # Stops script on failure
+    - set -e
+    - apt update
+    - apt install gnupg2 wget -y
+    - wget -O - https://apt.wexample.com/gpg | apt-key add -
+    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
+    - apt update
+    - apt install wex -y
+    - wex hi
+    # Compare versions
+    - BUILD_VERSION=$(cat version.txt) && echo "Deployed version should be ${BUILD_VERSION}"
+    - CURRENT_VERSION=$(wex version) && echo "Image version is ${CURRENT_VERSION}"
+    - test "$(cat version.txt)" = "$(wex version)" || exit 1
+    # Uninstall
+    - apt remove wex -y
+  needs:
+    - deploy:apt:publish
+
+# Try to install using the new debian apt repository.
+checkup-install:debian:
+  extends: .checkup-install
+  stage: checkup_install
+  image: gitlab-docker.wexample.com/wexample-public/docker/debian
+
+# Try to install using the new debian apt repository.
+checkup-install:ubuntu:22:
+  extends: .checkup-install
+  stage: checkup_install
+  image: ubuntu:22.04
