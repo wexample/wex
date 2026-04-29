@@ -3,7 +3,7 @@
 Expose des commandes wex via HTTP pour les déclencher depuis un CI/CD, un serveur distant,
 ou tout outil capable de faire une requête GET.
 
-**URL type :** `http://host:6543/webhook/{type}/{command/path}?_token=<token>&arg=val`
+**URL type :** `http://host:7654/webhook/{type}/{command/path}?_token=<token>&arg=val`
 
 ---
 
@@ -28,49 +28,49 @@ wex core::webhook/listen --asynchronous --force
 wex core::webhook/status
 
 # Ou directement via HTTP (pas d'auth sur /health)
-curl http://localhost:6543/health
+curl http://localhost:7654/health
 # → {"status": "ok", "uptime_seconds": 42}
 ```
 
-### 3. Obtenir le token d'une commande
+### 3. Créer un token pour une commande app
+
+Les tokens sont stockés **dans l'app**, pas de façon centrale.
+Il faut créer le fichier manuellement avec sudo :
 
 ```bash
-wex core::webhook/token-show --command-name "app::info/show"
-# → affiche le token, le génère s'il n'existe pas encore
+sudo mkdir -p /var/www/{env}/{app}/.wex/local
+python3 -c "import secrets; print(secrets.token_hex(32))"
+# → copier le token généré
+
+# Écrire le fichier (clé = commande locale sous forme point)
+echo "'.release/deploy': '<token>'" | sudo tee /var/www/{env}/{app}/.wex/local/webhook_tokens.yml
 ```
 
 ### 4. Appeler le webhook
 
 ```bash
 # Token en query param
-curl "http://localhost:6543/webhook/addon/app/info/show?_token=<token>"
+curl "http://localhost:7654/webhook/app/prod/myapp/release/deploy?_token=<token>"
 
 # Token en header
 curl -H "Authorization: Bearer <token>" \
-     "http://localhost:6543/webhook/addon/app/info/show"
+     "http://localhost:7654/webhook/app/prod/myapp/release/deploy"
 
 # Avec des arguments
-curl "http://localhost:6543/webhook/addon/app/info/show?_token=<token>&env=prod"
+curl "http://localhost:7654/webhook/app/prod/myapp/release/deploy?_token=<token>&env=prod"
 ```
 
 ### 5. Consulter les logs
 
 ```bash
-# Dernières requêtes (20 par défaut)
+# Dernières requêtes
 wex core::webhook/status
 
 # Log brut (JSON, une ligne par requête)
 tail -f {workdir}/logs/webhook.log
 ```
 
-### 6. Renouveler un token
-
-```bash
-wex core::webhook/token-rotate --command-name "app::info/show"
-# → affiche le nouveau token — l'ancien est immédiatement invalide
-```
-
-### 7. Arrêter le daemon
+### 6. Arrêter le daemon
 
 ```bash
 wex core::webhook/stop
@@ -89,21 +89,28 @@ wex core::webhook/stop
 
 | URL | Commande exécutée |
 |-----|-------------------|
-| `/webhook/addon/app/info/show` | `app::info/show` |
-| `/webhook/app/remote/push_receive` | `.remote/push_receive` |
-| `/webhook/service/nginx/status` | `@nginx::status` |
+| `/webhook/app/prod/myapp/release/deploy` | `.release/deploy` dans `/var/www/prod/myapp` |
+| `/webhook/app/prod/myapp/apt/publish` | `.apt/publish` dans `/var/www/prod/myapp` |
 
-Le type `addon` est le plus courant (commandes globales wex).
-Le type `app` est pour les dot-commands contextuelles.
+Seul le type `app` est supporté actuellement. Les types `addon` et `service` sont prévus.
 
 ### Sécurité
 
-Chaque commande a un token indépendant stocké dans `{workdir}/webhook_tokens.yml`.
+Chaque app gère ses propres tokens dans `{app_path}/.wex/local/webhook_tokens.yml`.
 
 - Transmis via `Authorization: Bearer <token>` ou `?_token=<token>`
 - Comparaison en temps constant (`hmac.compare_digest`)
 - Absent ou invalide → 401, loggué avec IP + path
 - `/health` est exempt d'authentification
+
+### Token — format du fichier
+
+```yaml
+'.release/deploy': 'abc123...'
+'.apt/publish': 'def456...'
+```
+
+La clé est la commande locale (préfixe `.`), la valeur est un hex 32 bytes (`secrets.token_hex(32)`).
 
 ### Logs
 
@@ -122,6 +129,17 @@ Rotation : 5 fichiers × 1 Mo max.
 
 ## Marquer une commande comme accessible
 
+```yaml
+# .wex/commands/release/deploy.yml
+decorators:
+- name: webhook
+- name: sudo
+scripts:
+  ...
+```
+
+En Python :
+
 ```python
 from wexample_wex_core.decorator.webhook import webhook
 
@@ -132,7 +150,6 @@ def my__group__command(context: ExecutionContext) -> None:
 ```
 
 Le décorateur `@webhook()` pose `webhook = True` sur le `CommandMethodWrapper`.
-Le token doit ensuite être explicitement généré via `webhook/token-show`.
 
 ---
 
@@ -144,5 +161,3 @@ Le token doit ensuite être explicitement généré via `webhook/token-show`.
 | `core::webhook/stop` | Arrêter le daemon |
 | `core::webhook/status` | État + dernières lignes de log |
 | `core::webhook/exec` | Dispatcher interne (appelé par le daemon) |
-| `core::webhook/token-show` | Afficher / générer le token d'une commande |
-| `core::webhook/token-rotate` | Régénérer le token d'une commande |

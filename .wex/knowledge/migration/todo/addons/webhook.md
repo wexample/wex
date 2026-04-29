@@ -15,9 +15,18 @@
 
 | URL | Type | Commande exécutée |
 |-----|------|-------------------|
-| `/webhook/addon/app/info/show` | addon | `app::info/show` |
-| `/webhook/app/remote/push_receive` | app | `.remote/push_receive` |
-| `/webhook/service/nginx/status` | service | `@nginx::status` |
+| `/webhook/app/prod/myapp/release/deploy` | app | `.release/deploy` |
+| `/webhook/addon/app/info/show` | addon | `app::info/show` (non implémenté) |
+| `/webhook/service/nginx/status` | service | `@nginx::status` (non implémenté) |
+
+### Tokens
+
+Un token par app, stocké dans `{app_path}/.wex/local/webhook_tokens.yml`.
+Pas de registre central — chaque app gère ses propres tokens.
+Création manuelle avec `sudo` (voir readme).
+
+Les commandes `token-show` et `token-rotate` ont été supprimées : elles écrivaient dans
+le workdir wex (`/usr/lib/wex/.wex/local/`) que le daemon ne lit pas.
 
 ### Logs
 
@@ -26,7 +35,7 @@ Affiché directement par `webhook/status`.
 
 ---
 
-## ✅ Phases 1 et 2 — Terminées
+## ✅ Phases 1, 2 et 3 — Terminées
 
 **Phase 1 — Infrastructure**
 - `webhook/const.py`, `webhook/routing.py`, `webhook/handler.py` (`ThreadingHTTPServer`)
@@ -34,24 +43,13 @@ Affiché directement par `webhook/status`.
 - Endpoint `/health` sans auth → `{"status":"ok","uptime_seconds":...}`
 
 **Phase 2 — Sécurité**
-- `webhook/token_store.py` — stockage YAML (`webhook_tokens.yml` dans workdir)
-- `decorator/webhook.py` — `@webhook()` / `webhook: bool` sur `CommandMethodWrapper`
-- Commandes : `token_show`, `token_rotate`
 - Handler : `Authorization: Bearer` ou `?_token`, `hmac.compare_digest`, 401 + log des échecs
+- `decorator/webhook.py` — `@webhook()` / `webhook: bool` sur `CommandMethodWrapper`
+- Tokens stockés par app dans `{app_path}/.wex/local/webhook_tokens.yml`
 
----
-
-## Phase 3 — Mise en production (priorité immédiate)
-
-Objectif : wex-apt-repo répond à un webhook depuis l'extérieur, en wex 6.
-
-- [ ] **Déployer wex 6** sur le serveur (package apt)
-- [ ] **Stopper le daemon wex 5** (sans doute périmé)
-- [ ] **Installer wex 6** à la place de wex 5 — les apps wex 5 continuent de tourner
-- [ ] **Démarrer le daemon wex 6** (`wex core::webhook/listen --asynchronous`)
-- [ ] **Push wex-apt-repo en wex 6** — migration appliquée, commandes converties
-- [ ] **Trigger le webhook depuis l'extérieur** — vérifier token, log, réponse
-- [ ] **Boucler le CI/CD** — wex 6 se publie lui-même via webhook (wex-apt-repo déclenché depuis GitLab/GitHub)
+**Phase 3 — Production**
+- wex 6 déployé sur wexample.com (port 7654)
+- wex-apt-repo et tiunine opérationnels avec webhook
 
 ---
 
@@ -67,10 +65,15 @@ Objectif : wex-apt-repo répond à un webhook depuis l'extérieur, en wex 6.
 
 ---
 
-## Phase 5 — Dot-commands (`.group/command` via webhook)
+## Phase 5 — Addon et service types
 
-> Nécessite de valider `AppCommandResolver` en contexte daemon.
+- [ ] Implémenter `_validate_token` pour `addon` et `service` (actuellement `return False`)
+- [ ] Décider du stockage : workdir wex central ou par addon ?
 
-- [ ] Vérifier résolution contextuelle de `.group/command` depuis le workdir daemon
-- [ ] Passer le `app_path` comme argument si nécessaire
-- [ ] Tests de résolution app-level depuis un daemon hors workdir
+---
+
+## Phase 6 — Commande de gestion des tokens (wex-addon-app)
+
+- [ ] Créer `app::webhook/token-show --command-name ".release/deploy"` dans wex-addon-app
+  - Détecte l'app workdir courant, écrit dans `{app_path}/.wex/local/webhook_tokens.yml`
+  - Pas de dépendance inversée core→app
