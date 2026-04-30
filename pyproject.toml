@@ -4,7 +4,7 @@ build-backend = "pdm.backend"
 
 [project]
 name = "wex"
-version = "6.0.57"
+version = "6.0.58"
 description = "A friendly CLI"
 authors = [
     { name = "weeger", email = "contact@wexample.com" },
@@ -21,9 +21,9 @@ dependencies = [
     "wexample-wex-addon-filestate>=6.0.26",
     "wexample-wex-addon-package>=0.1.1",
     "wexample-wex-addon-services-collab>=7.0.9",
-    "wexample-wex-addon-services-db>=7.2.0",
+    "wexample-wex-addon-services-db>=7.3.0",
     "wexample-wex-addon-services-monitoring>=7.1.0",
-    "wexample-wex-addon-services-platform>=7.5.0",
+    "wexample-wex-addon-services-platform>=7.6.0",
     "wexample-wex-core>=17.0.0",
 ]
 
