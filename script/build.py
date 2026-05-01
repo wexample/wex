@@ -87,9 +87,7 @@ class BuildManager:
         self.delete_dir(self.path['build_source'] + '.git')
         self.delete_file_recursive('.gitignore', self.path['build_source'])
         # Remove dev-only artifacts that should not land in the package
-        # .wex contains absolute symlinks (e.g. .wex/bin/app-manager) that dpkg-source
-        # cannot represent in quilt format → "unrepresentable changes to source"
-        for dev_artifact in ['.venv', '.mypy_cache', '.pytest_cache', 'tests', '.wex']:
+        for dev_artifact in ['.venv', '.mypy_cache', '.pytest_cache', 'tests']:
             self.delete_dir(self.path['build_source'] + dev_artifact)
         for dev_file in ['pytest.ini', '.iml']:
             self.delete_file_recursive(dev_file, self.path['build_source'])
