@@ -68,13 +68,13 @@ handler.type_resolvers["app"] = AppWebhookTypeResolver(apps_base_path)
 
 Commandes depuis le workdir d'une app (contexte `.`), déléguant au resolver :
 
-- [ ] `app::webhook/status` — statut daemon (pid/port/uptime) + liste des commandes
-  `@webhook()` de l'app + état des tokens (présent/absent, jamais la valeur)
-- [ ] `app::webhook/token/generate --command ".release/deploy"` — génère et écrit dans
-  `{app_path}/.wex/local/webhook_tokens.yml`, affiche le token une seule fois
-- [ ] `app::webhook/token/show --command ".release/deploy"` — affiche token existant
-- [ ] `app::webhook/token/list` — liste toutes les commandes avec token enregistré
-- [ ] `app::webhook/token/revoke --command ".release/deploy"` — supprime l'entrée
+- [x] `app::webhook/status` — statut daemon + liste commandes `@webhook()` + état tokens
+- [x] `app::webhook/token-generate [--command | --all] [--force]`
+- [x] `app::webhook/token-show --command`
+- [x] `app::webhook/token-list`
+- [x] `app::webhook/token-revoke [--command | --all]`
+- [x] Section "Webhooks" dans `app::info/show`
+- [x] `webhook: bool` ajouté à `RegistryCommandData` (Python + YAML)
 
 ---
 
