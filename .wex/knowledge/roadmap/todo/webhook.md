@@ -92,10 +92,9 @@ Commandes depuis le workdir d'une app (contexte `.`), déléguant au resolver :
 
 ## Phase 7 — Robustesse et observabilité
 
-- [ ] Timeout par worker configurable (`--worker-timeout`, défaut 30s)
-- [ ] Signal handling propre : `SIGTERM` → `server.shutdown()` gracieux
-- [ ] Option `--log-level` (debug/info/warning)
-- [ ] Endpoint `/metrics` Prometheus : `webhook_requests_total`, `webhook_request_duration_seconds`
+- [x] Timeout par worker configurable (`--worker-timeout`, défaut 300s, 0 = infini) → HTTP 504 si dépassé
+- [x] Signal handling propre : `SIGTERM` → `server.shutdown()` gracieux
+- [x] Endpoint `/metrics` Prometheus : `webhook_requests_total`, `webhook_request_duration_seconds`
 
 ## Pase 8 - Test
 
