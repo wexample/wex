@@ -35,7 +35,8 @@ curl http://localhost:7654/health
 ### 3. Créer un token pour une commande app
 
 Les tokens sont stockés **dans l'app**, pas de façon centrale.
-Il faut créer le fichier manuellement avec sudo :
+La commande `app::webhook/token-show` est prévue (roadmap phase 6) mais pas encore implémentée.
+En attendant, créer le fichier manuellement avec sudo :
 
 ```bash
 sudo mkdir -p /var/www/{env}/{app}/.wex/local

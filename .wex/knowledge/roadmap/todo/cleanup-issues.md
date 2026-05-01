@@ -33,7 +33,7 @@ curl -s -X PUT --header "PRIVATE-TOKEN: $GITLAB_API_TOKEN" \
 
 ## Issues (ordre chronologique)
 
-- [ ] #1 — Wexd (2023-05-11)
+- [x] #1 — Wexd (2023-05-11)
 - [ ] #2 — Wexd logs (2023-05-12)
 - [ ] #6 — Wexd limiter le nombre d'arguments (2023-05-27)
 - [ ] #7 — Webhook python (2023-06-05)
