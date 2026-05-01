@@ -21,31 +21,3 @@ class WexWorkdir(
 
         return super(ManagedWorkdir, self).apply(**kwargs)
 
-    def publish(self, force: bool = False) -> None:
-        import os
-
-        from wexample_wex_addon_app.commands.library.sync import app__library__sync
-        from wexample_wex_addon_app.commands.state.rectify import app__state__rectify
-        from wexample_wex_addon_package.commands.suite.publish import (
-            package__suite__publish,
-        )
-
-        library_path = os.environ.get("PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH")
-
-        if library_path:
-            self.manager_run_command_from_path(
-                command=package__suite__publish,
-                path=library_path,
-                arguments=["--yes"],
-            )
-            self.manager_run_command(command=app__library__sync)
-
-        bumped = self.bump(interactive=False, force=force)
-        if not bumped:
-            return
-
-        self.manager_run_command(command=app__state__rectify, arguments=["--loop", "--yes"])
-        self.commit_changes()
-        self.push_to_deployment_remote()
-
-        super().publish(force=force)
