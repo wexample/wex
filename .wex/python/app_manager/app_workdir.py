@@ -9,6 +9,16 @@ if TYPE_CHECKING:
 
 
 class AppWorkdir(PythonWorkdir):
+    """
+    App-level workdir for the wex project, loaded by the app-manager subprocess.
+
+    IMPORTANT: this is the class that addon commands receive as `app_workdir`
+    when run from the wex project directory (via AppMiddleware). It is NOT
+    the same as WexWorkdir (src/workdir/wex_workdir.py), which is the kernel-level
+    workdir and is never seen by addon commands.
+
+    All project-specific overrides (publish, bump, etc.) belong here.
+    """
     def prepare_value(self, raw_value: DictConfig | None = None) -> DictConfig:
         raw_value = super().prepare_value(raw_value=raw_value)
 

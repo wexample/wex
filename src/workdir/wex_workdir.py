@@ -11,7 +11,15 @@ class WexWorkdir(
     KernelWorkdir
 ):
     """
-    The main wex core kernel is also an app kernel (with .wex config, etc.)
+    Kernel-level workdir for the wex process itself.
+
+    IMPORTANT: this class is NOT what addon commands receive as `app_workdir`.
+    When running `wex <command>` from the wex project directory, the `app_workdir`
+    resolved by the AppMiddleware is the AppWorkdir defined in:
+        .wex/python/app_manager/app_workdir.py
+
+    WexWorkdir is only instantiated as the kernel's own workdir (KernelWorkdir).
+    Project-specific overrides (publish, bump, etc.) must go in AppWorkdir, not here.
     """
 
     def apply(self, **kwargs):
