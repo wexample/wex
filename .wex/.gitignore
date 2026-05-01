@@ -1,7 +1,4 @@
 
-.env
-tmp/
-local/
 /.env
 /tmp/
 /local/
