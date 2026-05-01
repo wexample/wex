@@ -80,9 +80,13 @@ Commandes depuis le workdir d'une app (contexte `.`), déléguant au resolver :
 
 ## Phase 6 — Addon et service types
 
-- [ ] Implémenter `AddonWebhookTypeResolver` (token dans workdir wex global)
-- [ ] Implémenter `ServiceWebhookTypeResolver`
-- [ ] Enregistrer les resolvers au démarrage du daemon
+- [x] Implémenter `AddonWebhookTypeResolver` (token dans workdir wex global)
+- [x] Implémenter `ServiceWebhookTypeResolver`
+- [x] Enregistrer les resolvers au démarrage du daemon
+- [x] `core::webhook/token-generate --type addon|service [--command | --all] [--force]`
+- [x] `core::webhook/token-show --type addon|service --command`
+- [x] `core::webhook/token-list --type addon|service`
+- [x] `core::webhook/token-revoke --type addon|service [--command | --all]`
 
 ---
 
