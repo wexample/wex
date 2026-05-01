@@ -26,11 +26,11 @@ Trois couches de variables d'environnement coexistent dans wex :
 Permet de lire/écrire des vars individuelles dans `.wex/.env` sans passer par un éditeur.
 
 **Attention :** `app::env/set` existe déjà et prend un seul argument `{environment}` (= APP_ENV).
-Les nouvelles commandes vont dans un sous-groupe `var/` pour éviter la collision.
+Les nouvelles commandes utilisent un nom composé pour éviter la collision.
 
-- `app::env/var/list` — affiche le contenu de `.wex/.env` (clé → valeur, une par ligne)
-- `app::env/var/set KEY VALUE` — écrit ou écrase une var dans `.wex/.env`
-- `app::env/var/get KEY` — lit une var (utile en scripting)
+- `app::env/var-list` — affiche le contenu de `.wex/.env` (clé → valeur, une par ligne)
+- `app::env/var-set KEY VALUE` — écrit ou écrase une var dans `.wex/.env`
+- `app::env/var-get KEY` — lit une var (utile en scripting)
 
 Ces trois commandes passent par `app_workdir.get_env_parameters()` / `set_env_parameters()`, jamais par `os.environ` direct.
 
