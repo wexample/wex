@@ -41,9 +41,9 @@ Le handler HTTP expose un registre de type-resolvers :
 
 ```python
 class WebhookTypeResolver(Protocol):
-    def resolve_cwd(self, command_path: str) -> str | None: ...
-    def resolve_token(self, command_path: str, command_str: str) -> str | None: ...
-    def build_command(self, command_path: str) -> str | None: ...
+  def resolve_cwd(self, command_path: str) -> str | None: ...
+  def resolve_token(self, command_path: str, command_str: str) -> str | None: ...
+  def build_command(self, command_path: str) -> str | None: ...
 
 # Dans handler.py (core)
 type_resolvers: dict[str, WebhookTypeResolver] = {}
@@ -54,14 +54,13 @@ handler.type_resolvers["app"] = AppWebhookTypeResolver(apps_base_path)
 
 ### Tâches
 
-- [ ] Définir `WebhookTypeResolver` (Protocol) dans `webhook/resolver.py` (core)
-- [ ] Vider `handler.py` de toute logique app : `_validate_token`, `_read_app_token`,
-  `_resolve_cwd` deviennent des délégations au resolver enregistré
-- [ ] Sortir `WEBHOOK_APPS_BASE_PATH` et `routing_parse_app_url` de core vers wex-addon-app
-- [ ] Créer `AppWebhookTypeResolver` dans wex-addon-app
-- [ ] `listen.py` (core) : ne plus injecter `apps_base_path` — le resolver addon-app s'en charge
-- [ ] `exec.py` (core) : supprimer la branche `if command_type == "app"`, déléguer au resolver
-- [ ] `listen` dans wex-addon-app : override ou hook pour enregistrer `AppWebhookTypeResolver`
+- [x] Définir `WebhookTypeResolver` (Protocol) dans `webhook/resolver.py` (core)
+- [x] Vider `handler.py` de toute logique app : délégation complète au resolver
+- [x] Sortir `WEBHOOK_APPS_BASE_PATH` et `routing_parse_app_url` de core vers wex-addon-app
+- [x] Créer `AppWebhookTypeResolver` dans wex-addon-app
+- [x] `listen.py` (core) : charge les resolvers via `_load_type_resolvers()` (import gracieux)
+- [x] `exec.py` (core) : reçoit `--command-str` résolu par le handler, plus de logique app
+- [x] `listen` dans wex-addon-app : `AppWebhookTypeResolver` injecté automatiquement au démarrage
 
 ---
 
@@ -93,3 +92,10 @@ Commandes depuis le workdir d'une app (contexte `.`), déléguant au resolver :
 - [ ] Signal handling propre : `SIGTERM` → `server.shutdown()` gracieux
 - [ ] Option `--log-level` (debug/info/warning)
 - [ ] Endpoint `/metrics` Prometheus : `webhook_requests_total`, `webhook_request_duration_seconds`
+
+## Pase 8 - Test
+
+- [ ] Marche actuellement : url http://151.80.23.108:7654/webhook/app/prod/wex-apt-repo/apt/publish?_token=Hi2gft8Fo1q4ie5-ZjNtOerjGg3CPvbgbse98sE2AtY&project=155&version=6.0.63&_async=0
+- [ ] Déploiement en prod (nouvelle version wex faite par weeger)
+- [ ] Retest du curl
+
