@@ -1,5 +1,0 @@
-services:
-    gitlab:
-        environment:
-          - VIRTUAL_PORT=443
-          - VIRTUAL_PROTO=https
