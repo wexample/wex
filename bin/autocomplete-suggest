@@ -38,7 +38,7 @@ def _scan_commands(base: Path, prefix: str) -> list[str]:
             continue
         for f in group.iterdir():
             if f.suffix in (".py", ".yml") and not f.name.startswith("_"):
-                cmds.append(f"{prefix}{group.name}/{f.stem}")
+                cmds.append(f"{prefix}{group.name.replace('_', '-')}/{f.stem.replace('_', '-')}")
     return cmds
 
 
