@@ -1,79 +1,87 @@
 #!/usr/bin/env python3
 """Fast autocomplete for addon commands — reads autocomplete.json cache, no kernel."""
-import argparse
 import json
+import sys
 from pathlib import Path
 
+_CACHE = Path(__file__).resolve().parent.parent / "tmp" / "autocomplete.json"
+_SEP = "::"
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-s", "--search", default="")
-    parser.add_argument("-c", "--cursor", type=int, default=0)
-    args = parser.parse_args()
 
-    search_split = args.search.split(" ") if args.search.strip() else [""]
-    cursor = args.cursor
-    first = search_split[0] if search_split else ""
-    second = search_split[1] if len(search_split) > 1 else ""
-    third = search_split[2] if len(search_split) > 2 else ""
+def _parse_args() -> tuple[str, int]:
+    search, cursor = "", 0
+    args = sys.argv[1:]
+    i = 0
+    while i < len(args):
+        if args[i] == "-s" and i + 1 < len(args):
+            search = args[i + 1]
+            i += 2
+        elif args[i] == "-c" and i + 1 < len(args):
+            cursor = int(args[i + 1])
+            i += 2
+        else:
+            i += 1
+    return search, cursor
 
-    # Only handle addon commands (start with a-z)
-    if not first or not first[0].islower():
-        return
 
-    cache_path = Path(__file__).resolve().parent.parent / "tmp" / "autocomplete.json"
-    if not cache_path.exists():
-        return
+def suggest(search: str, cursor: int) -> str:
+    if not _CACHE.exists():
+        return ""
 
-    cache = json.loads(cache_path.read_text())
+    cache = json.loads(_CACHE.read_text())
     all_cmds = cache.get("commands", [])
     all_aliases = cache.get("aliases", [])
 
-    # Addon commands: contain "::" and don't start with @ or ~
-    addon_cmds = [c for c in all_cmds if "::" in c and c[0] not in ("@", "~")]
+    # Addon commands: contain "::" and start with a-z
+    addon_cmds = [c for c in all_cmds if _SEP in c and c[0].islower()]
 
-    SEPARATOR = "::"
-    suggestions = []
+    search_split = search.split() if search.strip() else [""]
+    first = search_split[0] if search_split else ""
 
-    if cursor == 0:
-        addon_names = sorted({c.split("::")[0] for c in addon_cmds})
-        suggestions = [a for a in addon_names if a.startswith(first)]
-        # Aliases (short forms without :: prefix)
-        for alias in all_aliases:
-            if (
-                alias.startswith(first)
-                and "::" not in alias
-                and (not alias or alias[0] not in ("@", "~", "."))
-            ):
-                suggestions.append(alias)
-        # Unqualified commands: group/name without addon:: prefix
-        if "/" in first and "::" not in first:
-            unqualified = sorted(
-                {c.split("::")[1] for c in addon_cmds if c.split("::")[1].startswith(first)}
-            )
-            suggestions.extend(unqualified)
+    # Only handle addon commands (start with a-z)
+    if not first or not first[0].islower():
+        return ""
 
-    elif cursor == 1:
-        if second == SEPARATOR:
-            groups = sorted(
-                {c.split("::")[1].split("/")[0] for c in addon_cmds if c.split("::")[0] == first}
-            )
-            suggestions = [f"{g}/" for g in groups]
-        elif second == ":":
-            suggestions = [SEPARATOR]
+    sep_idx = next((i for i, s in enumerate(search_split) if s == _SEP), None)
 
-    elif cursor == 2:
-        suggestions = sorted(
-            [
-                c.split("::")[1]
-                for c in addon_cmds
-                if c.split("::")[0] == first and c.split("::")[1].startswith(third)
-            ]
-        )
+    if sep_idx is not None:
+        # After "::" — suggest group/command for the matched addon prefix
+        addon_prefix = "".join(search_split[:sep_idx]) + _SEP
+        post = search_split[cursor] if cursor < len(search_split) else ""
+        matches = sorted({
+            c[len(addon_prefix):]
+            for c in addon_cmds
+            if c.startswith(addon_prefix) and c[len(addon_prefix):].startswith(post)
+        })
+        return " ".join(matches)
 
-    if suggestions:
-        print(" ".join(suggestions))
+    # Before "::" — suggest addon names or unqualified group/command
+    typed = "".join(search_split[: cursor + 1])
+    results: list[str] = []
+
+    # Addon names (without "::" appended — user chooses :: or / next)
+    seen: set[str] = set()
+    for cmd in addon_cmds:
+        addon_name = cmd[: cmd.index(_SEP)]
+        if addon_name not in seen and addon_name.startswith(typed):
+            seen.add(addon_name)
+            results.append(addon_name)
+
+    # Aliases (short forms without :: prefix, starting with a-z)
+    for alias in all_aliases:
+        if alias.startswith(typed) and _SEP not in alias and alias[0:1].islower():
+            results.append(alias)
+
+    # Unqualified commands: group/name without addon:: prefix
+    if "/" in typed and _SEP not in typed:
+        unqualified = sorted({c.split(_SEP)[1] for c in addon_cmds if c.split(_SEP)[1].startswith(typed)})
+        results.extend(unqualified)
+
+    return " ".join(sorted(set(results)))
 
 
 if __name__ == "__main__":
-    main()
+    search, cursor = _parse_args()
+    result = suggest(search, cursor)
+    if result:
+        print(result)
