@@ -6,7 +6,7 @@ autocomplete() {
   local CURSOR=$((COMP_CWORD - 1))
 
   local SUGGESTIONS
-  SUGGESTIONS=($(${WEX_DIR_ROOT}bin/autocomplete-suggest -s "${SEARCH}" -c "${CURSOR}" 2>/dev/null))
+  SUGGESTIONS=($(wex core::autocomplete/suggest -s "${SEARCH}" -c "${CURSOR}" 2>/dev/null))
 
   # "::" is a word separator in bash — clear CURRENT to allow suggestions through
   if [ "${CURRENT}" == "::" ]; then

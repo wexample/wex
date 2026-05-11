@@ -85,7 +85,7 @@ echo "Installing symlink..."
 ln -sf "${WEX_DIR_CLI}wex" /usr/local/bin/wex
 
 echo "Installing autocomplete..."
-chmod +x "${WEX_DIR_CLI}autocomplete" "${WEX_DIR_CLI}autocomplete-handler" "${WEX_DIR_CLI}autocomplete-suggest"
+chmod +x "${WEX_DIR_CLI}autocomplete" "${WEX_DIR_CLI}autocomplete-handler"
 echo ". ${WEX_DIR_CLI}autocomplete-handler" > /etc/bash_completion.d/wex
 
 # On dev machine, install local editable packages over the venv
