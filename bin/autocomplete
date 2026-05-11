@@ -6,6 +6,7 @@ autocomplete() {
   local CURSOR=$((COMP_CWORD - 1))
 
   local SUGGESTIONS
+  local SUGGESTIONS
   local FIRST_CHAR="${SEARCH:0:1}"
   # Fast path for addon commands (start with a-z): read autocomplete.json cache directly, no kernel startup
   if [[ "${FIRST_CHAR}" =~ ^[a-z]$ ]]; then
