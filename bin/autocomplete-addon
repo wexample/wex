@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+"""Fast autocomplete for addon commands — reads autocomplete.json cache, no kernel."""
+import argparse
+import json
+from pathlib import Path
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-s", "--search", default="")
+    parser.add_argument("-c", "--cursor", type=int, default=0)
+    args = parser.parse_args()
+
+    search_split = args.search.split(" ") if args.search.strip() else [""]
+    cursor = args.cursor
+    first = search_split[0] if search_split else ""
+    second = search_split[1] if len(search_split) > 1 else ""
+    third = search_split[2] if len(search_split) > 2 else ""
+
+    # Only handle addon commands (start with a-z)
+    if not first or not first[0].islower():
+        return
+
+    cache_path = Path(__file__).resolve().parent.parent / "tmp" / "autocomplete.json"
+    if not cache_path.exists():
+        return
+
+    cache = json.loads(cache_path.read_text())
+    all_cmds = cache.get("commands", [])
+    all_aliases = cache.get("aliases", [])
+
+    # Addon commands: contain "::" and don't start with @ or ~
+    addon_cmds = [c for c in all_cmds if "::" in c and c[0] not in ("@", "~")]
+
+    SEPARATOR = "::"
+    suggestions = []
+
+    if cursor == 0:
+        addon_names = sorted({c.split("::")[0] for c in addon_cmds})
+        suggestions = [a for a in addon_names if a.startswith(first)]
+        # Aliases (short forms without :: prefix)
+        for alias in all_aliases:
+            if (
+                alias.startswith(first)
+                and "::" not in alias
+                and (not alias or alias[0] not in ("@", "~", "."))
+            ):
+                suggestions.append(alias)
+        # Unqualified commands: group/name without addon:: prefix
+        if "/" in first and "::" not in first:
+            unqualified = sorted(
+                {c.split("::")[1] for c in addon_cmds if c.split("::")[1].startswith(first)}
+            )
+            suggestions.extend(unqualified)
+
+    elif cursor == 1:
+        if second == SEPARATOR:
+            groups = sorted(
+                {c.split("::")[1].split("/")[0] for c in addon_cmds if c.split("::")[0] == first}
+            )
+            suggestions = [f"{g}/" for g in groups]
+        elif second == ":":
+            suggestions = [SEPARATOR]
+
+    elif cursor == 2:
+        suggestions = sorted(
+            [
+                c.split("::")[1]
+                for c in addon_cmds
+                if c.split("::")[0] == first and c.split("::")[1].startswith(third)
+            ]
+        )
+
+    if suggestions:
+        print(" ".join(suggestions))
+
+
+if __name__ == "__main__":
+    main()
