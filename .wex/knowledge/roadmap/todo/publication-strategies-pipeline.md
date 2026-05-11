@@ -21,59 +21,42 @@ l'autre couvre l'implémentation spécifique au package `wex` (apt).
 
 ---
 
-## Phase 1 — Refactoring AbstractPublicationStrategy
+## Phase 1 — Refactoring AbstractPublicationStrategy ✅
 
-- [ ] Remplacer `ensure_tag_triggers_ci()` par `run_post_publish_pipeline()`
-- [ ] Déclarer les hooks optionnels dans la classe abstraite :
-  - `post_push()` — après push branche (ex : créer MR)
-  - `wait_for_ci()` — poll pipeline CI
-  - `wait_for_deployment()` — poll prod (optionnel)
-- [ ] `from_workdir()` lit `git.publication_strategy` dans `.wex/config.yml`
-- [ ] Mettre à jour `_do_publish()` dans `repo_workdir.py` pour appeler `run_post_publish_pipeline()`
+- [x] Remplacer `ensure_tag_triggers_ci()` par `run_post_publish_pipeline()`
+- [x] Déclarer les hooks dans la classe abstraite : `post_push()`, `wait_for_ci()`, `wait_for_deployment()`
+- [x] `from_workdir()` lit `git.publication_strategy` dans `.wex/config.yml`
+- [x] Mettre à jour `_do_publish()` dans `repo_workdir.py`
 
 ---
 
-## Phase 2 — GitlabApiClient
+## Phase 2 — GitlabRemote enrichi ✅
 
-- [ ] Créer `wex-addon-app/gitlab/gitlab_api_client.py`
-  - Token via env var (clé config `git.gitlab_token_env_var`, défaut `GITLAB_TOKEN`)
-  - `create_merge_request(project_id, source_branch, target_branch, title)` — idempotent
-  - `get_merge_request_pipelines(project_id, mr_iid)`
-  - `merge_merge_request(project_id, mr_iid)`
-  - `get_pipeline_status(project_id, pipeline_id)`
-- [ ] Config keys :
-  - `git.gitlab_project_id`
-  - `git.gitlab_token_env_var` (défaut : `GITLAB_TOKEN`)
+Intégré dans `filestate-git/remote/` (pas de doublon dans `wex-addon-app`) :
 
----
-
-## Phase 3 — BranchMergePublicationStrategy complète
-
-Pipeline de `run_post_publish_pipeline()` :
-
-1. Push branche `version-x.y.z` sur GitLab (déjà fait dans `version/push`)
-2. Créer MR `version-x.y.z → main` (titre : `Release x.y.z`)
-3. Poller pipeline pre-merge jusqu'à `success` / `failed`
-4. Merger la MR via API
-5. Poller pipeline post-merge sur `main`
-6. (Optionnel) `wait_for_deployment()` si configuré
-
-- [ ] Implémenter les étapes 2–5 dans `BranchMergePublicationStrategy`
-- [ ] Afficher progression via `io.progress` (lien pipeline dans les logs)
-- [ ] Lever exception claire si pipeline `failed` (avec URL)
-- [ ] Polling interruptible (Ctrl+C propre)
-- [ ] Timeout configurable (`git.ci_poll_timeout`, défaut 600s)
+- [x] `AbstractRemote` — interface MR/pipeline : `create_merge_proposal`, `get_merge_proposal_pipelines`,
+  `merge_merge_proposal`, `get_pipeline`, `poll_pipeline` (concret), hooks `_extract_pipeline_status` /
+  `_is_pipeline_terminal`
+- [x] `GitlabRemote` — implémentation avec `_project_endpoint(namespace, name)` → `projects/{ns}%2F{name}`
+- [x] `GithubRemote` — implémentation (PRs, check-runs, workflow runs, override `_extract_pipeline_status`)
+- [x] Config keys : `git.gitlab_url`, `git.gitlab_project_id`, `git.gitlab_token_env_var`
 
 ---
 
-## Phase 4 — Application à syrtis-react-ui
+## Phase 3 — BranchMergePublicationStrategy complète ✅
 
-- [ ] Ajouter dans `.wex/config.yml` de `syrtis-react-ui` :
-  ```yaml
-  git:
-    publication_strategy: branch_merge
-    gitlab_project_id: <ID>
-  ```
+- [x] `post_push()` — créer MR idempotente, stocker `_mr_iid`
+- [x] `wait_for_ci()` — attendre pipeline MR, lever exception si `failed`, merger si `success`
+- [x] `_wait_for_mr_pipeline()` — retry si pipeline pas encore créé
+- [x] Timeout configurable (`git.ci_poll_timeout`, défaut 600s)
+- [x] Exception claire avec URL pipeline en cas d'échec
+
+---
+
+## Phase 4 — Application à syrtis-react-ui ✅
+
+- [x] Config `.wex/config.yml` : `publication_strategy: branch_merge`, `gitlab_project_id: "73"`,
+  `gitlab_url: https://gitlab.syrtis.ai`, `gitlab_token_env_var: GITLAB_API_TOKEN`
 - [ ] Tester un cycle complet `wex app::release/publish`
 - [ ] Vérifier publication npm après merge
 
@@ -81,7 +64,6 @@ Pipeline de `run_post_publish_pipeline()` :
 
 ## Phase 5 — wait_for_deployment (optionnel)
 
-- [ ] Interface `wait_for_deployment()` dans `AbstractPublicationStrategy` (no-op par défaut)
 - [ ] Implémentation : poll `deployment.health_check_url` jusqu'à version attendue
 - [ ] Config : `deployment.health_check_url`, `deployment.version_json_path`, `deployment.timeout`
 
