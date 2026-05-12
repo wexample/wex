@@ -77,7 +77,7 @@ def suggest(search: str, cursor: int) -> str:
             results.append(alias)
 
     # Unqualified commands: group/name without addon:: prefix
-    if "/" in typed and _SEP not in typed:
+    if typed and _SEP not in typed:
         unqualified = sorted({c.split(_SEP)[1] for c in addon_cmds if c.split(_SEP)[1].startswith(typed)})
         results.extend(unqualified)
 
