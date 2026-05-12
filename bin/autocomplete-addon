@@ -59,13 +59,17 @@ def suggest(search: str, cursor: int) -> str:
     typed = "".join(search_split[: cursor + 1])
     results: list[str] = []
 
-    # Addon names (without "::" appended — user chooses :: or / next)
+    # Addon names — append "::" only when single unambiguous match
     seen: set[str] = set()
     for cmd in addon_cmds:
         addon_name = cmd[: cmd.index(_SEP)]
         if addon_name not in seen and addon_name.startswith(typed):
             seen.add(addon_name)
-            results.append(addon_name)
+    addon_name_matches = sorted(seen)
+    if len(addon_name_matches) == 1:
+        results.append(addon_name_matches[0] + _SEP)
+    else:
+        results.extend(addon_name_matches)
 
     # Aliases (short forms without :: prefix, starting with a-z)
     for alias in all_aliases:

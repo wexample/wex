@@ -9,7 +9,8 @@ autocomplete() {
   local SUGGESTIONS
   local FIRST_CHAR="${SEARCH:0:1}"
   # Fast path for addon commands (start with a-z): read autocomplete.json cache directly, no kernel startup
-  if [[ "${FIRST_CHAR}" =~ ^[a-z]$ ]]; then
+  # Set AUTOCOMPLETE_NO_CACHE=true to disable
+  if [[ "${FIRST_CHAR}" =~ ^[a-z]$ ]] && [[ "${AUTOCOMPLETE_NO_CACHE}" != "true" ]]; then
     SUGGESTIONS=($(${WEX_DIR_ROOT}bin/autocomplete-addon -s "${SEARCH}" -c "${CURSOR}" 2>/dev/null))
   fi
   # Fall back to kernel for empty search, app/user/service commands, or missing cache
