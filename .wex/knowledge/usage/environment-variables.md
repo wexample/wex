@@ -263,25 +263,29 @@ Donc dans un YAML, `${VAR}` résout dans cet ordre.
 
 **Constat factuel** sur le contenu réel des projets (audit du `2026-05-13`) :
 
-- `.wex/.env` contient : `APP_ENV`, `GITLAB_API_TOKEN`, `GITHUB_API_TOKEN`, `PIPY_TOKEN`, `LOCAL_*` chemins
-- `.wex/local/env.yml` contient : `SSH_AUTH_SOCK`, `PDM_BIN_DIR`
+- `<install_wex>/.env` (install) contient `APP_ENV=local` + qq vars projet (wex est un projet python)
+- `<install_wex>/.env.yml` (install) : **prévu pour les structures complexes** (`host_paths_map`…). Un seul exemple dans tout le code : `SYRTIS/local/core/.env.yml`, contenu commenté → préparé puis désactivé. Mécanisme légitime, juste sous-exploité.
+- `<projet>/.wex/.env` (workdir) contient : `APP_ENV`, tokens API (`GITLAB_API_TOKEN`, `GITHUB_API_TOKEN`, `PIPY_TOKEN`), chemins locaux
+- `<projet>/.wex/local/env.yml` (machine-local) contient : `SSH_AUTH_SOCK`, `PDM_BIN_DIR`
 
-**Aucun des deux fichiers** n'utilise les structures complexes du YAML — tout est `KEY: value` plat. L'argument historique « YAML pour structures complexes » n'est pas vérifié.
+**Aucun fichier YAML actif n'utilise les structures complexes** — tout est `KEY: value` plat. L'argument YAML > dotenv n'est pas vérifié en pratique (sauf via le `.env.yml` désactivé de SYRTIS).
 
 **Différence fonctionnelle qui reste à préserver** : le YAML runner (`core_yaml_command_runner._build_variables`) lit `.wex/.env` du `call_workdir` comme source de substitution `${VAR}` dans les scripts. Si on fusionne sur YAML, le runner doit aussi lire le YAML.
 
-**Direction prévue** (cf. roadmap `env.md`) : fusion sur `.wex/local/env.yml` (YAML, dans `local/` gitignored). Format YAML choisi pour cohérence avec le reste de la stack wex (`config.yml`, `suite.yml`). JSON écarté (pas de commentaires, lisibilité humaine pauvre), TOML écarté (cohérence stack > optimisation marginale).
+**Direction prévue** (cf. roadmap `env.md`) : fusion **uniquement des deux fichiers du scope projet** (`.wex/.env` + `.wex/local/env.yml`) sur YAML. Les deux fichiers du scope install (`<install_wex>/.env` + `<install_wex>/.env.yml`) restent séparés — ils ont des rôles distincts (config runtime vs config machine du projet).
 
 ### Tableau de décision provisoire (avant fusion)
 
 | Type de donnée | Stockage actuel | Comment l'écrire |
 |---|---|---|
-| `APP_ENV` (local / prod / …) | `.wex/.env` | `wex app::env/set <env>` |
-| Var d'app non sensible (URL d'un service interne, port…) | `.wex/.env` | `wex app::env/var_set KEY value` |
-| Secret machine (token API, mot de passe registry…) | `.wex/.env` (en pratique) ou `.wex/local/env.yml` (souhaitable) | `wex app::env/var_set` ou `wex core::env/configure` |
-| Socket / chemin machine (`SSH_AUTH_SOCK`, etc.) | `.wex/local/env.yml` | Auto-détecté au `setup()`, ou `wex core::env/configure` |
-| Choix structurel du projet (stratégie de publication, branche principale…) | `config.yml` | `@require_app_config` au niveau commande |
-| Token webhook tournant | `.wex/local/{namespace}.yml` | `rotate_local_token()` |
+| `APP_ENV` du runtime wex | `<install_wex>/.env` | Édition manuelle |
+| Structure complexe globale au runtime wex (paths map…) | `<install_wex>/.env.yml` | Édition manuelle |
+| `APP_ENV` du projet | `<projet>/.wex/.env` | `wex app::env/set <env>` |
+| Var d'app non sensible (URL service, port…) | `<projet>/.wex/.env` | `wex app::env/var_set KEY value` |
+| Secret machine (token API, mot de passe registry…) | `<projet>/.wex/.env` (en pratique) ou `<projet>/.wex/local/env.yml` (souhaitable) | `wex app::env/var_set` ou `wex core::env/configure` |
+| Socket / chemin machine (`SSH_AUTH_SOCK`…) | `<projet>/.wex/local/env.yml` | Auto-détecté au `setup()`, ou `wex core::env/configure` |
+| Choix structurel du projet (stratégie de publication…) | `config.yml` | `@require_app_config` au niveau commande |
+| Token webhook tournant | `<projet>/.wex/local/{namespace}.yml` | `rotate_local_token()` |
 
 ---
 
@@ -296,11 +300,19 @@ Donc dans un YAML, `${VAR}` résout dans cet ordre.
 
 ### Sources de confusion
 
-- **Deux fichiers pour le même job** : `.wex/.env` (dotenv v1) et `.wex/local/env.yml` (YAML v2). En pratique fonctionnellement convergents — les deux finissent dans `os.environ` après init, aucun ne profite des structures complexes. À fusionner (cf. roadmap `env.md`).
+- **Deux fichiers projet pour le même job** : `<projet>/.wex/.env` (dotenv v1) et `<projet>/.wex/local/env.yml` (YAML v2). En pratique fonctionnellement convergents pour le contenu plat. À fusionner (cf. roadmap `env.md`).
+
+- **Deux mécanismes parallèles** pour lire un fichier `.env` :
+  - Côté kernel : `HasYamlEnvKeysFile._init_env_file()` → `<install_wex>/.env`
+  - Côté workdir : `WithEnvParametersMixin` → `<workdir>/.wex/.env` (lecture directe, sans passer par la chaîne `HasEnvKeysFile`)
+  
+  Pas une vraie duplication (cibles différentes), mais le naming `WithEnvParametersMixin` est trompeur.
 
 - **`get_env_parameter()` est volontairement séparé de `os.environ`.** Il renvoie la **config d'env wex** (chargée depuis les fichiers ci-dessus), pas une var système POSIX. Pour lire une var OS-level (`SSH_AUTH_SOCK`, `SUDO_UID`, etc.), on utilise `os.environ.get()` explicitement, avec un commentaire qui justifie le choix.
 
 - **Aucun usage formel de `get_expected_env_keys()`** dans les workdirs principaux : la validation `_validate_env_keys()` n'est appelée qu'au moment des `_init_*`, donc rate les besoins exprimés plus tard dans le code.
+
+- **`.env.yml` au niveau install est quasi-mort** : un seul exemple (commenté) dans tout le code. Le mécanisme `HasYamlEnvKeysFile` n'est utilisé que par le kernel et n'a presque jamais servi.
 
 - **Les checks de présence sont parfois trop tardifs** : un token absent peut n'être détecté qu'au milieu d'une commande long-running (cf. `branch_merge_publication_strategy` qui découvrait le token manquant à l'étape 7/7 d'un release). Solution prévue : décorateur `@require_local_env` (roadmap), bloqué tant que le ménage des fichiers n'est pas fait.
 
