@@ -1,6 +1,6 @@
 # Variables d'environnement — wex
 
-Topo complet de tous les mécanismes liés aux « env » dans le code. Plusieurs systèmes coexistent, avec des rôles distincts ou parfois redondants.
+Topo complet de tous les mécanismes liés aux « env » dans le code. Plusieurs systèmes coexistent, chacun avec un rôle propre — ils ne se recouvrent pas.
 
 ---
 
@@ -9,7 +9,7 @@ Topo complet de tous les mécanismes liés aux « env » dans le code. Plusieurs
 | Fichier / source | Format | Portée | Gitignored | Usage canonique |
 |---|---|---|---|---|
 | `.wex/.env` | dotenv (`KEY=value`) | par projet | non (souvent commit) | `APP_ENV`, vars app non-sensibles |
-| `.wex/local/env.yml` | YAML | par machine | oui (`.wex/local/` gitignored) | Secrets, sockets, tokens API, vars de dev |
+| `.wex/local/env.yml` | YAML | par machine | oui (tout `.wex/local/` est gitignored) | Secrets, sockets, tokens API, vars de dev |
 | `os.environ` | — | process / shell | — | Hérité du shell + injecté par les deux ci-dessus au démarrage |
 
 Tout le reste (mixins Python, décorateurs, commandes) n'est que **machinerie pour lire / écrire / valider** ces trois sources.
@@ -147,18 +147,18 @@ def get_app_env(self) -> str | None:
 
 `packages/app/src/wexample_app/workdir/mixin/with_local_data_mixin.py`
 
-`.wex/local/env.yml` n'est qu'**un namespace parmi d'autres** dans `.wex/local/`. Le mixin offre un stockage YAML générique :
+`.wex/local/env.yml` n'est **pas un fichier spécial réservé au core wex** : c'est juste le namespace `env` dans le système générique `.wex/local/{namespace}.yml`. Le mixin vit dans `wexample_app` et est accessible à n'importe quel code via `get_local_data("env")` / `set_local_data("env", …)`.
+
+Ce qui rend ce namespace particulier, c'est uniquement que **`kernel._init_local_env()` le charge dans `os.environ` au démarrage**. Les autres namespaces (`webhook_tokens.yml`, etc.) n'ont pas ce traitement — ils restent du stockage YAML pur.
 
 ```
 .wex/local/
-├── env.yml                # namespace "env"
+├── env.yml                # namespace "env"  (chargé dans os.environ au boot)
 ├── webhook_tokens.yml     # namespace "webhook_tokens"
 └── webhook_tokens_addon.yml
 ```
 
 API : `get_local_data(ns)`, `set_local_data(ns, data)`, `get_local_data_value(ns, key)`, `set_local_data_value(ns, key, value)`, `ensure_local_token(ns, key)`, `rotate_local_token(ns, key)`.
-
-Toute la couche kernel pour les env (`_init_local_env`, `_auto_detect_env`) utilise simplement `get_local_data("env")` / `set_local_data("env", …)`.
 
 ---
 
