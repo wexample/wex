@@ -4,96 +4,98 @@
 
 Doc de référence : `.wex/knowledge/usage/environment-variables.md`.
 
-Trois stockages cohabitent (`.wex/.env`, `.wex/local/env.yml`, `os.environ`),
-plusieurs mixins (`HasEnvKeys` & co.), trois moments d'init côté kernel.
-Chacun a son rôle, mais des incohérences se sont accumulées :
-- `get_env_parameter()` ne lit que `env_config`, pas `os.environ`
-- `os.environ.get()` direct utilisé par endroits au lieu de `get_env_parameter()`
-- Conventions floues sur quoi va dans `.wex/.env` vs `.wex/local/env.yml`
-- Vérifications de présence parfois tardives (cf. token découvert à l'étape 7/7)
-- Messages d'erreur qui pointent vers le mauvais fichier
+**Clarification fondatrice** (établie en audit) : deux univers à ne pas confondre.
 
-**Objectif** : avoir un système propre et cohérent **avant** d'introduire
-un décorateur `@require_local_env`. Pas de nouveau code tant que la base n'est pas saine.
+1. **`os.environ`** — espace POSIX du process, **hors sujet wex**. On y touche
+   uniquement pour lire une var qu'on sait être OS-level (`SSH_AUTH_SOCK`,
+   `SUDO_UID`…), toujours avec un commentaire qui justifie le choix.
+
+2. **« env » wex** — les **fichiers de config d'environnement** projet, équivalent
+   du `.env` Symfony. Aujourd'hui deux fichiers cohabitent (`.wex/.env` v1 dotenv
+   et `.wex/local/env.yml` v2 YAML) — fonctionnellement convergents, à fusionner.
+
+**Objectif** : avoir un système propre et cohérent **avant** d'introduire un
+décorateur `@require_local_env` (déclaration en amont, prompt si manquant,
+persistance dans le bon fichier).
 
 ---
 
 ## Phase 1 — Audit du code existant
 
-- [ ] Lister tous les appels `os.environ.get(...)` dans des méthodes de classe
-  (hors kernel et helpers d'env eux-mêmes). Décider pour chacun : remplacer par
-  `self.get_env_parameter()` ou justifier l'exception.
-- [ ] Lister tous les usages de `get_env_parameter()` et `get_env_parameter_or_suite_fallback()`
-  pour valider que la chaîne env_config est bien alimentée en amont
-  (sinon le lookup retournera systématiquement le `default`).
-- [ ] Lister tous les usages de `get_expected_env_keys()` :
-  - aucun → est-ce mort ? le retirer ?
-  - quelques-uns → les renforcer ?
+- [x] Lister tous les appels `os.environ.get(...)` dans des méthodes de classe
+  → **0 violation réelle**. Le seul cas (`repo_workdir.py:91`) est justifié
+  par un commentaire « OS-level variable ». Les autres occurrences sont dans
+  des helpers d'env, le kernel, ou des fonctions module-level POSIX.
+- [ ] Lister tous les usages de `get_env_parameter()` et
+  `get_env_parameter_or_suite_fallback()` pour valider que la chaîne `env_config`
+  est bien alimentée en amont (sinon le lookup retourne systématiquement le `default`).
+- [ ] Lister tous les usages de `get_expected_env_keys()` : aucun → est-ce mort ?
+  À retirer ou à utiliser ?
 - [ ] Lister les classes qui héritent de `HasEnvKeysFile` / `HasYamlEnvKeysFile`
   et identifier où sont chargés les fichiers (`_init_env_file`).
-- [ ] Lister les contenus actuels des `.wex/.env` et `.wex/local/env.yml`
-  sur les projets existants : quels types de données s'y retrouvent ?
+- [ ] Inventaire des contenus réels de `.wex/.env` et `.wex/local/env.yml` sur
+  les projets existants (déjà partiellement fait : voir doc section 8).
 
 ---
 
-## Phase 2 — Convention claire `.wex/.env` vs `.wex/local/env.yml`
+## Phase 2 — Fusion `.wex/.env` + `.wex/local/env.yml`
 
-Aujourd'hui le placement est arbitraire. Définir une règle simple.
+**Décision validée** (sous réserve d'une « couche de subtilité » à venir) : fusion
+sur `.wex/local/env.yml` (YAML, dans `local/` gitignored). JSON écarté (pas de
+commentaires), TOML écarté (cohérence stack > optim marginale).
 
-- [ ] Proposer une convention, à valider :
-  - `.wex/.env` : vars d'app, types simples (string, port, URL), peut être commité
-  - `.wex/local/env.yml` : machine-local, secrets, structures complexes, gitignored
-- [ ] Lister les vars existantes qui sont mal rangées selon la convention retenue,
-  et soit les migrer, soit ajuster la convention.
-- [ ] Documenter la convention dans `usage/environment-variables.md` (section 8).
-
----
-
-## Phase 3 — Aligner `get_env_parameter()` sur la réalité
-
-Le piège actuel : `get_env_parameter()` ne lit que `env_config`. Si une var
-n'a pas été chargée explicitement, elle est invisible — même si elle est dans `os.environ`.
-
-Deux options à trancher :
-
-- [ ] **Option A** : `get_env_parameter()` lit aussi `os.environ` en fallback.
-  Simple, mais casse la propriété « env_config est la seule source de vérité ».
-- [ ] **Option B** : laisser tel quel, mais garantir que tout `_init_*` peuple
-  `env_config` depuis `os.environ` + sources fichiers. Plus de discipline mais
-  comportement plus prévisible.
-- [ ] Implémenter le choix retenu.
-- [ ] Mettre à jour la doc en conséquence.
+- [ ] Étendre le lecteur du YAML runner (`core_yaml_command_runner._build_variables`)
+  pour qu'il lise le YAML en plus de `.wex/.env`.
+- [ ] Aligner les commandes `app::env/var_set` / `var_get` / `var_list` / `set` / `get`
+  pour qu'elles écrivent dans `.wex/local/env.yml`.
+- [ ] Adapter `_init_env_file` au cas YAML (si pas déjà géré via `HasYamlEnvKeysFile`).
+- [ ] Migration des projets existants : script qui lit chaque `.wex/.env` et le
+  fusionne dans `.wex/local/env.yml`, en archivant l'ancien.
+- [ ] Mettre à jour la doc (`usage/environment-variables.md`) pour refléter la
+  fusion une fois faite.
 
 ---
 
-## Phase 4 — Messages d'erreur cohérents
+## Phase 3 — Messages d'erreur cohérents
 
-- [ ] Auditer tous les messages d'erreur qui mentionnent `.wex/.env` ou un nom
-  de var : pointent-ils vers le bon fichier selon la convention de la phase 2 ?
-- [ ] Remplacer les messages qui suggèrent « set env var X » par des consignes
-  exploitables sans toucher au shell : nom de commande wex à lancer.
+- [ ] Auditer tous les messages d'erreur qui mentionnent `.wex/.env` :
+  pointer vers le bon fichier (post-fusion) et la bonne commande.
+- [ ] Remplacer les messages « set env var X » par des consignes exploitables
+  sans toucher au shell : nom de commande wex à lancer.
 - [ ] Cas concret à fixer : `branch_merge_publication_strategy.py:166`
   (« or add it to .wex/.env »).
 
 ---
 
+## Phase 4 — Faire le ménage sur `get_expected_env_keys()`
+
+Aujourd'hui le mécanisme existe mais n'est utilisé nulle part dans les workdirs
+principaux. Deux options :
+
+- [ ] **Option A** : l'activer — chaque workdir déclare ses vars requises,
+  validation au boot. Utile si on veut un check précoce sans décorateur.
+- [ ] **Option B** : le retirer — code mort. Le futur `@require_local_env`
+  fera le job au niveau commande, plus granulaire.
+
+---
+
 ## Phase 5 — Préparer le terrain pour `@require_local_env`
 
-Une fois la base saine, ouvrir une nouvelle roadmap pour le décorateur.
 Ne **rien** coder dans cette roadmap-ci : juste lister les pré-requis.
 
 - [ ] Confirmer que `check_config_requirements()` (utilisé par `@require_app_config`)
   est réutilisable / extensible pour les env vars, ou s'il faut un mécanisme parallèle.
 - [ ] Identifier où brancher le check (middleware d'addon ? hook dans le runner ?).
 - [ ] Décider du contrat : la valeur saisie est-elle persistée immédiatement,
-  propagée dans `os.environ` + `env_config` pour la suite de la commande, et/ou
-  injectée dans les sous-process ?
+  propagée dans `env_config` (et éventuellement `os.environ`) pour la suite de la commande ?
 - [ ] Créer la roadmap dédiée `require-local-env-decorator.md`.
 
 ---
 
 ## Notes
 
-- Ne **pas** introduire `@require_local_env` tant que les phases 1 à 4 ne sont pas terminées.
+- **Pas** de `@require_local_env` tant que les phases 1 à 4 ne sont pas terminées.
 - Toute modification doit garder la rétro-compatibilité avec les `.wex/.env`
-  et `.wex/local/env.yml` existants des projets en cours.
+  existants (au moins en lecture, le temps de la migration).
+- La règle « ne pas confondre `os.environ` et env wex » s'applique aussi aux
+  futures docs / commentaires / messages d'erreur.

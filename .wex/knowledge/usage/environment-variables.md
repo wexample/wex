@@ -4,15 +4,26 @@ Topo complet de tous les mécanismes liés aux « env » dans le code. Plusieurs
 
 ---
 
-## TL;DR — les trois stockages physiques
+## Avant tout — deux univers distincts à ne pas confondre
 
-| Fichier / source | Format | Portée | Gitignored | Usage canonique |
-|---|---|---|---|---|
-| `.wex/.env` | dotenv (`KEY=value`) | par projet | non (souvent commit) | `APP_ENV`, vars app non-sensibles |
-| `.wex/local/env.yml` | YAML | par machine | oui (tout `.wex/local/` est gitignored) | Secrets, sockets, tokens API, vars de dev |
-| `os.environ` | — | process / shell | — | Hérité du shell + injecté par les deux ci-dessus au démarrage |
+1. **`os.environ`** — l'espace de variables d'environnement **POSIX du process**, hérité du shell parent. Géré par le système d'exploitation, pas par wex. On y touche **uniquement** quand on lit une var qu'on sait être OS-level (`SSH_AUTH_SOCK`, `SUDO_UID`, `PATH`, etc.). **Ce n'est pas le sujet de cette doc.**
 
-Tout le reste (mixins Python, décorateurs, commandes) n'est que **machinerie pour lire / écrire / valider** ces trois sources.
+2. **« env » au sens wex** — les **fichiers de config d'environnement** déclarés à la racine d'un projet (équivalent du `.env` Symfony). Aujourd'hui deux fichiers cohabitent, fonctionnellement convergents (cf. section 8).
+
+Toute la machinerie décrite ci-dessous (`HasEnvKeys`, `get_env_parameter`, etc.) parle **uniquement** de l'univers 2. Si du code fait `os.environ.get(...)`, c'est qu'il lit une vraie var POSIX, pas une config wex — ce qui doit être **commenté explicitement**.
+
+---
+
+## TL;DR — les deux fichiers de config d'env wex
+
+| Fichier | Format | Édité par | Contenu observé en pratique |
+|---|---|---|---|
+| `.wex/.env` | dotenv (`KEY=value`) | `app::env/var_set`, `app::env/set` | `APP_ENV`, tokens (`GITLAB_API_TOKEN`, `GITHUB_API_TOKEN`, `PIPY_TOKEN`), chemins locaux |
+| `.wex/local/env.yml` | YAML | `core::env/configure`, `kernel._auto_detect_env` | Sockets et chemins auto-détectés (`SSH_AUTH_SOCK`, `PDM_BIN_DIR`) |
+
+Les deux finissent dans `kernel.env_config` + `os.environ` après init. La séparation actuelle est un accident d'historique (dotenv v1 → YAML v2), pas une vraie séparation de responsabilités.
+
+Tout le reste (mixins Python, décorateurs, commandes) n'est que **machinerie pour lire / écrire / valider** ces deux fichiers.
 
 ---
 
@@ -204,13 +215,26 @@ Donc dans un YAML, `${VAR}` résout dans cet ordre.
 
 ---
 
-## 8. Tableau de décision — où ranger quoi ?
+## 8. État de l'art — fusion en cours, convention à finaliser
 
-| Type de donnée | Stockage | Comment l'écrire |
+**Constat factuel** sur le contenu réel des projets (audit du `2026-05-13`) :
+
+- `.wex/.env` contient : `APP_ENV`, `GITLAB_API_TOKEN`, `GITHUB_API_TOKEN`, `PIPY_TOKEN`, `LOCAL_*` chemins
+- `.wex/local/env.yml` contient : `SSH_AUTH_SOCK`, `PDM_BIN_DIR`
+
+**Aucun des deux fichiers** n'utilise les structures complexes du YAML — tout est `KEY: value` plat. L'argument historique « YAML pour structures complexes » n'est pas vérifié.
+
+**Différence fonctionnelle qui reste à préserver** : le YAML runner (`core_yaml_command_runner._build_variables`) lit `.wex/.env` du `call_workdir` comme source de substitution `${VAR}` dans les scripts. Si on fusionne sur YAML, le runner doit aussi lire le YAML.
+
+**Direction prévue** (cf. roadmap `env.md`) : fusion sur `.wex/local/env.yml` (YAML, dans `local/` gitignored). Format YAML choisi pour cohérence avec le reste de la stack wex (`config.yml`, `suite.yml`). JSON écarté (pas de commentaires, lisibilité humaine pauvre), TOML écarté (cohérence stack > optimisation marginale).
+
+### Tableau de décision provisoire (avant fusion)
+
+| Type de donnée | Stockage actuel | Comment l'écrire |
 |---|---|---|
 | `APP_ENV` (local / prod / …) | `.wex/.env` | `wex app::env/set <env>` |
 | Var d'app non sensible (URL d'un service interne, port…) | `.wex/.env` | `wex app::env/var_set KEY value` |
-| Secret machine (token API GitLab/GitHub, mot de passe registry…) | `.wex/local/env.yml` | `wex core::env/configure` ou édition manuelle |
+| Secret machine (token API, mot de passe registry…) | `.wex/.env` (en pratique) ou `.wex/local/env.yml` (souhaitable) | `wex app::env/var_set` ou `wex core::env/configure` |
 | Socket / chemin machine (`SSH_AUTH_SOCK`, etc.) | `.wex/local/env.yml` | Auto-détecté au `setup()`, ou `wex core::env/configure` |
 | Choix structurel du projet (stratégie de publication, branche principale…) | `config.yml` | `@require_app_config` au niveau commande |
 | Token webhook tournant | `.wex/local/{namespace}.yml` | `rotate_local_token()` |
@@ -228,19 +252,17 @@ Donc dans un YAML, `${VAR}` résout dans cet ordre.
 
 ### Sources de confusion
 
-- **Deux fichiers, deux formats** pour des env :
-  - `.wex/.env` (dotenv) pour le projet
-  - `.wex/local/env.yml` (YAML) pour la machine
-  
-  Cohabitent légitimement (portées différentes), mais c'est facile de se tromper. Les messages d'erreur doivent pointer **vers le bon**.
+- **Deux fichiers pour le même job** : `.wex/.env` (dotenv v1) et `.wex/local/env.yml` (YAML v2). En pratique fonctionnellement convergents — les deux finissent dans `os.environ` après init, aucun ne profite des structures complexes. À fusionner (cf. roadmap `env.md`).
 
-- **`get_env_parameter` ne lit pas `os.environ`** directement, seulement `env_config`. Une var purement shell (sans passage par un init) n'est pas visible via cette méthode. Toute classe qui veut « la var où qu'elle soit » doit s'assurer que `_init_env_file` ou `_init_local_env` a tourné en amont.
+- **`get_env_parameter()` est volontairement séparé de `os.environ`.** Il renvoie la **config d'env wex** (chargée depuis les fichiers ci-dessus), pas une var système POSIX. Pour lire une var OS-level (`SSH_AUTH_SOCK`, `SUDO_UID`, etc.), on utilise `os.environ.get()` explicitement, avec un commentaire qui justifie le choix.
 
 - **Aucun usage formel de `get_expected_env_keys()`** dans les workdirs principaux : la validation `_validate_env_keys()` n'est appelée qu'au moment des `_init_*`, donc rate les besoins exprimés plus tard dans le code.
 
-- **Les checks de présence sont parfois trop tardifs** : un token absent peut n'être détecté qu'au milieu d'une commande long-running (cf. `branch_merge_publication_strategy` qui découvrait le token manquant à l'étape 7/7 d'un release). Solution : déclarer la var dans `get_local_configurable_keys()` de l'addon, **ou** ajouter un `@require_app_config` sur la commande (pour le nom de var, à défaut de la valeur elle-même).
+- **Les checks de présence sont parfois trop tardifs** : un token absent peut n'être détecté qu'au milieu d'une commande long-running (cf. `branch_merge_publication_strategy` qui découvrait le token manquant à l'étape 7/7 d'un release). Solution prévue : décorateur `@require_local_env` (roadmap), bloqué tant que le ménage des fichiers n'est pas fait.
 
 ### Anti-pattern à éviter
 
-- `os.environ.get(...)` **directement** dans une méthode de classe. Toujours passer par `self.get_env_parameter()` pour respecter la chaîne `env_config` (et permettre l'override en test, le fallback suite, etc.).
+- Confondre « env » au sens wex (config projet) avec `os.environ` (espace POSIX). Ce sont **deux univers distincts**.
+- Lire une var de config wex via `os.environ.get()` dans une méthode de classe → toujours `self.get_env_parameter()`.
+- Lire une var OS-level via `self.get_env_parameter()` → utiliser `os.environ.get()` avec un commentaire qui dit pourquoi.
 - Pointer vers `.wex/.env` dans un message d'erreur pour un **secret machine**. Le secret va dans `.wex/local/env.yml` (via `core::env/configure`).
