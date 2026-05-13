@@ -4,17 +4,19 @@ Topo complet de tous les mécanismes liés aux « env » dans le code. Plusieurs
 
 ---
 
-## Avant tout — deux univers distincts à ne pas confondre
+## Avant tout — trois univers distincts à ne pas confondre
 
-1. **`os.environ`** — l'espace de variables d'environnement **POSIX du process**, hérité du shell parent. Géré par le système d'exploitation, pas par wex. On y touche **uniquement** quand on lit une var qu'on sait être OS-level (`SSH_AUTH_SOCK`, `SUDO_UID`, `PATH`, etc.). **Ce n'est pas le sujet de cette doc.**
+1. **`os.environ`** — l'espace de variables d'environnement **POSIX du process**, hérité du shell parent. Géré par le système d'exploitation, pas par wex. On y touche **uniquement** quand on lit une var qu'on sait être OS-level (`SSH_AUTH_SOCK`, `SUDO_UID`, `PATH`, etc.). **Pas le sujet de cette doc.**
 
-2. **« env » au sens wex** — les **fichiers de config d'environnement** déclarés à la racine d'un projet (équivalent du `.env` Symfony). Aujourd'hui deux fichiers cohabitent, fonctionnellement convergents (cf. section 8).
+2. **Scope applicatif — `.env`** à la racine du projet (`<project>/.env`). Équivalent strict du `.env` Symfony : consommé directement par l'application (PHP, Python, Docker compose, runtime…). **Wex ne le lit pas.** Il vit en parallèle, le projet le gère lui-même. **Pas non plus le sujet de cette doc**, mais important de le distinguer pour ne pas le mélanger avec le suivant.
 
-Toute la machinerie décrite ci-dessous (`HasEnvKeys`, `get_env_parameter`, etc.) parle **uniquement** de l'univers 2. Si du code fait `os.environ.get(...)`, c'est qu'il lit une vraie var POSIX, pas une config wex — ce qui doit être **commenté explicitement**.
+3. **Scope wex — `.wex/.env` + `.wex/local/env.yml`.** La config d'environnement du **gestionnaire wex** (le `.wex/` est son répertoire). C'est l'univers que cette doc décrit. Aujourd'hui deux fichiers cohabitent, fonctionnellement convergents (cf. section 8) — à fusionner.
+
+⚠️ **Piège de naming** : `WithEnvParametersMixin` porte un nom générique et était probablement conçu à l'origine pour le scope **applicatif** (lire un `.env` racine type Symfony). Mais l'implémentation actuelle construit son chemin via `path / WORKDIR_SETUP_DIR / ".env"` (= `<path>/.wex/.env`), donc en pratique il gère le scope **wex**. Le nom est trompeur, à clarifier (cf. roadmap).
 
 ---
 
-## TL;DR — les deux fichiers de config d'env wex
+## TL;DR — les deux fichiers du scope wex
 
 | Fichier | Format | Édité par | Contenu observé en pratique |
 |---|---|---|---|
@@ -45,7 +47,7 @@ Mixins génériques, vivent dans `wexample_helpers` / `wexample_helpers_yaml`. I
 | `_init_env(env_dict)` | Remplace `env_config` puis valide |
 | `_validate_env_keys()` | Raise `MissingRequiredEnvVarError` si une clé requise manque |
 
-**Piège** : `get_env_parameter` ne regarde **pas** `os.environ`. Pour qu'une var du shell soit lisible via cette méthode, il faut qu'un autre mécanisme l'ait préalablement copiée dans `env_config`.
+**À retenir** : `get_env_parameter()` (sur le mixin de base) ne renvoie que ce qu'il y a dans `env_config`. Il ne lit pas `os.environ` — c'est volontaire, les deux univers sont séparés. Les sous-classes (`WithEnvParametersMixin`, etc.) peuvent étendre la lecture vers d'autres sources.
 
 ### `HasEnvKeysFile`
 
@@ -63,6 +65,18 @@ Format dotenv classique. Utilisé pour charger `.wex/.env`.
 `packages/helpers-yaml/src/wexample_helpers_yaml/classes/mixin/has_yaml_env_keys_file.py`
 
 Variante YAML : charge un YAML, met les clés dans `env_config` ET propage dans `os.environ`.
+
+### `WithEnvParametersMixin` — accès workdir vers `.wex/.env`
+
+`packages/app/src/wexample_app/workdir/mixin/with_env_parameters_mixin.py`
+
+Hérite de `HasEnvKeys`. Spécialise `get_env_parameter()` pour qu'il :
+1. Lise **d'abord directement le fichier `.wex/.env`** via `EnvFile.create_from_path()`
+2. Tombe en fallback sur `super().get_env_parameter()` (donc `env_config`)
+
+Fournit aussi `set_env_parameters(dict)` qui **écrit dans `.wex/.env`** (en plus de mettre à jour `env_config`).
+
+**Naming trompeur** : le nom suggère un mixin générique pour `.env` applicatif, mais le chemin construit est `path / ".wex" / ".env"`. C'est en fait le mixin du **scope wex**, pas du scope applicatif. À renommer ou clarifier (cf. roadmap).
 
 ### Extension : `get_env_parameter_or_suite_fallback`
 
