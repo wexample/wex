@@ -4,28 +4,38 @@ Topo complet de tous les mécanismes liés aux « env » dans le code. Plusieurs
 
 ---
 
-## Avant tout — trois univers distincts à ne pas confondre
+## Avant tout — distinguer ce qui est wex de ce qui ne l'est pas
 
-1. **`os.environ`** — l'espace de variables d'environnement **POSIX du process**, hérité du shell parent. Géré par le système d'exploitation, pas par wex. On y touche **uniquement** quand on lit une var qu'on sait être OS-level (`SSH_AUTH_SOCK`, `SUDO_UID`, `PATH`, etc.). **Pas le sujet de cette doc.**
+### Hors périmètre wex
 
-2. **Scope applicatif — `.env`** à la racine du projet (`<project>/.env`). Équivalent strict du `.env` Symfony : consommé directement par l'application (PHP, Python, Docker compose, runtime…). **Wex ne le lit pas.** Il vit en parallèle, le projet le gère lui-même. **Pas non plus le sujet de cette doc**, mais important de le distinguer pour ne pas le mélanger avec le suivant.
+1. **`os.environ`** — espace POSIX du process, hérité du shell parent. Géré par l'OS. On y touche **uniquement** quand on lit une var qu'on sait être OS-level (`SSH_AUTH_SOCK`, `SUDO_UID`, `PATH`, etc.). **Pas le sujet de cette doc.**
 
-3. **Scope wex — `.wex/.env` + `.wex/local/env.yml`.** La config d'environnement du **gestionnaire wex** (le `.wex/` est son répertoire). C'est l'univers que cette doc décrit. Aujourd'hui deux fichiers cohabitent, fonctionnellement convergents (cf. section 8) — à fusionner.
+2. **Scope applicatif — `<projet_user>/.env`** à la racine du projet. Équivalent du `.env` Symfony : consommé directement par l'application elle-même (PHP, Python, Docker compose, runtime…). **Wex ne le lit jamais.** Le projet le gère lui-même, et peut d'ailleurs utiliser n'importe quel nom de fichier (`.env`, `.env.local`, `.trilili-vars`, etc.) — c'est l'app qui décide.
 
-⚠️ **Piège de naming** : `WithEnvParametersMixin` porte un nom générique et était probablement conçu à l'origine pour le scope **applicatif** (lire un `.env` racine type Symfony). Mais l'implémentation actuelle construit son chemin via `path / WORKDIR_SETUP_DIR / ".env"` (= `<path>/.wex/.env`), donc en pratique il gère le scope **wex**. Le nom est trompeur, à clarifier (cf. roadmap).
+### Périmètre wex (3 scopes)
+
+3. **Scope install wex — `<install_wex>/.env` + `<install_wex>/.env.yml`.** Config **globale du runtime wex**, à la racine de l'installation (`local/wex/`). Chargée au boot par `AbstractKernel._init_env_file` et `_init_env_file_yaml`. Wex étant lui-même un projet python, son `APP_ENV` vit ici. C'est aussi là qu'on peut mettre des structures complexes (le YAML est prévu pour ça : ex. `host_paths_map`).
+
+4. **Scope workdir projet — `<projet_user>/.wex/.env`.** Config wex **par projet**, lue par `WithEnvParametersMixin` quand on est sur ce workdir. Contient typiquement `APP_ENV` du projet, tokens API, chemins locaux.
+
+5. **Scope machine-local projet — `<projet_user>/.wex/local/env.yml`.** State **par machine** du projet (gitignored). Auto-détecté par les addons (`SSH_AUTH_SOCK`, `PDM_BIN_DIR`…) ou rempli interactivement via `core::env/configure`.
+
+⚠️ **Piège de naming** : `WithEnvParametersMixin` porte un nom générique. Il lit en réalité `<workdir>/.wex/.env`, donc il gère **uniquement le scope 4**. À renommer (`WithSetupEnvParameterMixin`, cf. roadmap).
 
 ---
 
-## TL;DR — les deux fichiers du scope wex
+## TL;DR — les trois fichiers du périmètre wex
 
-| Fichier | Format | Édité par | Contenu observé en pratique |
+| Fichier | Scope | Format | Géré par |
 |---|---|---|---|
-| `.wex/.env` | dotenv (`KEY=value`) | `app::env/var_set`, `app::env/set` | `APP_ENV`, tokens (`GITLAB_API_TOKEN`, `GITHUB_API_TOKEN`, `PIPY_TOKEN`), chemins locaux |
-| `.wex/local/env.yml` | YAML | `core::env/configure`, `kernel._auto_detect_env` | Sockets et chemins auto-détectés (`SSH_AUTH_SOCK`, `PDM_BIN_DIR`) |
+| `<install_wex>/.env` | Install (config runtime wex) | dotenv | `AbstractKernel._init_env_file` |
+| `<install_wex>/.env.yml` | Install (config runtime wex, structures complexes) | YAML | `AbstractKernel._init_env_file_yaml` |
+| `<projet>/.wex/.env` | Workdir (config wex du projet) | dotenv | `WithEnvParametersMixin` + `app::env/*` |
+| `<projet>/.wex/local/env.yml` | Machine-local (state du projet) | YAML | `kernel._init_local_env` + `WithLocalDataMixin` |
 
-Les deux finissent dans `kernel.env_config` + `os.environ` après init. La séparation actuelle est un accident d'historique (dotenv v1 → YAML v2), pas une vraie séparation de responsabilités.
+Les deux fichiers `<install_wex>/...` sont **chargés une fois au boot** par le kernel et alimentent `kernel.env_config` + `os.environ`. Les deux fichiers `<projet>/.wex/...` sont **par-projet**, accessibles via le workdir courant.
 
-Tout le reste (mixins Python, décorateurs, commandes) n'est que **machinerie pour lire / écrire / valider** ces deux fichiers.
+**À fusionner** (cf. roadmap) : `<projet>/.wex/.env` (dotenv) + `<projet>/.wex/local/env.yml` (YAML). Les deux scopes install et machine-local restent distincts.
 
 ---
 
@@ -58,13 +68,17 @@ Ajoute `_init_env_file(file_path)` :
 2. `dotenv_values(file_path)` → vars **dans `self.env_config`**
 3. `_validate_env_keys()`
 
-Format dotenv classique. Utilisé pour charger `.wex/.env`.
+Format dotenv classique.
 
 ### `HasYamlEnvKeysFile`
 
 `packages/helpers-yaml/src/wexample_helpers_yaml/classes/mixin/has_yaml_env_keys_file.py`
 
 Variante YAML : charge un YAML, met les clés dans `env_config` ET propage dans `os.environ`.
+
+### À retenir sur ces deux mixins
+
+**Un seul consommateur** : `AbstractKernel`. Aucun workdir, aucun addon n'utilise `_init_env_file` ou `_init_env_file_yaml` ailleurs. Les workdirs lisent leur `.wex/.env` via un mécanisme parallèle (`WithEnvParametersMixin`, ci-dessous), pas via cette chaîne.
 
 ### `WithEnvParametersMixin` — accès workdir vers `.wex/.env`
 
@@ -88,11 +102,27 @@ Lookup avec fallback sur la suite parente : si la var n'est pas trouvée dans le
 
 ## 2. Couche kernel — initialisation au démarrage
 
-`wex/wex-core/src/wexample_wex_core/common/kernel.py`
+`packages/app/src/wexample_app/common/abstract_kernel.py` + `wex/wex-core/src/wexample_wex_core/common/kernel.py`
 
-Le kernel orchestre, au démarrage (`setup()`), deux opérations sur les env :
+Le kernel orchestre, au démarrage (`setup()`), **trois** opérations sur les env :
 
-### `_init_local_env()` — ligne 506
+### `AbstractKernel.setup()` — `.env` et `.env.yml` de l'install
+
+`abstract_kernel.py:83-84` :
+```python
+env_dir_path = Path(self.entrypoint_path).parent  # par défaut
+self._init_env_file(env_dir_path / FILE_NAME_ENV)        # .env
+self._init_env_file_yaml(env_dir_path / FILE_NAME_ENV_YAML)  # .env.yml
+```
+
+`entrypoint_path` est défini à l'instanciation du kernel par `__main__.py` :
+```python
+Wex(entrypoint_path=__file__).exec()
+```
+
+Donc `entrypoint_path.parent` = **racine de l'installation wex** (ex. `local/wex/`). C'est là que vivent le `.env` (config globale dotenv) et le `.env.yml` (config globale YAML, prévu pour les structures complexes).
+
+### `Kernel._init_local_env()` — ligne 506
 
 Lit `.wex/local/env.yml` du workdir courant via `get_local_data("env")` :
 - Tout son contenu est **copié dans `kernel.env_config`**
@@ -100,7 +130,7 @@ Lit `.wex/local/env.yml` du workdir courant via `get_local_data("env")` :
 
 C'est le chemin par lequel un secret stocké en local devient disponible globalement dans le process.
 
-### `_auto_detect_env()` — ligne 205
+### `Kernel._auto_detect_env()` — ligne 205
 
 Pour chaque addon, regarde `addon.get_local_configurable_keys()` (liste de dicts `{key, description, detect, on_apply, default_candidates}`). Pour chaque entrée :
 
