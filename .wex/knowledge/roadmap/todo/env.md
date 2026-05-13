@@ -4,24 +4,34 @@
 
 Doc de référence : `.wex/knowledge/usage/environment-variables.md`.
 
-**Trois univers à ne pas confondre** (établi en audit) :
+**Distinguer ce qui est wex de ce qui ne l'est pas** (établi en audit) :
+
+### Hors périmètre
 
 1. **`os.environ`** — espace POSIX du process, **hors sujet wex**.
    On y touche uniquement pour lire une var qu'on sait être OS-level
    (`SSH_AUTH_SOCK`, `SUDO_UID`…), avec un commentaire qui justifie le choix.
 
-2. **Scope applicatif — `.env` à la racine du projet.** Équivalent du `.env`
-   Symfony, consommé par l'application elle-même (Symfony, runtime Python,
-   Docker compose). **Wex ne le lit jamais.** Hors sujet pour cette roadmap.
+2. **Scope applicatif — `<projet>/.env`** (ou autre nom au choix de l'app).
+   Consommé par l'application elle-même (Symfony, runtime Python, Docker compose).
+   **Wex ne le lit jamais.** Hors sujet pour cette roadmap.
 
-3. **Scope wex — `.wex/.env` + `.wex/local/env.yml`.** La config d'env du
-   gestionnaire wex (le `.wex/` est son répertoire). C'est cet univers qu'on
-   nettoie. Aujourd'hui deux fichiers cohabitent, fonctionnellement convergents,
-   à fusionner.
+### Périmètre wex — trois scopes
+
+3. **Scope install wex — `<install_wex>/.env` + `<install_wex>/.env.yml`.**
+   Config globale du runtime wex, chargée au boot par `AbstractKernel._init_env_file`
+   et `_init_env_file_yaml`. `entrypoint_path.parent` = racine de l'installation
+   (`local/wex/`). Le `.env.yml` est prévu pour les structures complexes
+   (un seul exemple actif côté SYRTIS, commenté).
+
+4. **Scope workdir projet — `<projet>/.wex/.env`.**
+   Config wex par projet, lue par `WithEnvParametersMixin`.
+
+5. **Scope machine-local projet — `<projet>/.wex/local/env.yml`.**
+   State par-machine du projet (gitignored).
 
 **Piège de naming repéré** : `WithEnvParametersMixin` porte un nom générique
-mais lit en réalité `.wex/.env`. Conçu probablement à l'origine pour le
-scope applicatif, dévié vers le scope wex. À renommer ou clarifier.
+mais lit en réalité `<workdir>/.wex/.env`. À renommer (`WithSetupEnvParameterMixin`).
 
 **Objectif** : avoir un système propre et cohérent **avant** d'introduire un
 décorateur `@require_local_env` (déclaration en amont, prompt si manquant,
@@ -31,21 +41,26 @@ persistance dans le bon fichier).
 
 ## Phase 1 — Audit du code existant
 
-- [x] Lister tous les appels `os.environ.get(...)` dans des méthodes de classe
-  → **0 violation réelle**. Le seul cas (`repo_workdir.py:91`) est justifié
-  par un commentaire « OS-level variable ». Les autres occurrences sont dans
-  des helpers d'env, le kernel, ou des fonctions module-level POSIX.
-- [ ] Lister tous les usages de `get_env_parameter()` et
-  `get_env_parameter_or_suite_fallback()` pour valider que la chaîne `env_config`
-  est bien alimentée en amont (sinon le lookup retourne systématiquement le `default`).
-- [ ] Lister tous les usages de `get_expected_env_keys()` : aucun → est-ce mort ?
-  À retirer ou à utiliser ?
-- [ ] Lister les classes qui héritent de `HasEnvKeysFile` / `HasYamlEnvKeysFile`
-  et identifier où sont chargés les fichiers (`_init_env_file`).
-- [ ] Inventaire des contenus réels de `.wex/.env` et `.wex/local/env.yml` sur
-  les projets existants (déjà partiellement fait : voir doc section 8).
-- [ ] Vérifier que **rien dans le code Python wex ne lit `.env` racine**
-  (audit grep confirme déjà : aucun appel hors `.wex/`). Documenter le fait.
+- [x] **1.1 — `os.environ.get(...)` dans des méthodes de classe** : 0 violation
+  réelle. Le seul cas (`repo_workdir.py:91`) est justifié par un commentaire
+  « OS-level variable ». Les autres occurrences sont dans des helpers d'env,
+  le kernel, ou des fonctions module-level POSIX.
+- [x] **1.2 — Usages de `get_env_parameter()` et `get_env_parameter_or_suite_fallback()`** :
+  7/8 OK. 1 cas à reconfirmer : `kernel_registry.py:36` lit `APP_ENV` sur
+  `kernel.env_config`. Tracé : le kernel charge `<install_wex>/.env` au boot
+  via `entrypoint_path = __main__.__file__`, donc `entrypoint_path.parent` =
+  racine de l'install wex, qui contient `APP_ENV=local`. Donc ça marche.
+- [x] **1.4 — Héritiers de `HasEnvKeysFile` / `HasYamlEnvKeysFile`** : un seul
+  consommateur (`AbstractKernel`). Aucun autre code n'utilise `_init_env_file`
+  ou `_init_env_file_yaml`. Les workdirs lisent leur `.wex/.env` via
+  `WithEnvParametersMixin` (lecture directe, mécanisme parallèle).
+- [ ] **1.3 — Usages de `get_expected_env_keys()`** : aucun usage formel dans
+  les workdirs principaux → mort ? À retirer ou à utiliser. (Voir phase 5.)
+- [ ] **1.5 — Inventaire des contenus réels** : fait partiellement (doc section 8).
+  À étendre aux fichiers du scope install (`<install_wex>/.env*`).
+- [x] **1.6 — Vérifier que rien dans le code Python wex ne lit `.env` racine projet**
+  (audit grep confirmé : aucun appel hors `.wex/` côté workdir, et le kernel
+  pointe sur l'install wex, pas sur le projet utilisateur).
 
 ---
 
@@ -65,14 +80,17 @@ Décision à prendre **après** la phase 3 — le naming dépend de ce qui reste
 
 ---
 
-## Phase 3 — Fusion `.wex/.env` + `.wex/local/env.yml` (scope wex uniquement)
+## Phase 3 — Fusion `.wex/.env` + `.wex/local/env.yml` (scope projet uniquement)
 
-**Décision validée** : fusion sur `.wex/local/env.yml` (YAML, dans `local/`
-gitignored). JSON écarté (pas de commentaires), TOML écarté (cohérence stack
-> optim marginale).
+**Décision validée** : fusion sur `<projet>/.wex/local/env.yml` (YAML, dans
+`local/` gitignored). JSON écarté (pas de commentaires), TOML écarté
+(cohérence stack > optim marginale).
 
-⚠️ Cette fusion concerne **uniquement le scope wex**. Le `.env` racine
-(applicatif) reste indépendant, on n'y touche pas.
+⚠️ **Périmètre strict** : cette fusion concerne **uniquement les deux fichiers
+du scope projet** (`<projet>/.wex/.env` et `<projet>/.wex/local/env.yml`).
+- Le `<projet>/.env` racine (applicatif) reste indépendant — wex ne le touche pas.
+- Les fichiers du scope install (`<install_wex>/.env` et `<install_wex>/.env.yml`)
+  restent séparés — ils ont un rôle distinct (config runtime).
 
 - [ ] Étendre le lecteur du YAML runner (`core_yaml_command_runner._build_variables`)
   pour qu'il lise le YAML en plus de `.wex/.env`.
@@ -81,6 +99,10 @@ gitignored). JSON écarté (pas de commentaires), TOML écarté (cohérence stac
 - [ ] Faire évoluer `WithEnvParametersMixin` (ou son successeur) pour lire le YAML.
 - [ ] Migration des projets existants : script qui lit chaque `.wex/.env` et le
   fusionne dans `.wex/local/env.yml`, en archivant l'ancien.
+- [ ] Décider du sort de `HasYamlEnvKeysFile` côté kernel : soit on garde le
+  mécanisme et on le branche aussi sur `<projet>/.wex/local/env.yml` (au lieu
+  de juste `<install_wex>/.env.yml`), soit on le vire et le kernel utilise
+  `WithLocalDataMixin` directement.
 - [ ] Mettre à jour la doc une fois la fusion faite.
 
 ---
