@@ -57,7 +57,9 @@ Mixins génériques, vivent dans `wexample_helpers` / `wexample_helpers_yaml`. I
 | `_init_env(env_dict)` | Remplace `env_config` puis valide |
 | `_validate_env_keys()` | Raise `MissingRequiredEnvVarError` si une clé requise manque |
 
-**À retenir** : `get_env_parameter()` (sur le mixin de base) ne renvoie que ce qu'il y a dans `env_config`. Il ne lit pas `os.environ` — c'est volontaire, les deux univers sont séparés. Les sous-classes (`WithEnvParametersMixin`, etc.) peuvent étendre la lecture vers d'autres sources.
+**À retenir** :
+- `get_env_parameter()` (sur le mixin de base) ne renvoie que ce qu'il y a dans `env_config`. Il ne lit pas `os.environ` — c'est volontaire, les deux univers sont séparés. Les sous-classes (`WithEnvParametersMixin`, etc.) peuvent étendre la lecture vers d'autres sources.
+- **`get_expected_env_keys()` est le mécanisme officiel de centralisation** des vars requises pensé pour irriguer toute l'app. À override sur chaque classe qui dépend d'une var d'env. Aujourd'hui sous-utilisé (seul `AbstractKernel` déclare `["APP_ENV"]`), mais l'intention de design est de l'employer partout — pas de le contourner avec des `os.environ.get()` ad hoc. Validation au boot via `_validate_env_keys()`, et liste exposée par la commande `core::health/check`.
 
 ### `HasEnvKeysFile`
 
@@ -310,7 +312,14 @@ Donc dans un YAML, `${VAR}` résout dans cet ordre.
 
 - **`get_env_parameter()` est volontairement séparé de `os.environ`.** Il renvoie la **config d'env wex** (chargée depuis les fichiers ci-dessus), pas une var système POSIX. Pour lire une var OS-level (`SSH_AUTH_SOCK`, `SUDO_UID`, etc.), on utilise `os.environ.get()` explicitement, avec un commentaire qui justifie le choix.
 
-- **Aucun usage formel de `get_expected_env_keys()`** dans les workdirs principaux : la validation `_validate_env_keys()` n'est appelée qu'au moment des `_init_*`, donc rate les besoins exprimés plus tard dans le code.
+- **Usage formel de `get_expected_env_keys()` minimal** : seul `AbstractKernel` déclare une clé (`["APP_ENV"]`). Le mécanisme est en place mais sous-utilisé. C'est l'**intention officielle** : chaque classe qui a besoin d'une var devrait la déclarer ici. Voir roadmap phase 5.
+
+- **Trois niveaux de déclaration complémentaires** (pas concurrents) :
+  - **Classe** : `get_expected_env_keys()` — besoin structurel d'une classe, validation au boot
+  - **Addon** : `get_local_configurable_keys()` — auto-détection au boot + prompt via `core::env/configure`
+  - **Commande** : `@require_local_env` (à venir) — prompt avant exécution d'une commande spécifique
+  
+  Chaque niveau couvre un cas d'usage distinct. Aucun ne remplace les autres.
 
 - **`.env.yml` au niveau install est quasi-mort** : un seul exemple (commenté) dans tout le code. Le mécanisme `HasYamlEnvKeysFile` n'est utilisé que par le kernel et n'a presque jamais servi.
 
@@ -323,3 +332,4 @@ Donc dans un YAML, `${VAR}` résout dans cet ordre.
 - Lire une var de config wex via `os.environ.get()` dans une méthode de classe → toujours `self.get_env_parameter()`.
 - Lire une var OS-level via `self.get_env_parameter()` → utiliser `os.environ.get()` avec un commentaire qui dit pourquoi.
 - Pointer vers un fichier de config wex dans un message d'erreur sans préciser **quelle commande wex utiliser** pour le configurer.
+- **Contourner la centralisation** des vars requises. Toute classe qui a besoin d'une var d'env doit la déclarer via `get_expected_env_keys()` (intention officielle de centralisation). Lire `os.environ` à la volée ou ouvrir un `.env` manuellement avec `dotenv`/`open()`/`read_text()`/etc. **dans une méthode de classe** contourne ce dispositif et casse la promesse de check au boot.

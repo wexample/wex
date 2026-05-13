@@ -54,10 +54,20 @@ persistance dans le bon fichier).
   consommateur (`AbstractKernel`). Aucun autre code n'utilise `_init_env_file`
   ou `_init_env_file_yaml`. Les workdirs lisent leur `.wex/.env` via
   `WithEnvParametersMixin` (lecture directe, mécanisme parallèle).
-- [ ] **1.3 — Usages de `get_expected_env_keys()`** : aucun usage formel dans
-  les workdirs principaux → mort ? À retirer ou à utiliser. (Voir phase 5.)
-- [ ] **1.5 — Inventaire des contenus réels** : fait partiellement (doc section 8).
-  À étendre aux fichiers du scope install (`<install_wex>/.env*`).
+- [x] **1.3 — Usages de `get_expected_env_keys()`** : pas mort, juste sous-utilisé.
+  Une seule classe déclare une clé réelle (`AbstractKernel` → `["APP_ENV"]`).
+  Consommé par `_validate_env_keys()` (au boot) et `core::health/check`.
+  **Intention officielle** : c'est le mécanisme de **centralisation** des vars
+  requises, pensé pour irriguer toute l'app. À **promouvoir** (cf. phase 5),
+  pas à retirer. Les abus `os.environ.get()` direct et `read .env` direct sont
+  des contournements à proscrire.
+- [x] **1.5 — Inventaire des contenus réels** :
+  - `<projet>/.wex/.env` : **252 instances** (ubiquitaire)
+  - `<projet>/.wex/local/env.yml` : **1 seule instance** (l'install wex elle-même)
+  - `<install_wex>/.env` : `APP_ENV=local` + `PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH`
+  - `<install_wex>/.env.yml` : **absent en pratique**
+  - `.env.yml` ailleurs : **1 seul** (SYRTIS/core, commenté)
+  - Autres installs `wex-5/`, `wex-5-legacy/` : **legacy**, seule `wex/` est l'install valide.
 - [x] **1.6 — Vérifier que rien dans le code Python wex ne lit `.env` racine projet**
   (audit grep confirmé : aucun appel hors `.wex/` côté workdir, et le kernel
   pointe sur l'install wex, pas sur le projet utilisateur).
@@ -92,18 +102,39 @@ du scope projet** (`<projet>/.wex/.env` et `<projet>/.wex/local/env.yml`).
 - Les fichiers du scope install (`<install_wex>/.env` et `<install_wex>/.env.yml`)
   restent séparés — ils ont un rôle distinct (config runtime).
 
+### Stratégie de migration
+
+Utiliser le mécanisme de migrations existant (`wex-addon-app/migrations/`,
+fichiers `migration_wex_X_Y_Z.py` héritant d'`AbstractMigration`).
+
+**Approche progressive, non destructive** :
+
+1. **Migration v6.0.X — copie** : pour chaque projet wex détecté, copier le
+   contenu de `.wex/.env` dans `.wex/local/env.yml`. Le `.env` est **gardé
+   tel quel** (legacy).
+2. **Le code lit en priorité `.wex/local/env.yml`**, et tombe en fallback sur
+   `.wex/.env` si une clé manque. Garantit que les vieux projets fonctionnent
+   sans intervention.
+3. **Migration v7.X.X de cleanup (dans ~1 an)** : supprime `.wex/.env` une
+   fois que tous les projets actifs sont passés sur le YAML. Pas avant.
+
+### Tâches
+
 - [ ] Étendre le lecteur du YAML runner (`core_yaml_command_runner._build_variables`)
   pour qu'il lise le YAML en plus de `.wex/.env`.
+- [ ] Faire évoluer `WithEnvParametersMixin` pour lire d'abord `.wex/local/env.yml`,
+  puis tomber en fallback sur `.wex/.env`.
 - [ ] Aligner les commandes `app::env/var_set` / `var_get` / `var_list` / `set` / `get`
-  pour qu'elles écrivent dans `.wex/local/env.yml`.
-- [ ] Faire évoluer `WithEnvParametersMixin` (ou son successeur) pour lire le YAML.
-- [ ] Migration des projets existants : script qui lit chaque `.wex/.env` et le
-  fusionne dans `.wex/local/env.yml`, en archivant l'ancien.
+  pour qu'elles **écrivent** dans `.wex/local/env.yml` (lectures depuis les deux).
+- [ ] Écrire la migration `migration_wex_X_Y_Z.py` qui copie le contenu de
+  `.wex/.env` vers `.wex/local/env.yml` (sans supprimer `.env`).
 - [ ] Décider du sort de `HasYamlEnvKeysFile` côté kernel : soit on garde le
   mécanisme et on le branche aussi sur `<projet>/.wex/local/env.yml` (au lieu
   de juste `<install_wex>/.env.yml`), soit on le vire et le kernel utilise
   `WithLocalDataMixin` directement.
 - [ ] Mettre à jour la doc une fois la fusion faite.
+- [ ] Noter dans la roadmap (todo futur) : migration de cleanup `.wex/.env`
+  dans ~1 an.
 
 ---
 
@@ -118,20 +149,34 @@ du scope projet** (`<projet>/.wex/.env` et `<projet>/.wex/local/env.yml`).
 
 ---
 
-## Phase 5 — Faire le ménage sur `get_expected_env_keys()`
+## Phase 5 — Promouvoir `get_expected_env_keys()` et clarifier les 3 niveaux
 
-Aujourd'hui le mécanisme existe mais n'est utilisé nulle part dans les workdirs
-principaux. Deux options :
+**Décision** : `get_expected_env_keys()` **n'est pas mort, il est sous-utilisé**.
+C'est l'**intention officielle** de centralisation des variables d'env requises
+qui doit irriguer toute l'app. Les contournements (`os.environ.get()`
+direct dans une méthode de classe, `read .env` direct via dotenv ou autre)
+sont des **anti-patterns à proscrire**.
 
-- [ ] **Option A** : l'activer — chaque workdir déclare ses vars requises,
-  validation au boot. Utile si on veut un check précoce sans décorateur.
-- [ ] **Option B** : le retirer — code mort. Le futur `@require_local_env`
-  fera le job au niveau commande, plus granulaire.
+### Les trois mécanismes sont complémentaires (pas concurrents)
 
-⚠️ **Chevauchement conceptuel** avec `addon.get_local_configurable_keys()`
-(côté addons, déjà actif via `_auto_detect_env` + `core::env/configure`).
-Trois mécanismes potentiellement concurrents pour la même idée
-(déclaration de vars requises) : à arbitrer en un seul, pas en garder trois.
+| Niveau | Mécanisme | Déclenchement | Cas d'usage |
+|---|---|---|---|
+| Classe | `get_expected_env_keys()` | Au boot / `_init_*` | Besoin structurel d'une classe (`GitlabRemote` → `GITLAB_API_TOKEN`) |
+| Addon | `get_local_configurable_keys()` | `_auto_detect_env` + `core::env/configure` | Var système auto-détectable (`SSH_AUTH_SOCK`) |
+| Commande | `@require_local_env` (futur) | Avant exécution de la commande | Var nécessaire pour cette commande (token pour `app::release/publish`) |
+
+`@require_local_env` à lui seul **ne suffit pas** pour tous les usages — il
+ne couvre que le niveau commande. Les besoins de bas niveau (classes, librairies)
+restent du ressort de `get_expected_env_keys()`.
+
+### Tâches
+
+- [ ] Documenter explicitement les trois niveaux dans la doc env, avec exemples.
+- [ ] Identifier les classes qui devraient déclarer leurs vars via
+  `get_expected_env_keys()` (workdirs, connecteurs, gateways, addons,
+  stratégies de publication…) et les enrichir.
+- [ ] S'assurer que chaque niveau a un message d'erreur clair qui pointe vers
+  la commande wex à lancer pour fixer (pas vers le shell).
 
 ---
 
