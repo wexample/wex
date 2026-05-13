@@ -51,14 +51,15 @@ persistance dans le bon fichier).
 
 ## Phase 2 — Clarifier le naming de `WithEnvParametersMixin`
 
-Le mixin lit `.wex/.env` mais son nom suggère un mixin générique. Trois options :
+Le mixin lit `.wex/.env` mais son nom suggère un mixin générique. Convention
+interne : `.wex/` est appelé le « setup ». Trois options :
 
-- [ ] **Option A** : renommer en `WithWexEnvParametersMixin` ou
-  `WithWexDotEnvMixin` pour expliciter le scope.
+- [ ] **Option A** : renommer en `WithSetupEnvParameterMixin` (aligné sur la
+  convention « setup = `.wex/` », cohérent avec la constante `WORKDIR_SETUP_DIR`).
 - [ ] **Option B** : laisser le nom, ajouter un commentaire de classe qui
   explicite ce qu'il fait (et ce qu'il ne fait pas).
 - [ ] **Option C** : si on fusionne sur YAML (phase 3), le mixin disparaît
-  ou devient `WithWexEnvYamlMixin`.
+  ou devient `WithSetupEnvYamlMixin`.
 
 Décision à prendre **après** la phase 3 — le naming dépend de ce qui reste.
 
@@ -104,6 +105,11 @@ principaux. Deux options :
   validation au boot. Utile si on veut un check précoce sans décorateur.
 - [ ] **Option B** : le retirer — code mort. Le futur `@require_local_env`
   fera le job au niveau commande, plus granulaire.
+
+⚠️ **Chevauchement conceptuel** avec `addon.get_local_configurable_keys()`
+(côté addons, déjà actif via `_auto_detect_env` + `core::env/configure`).
+Trois mécanismes potentiellement concurrents pour la même idée
+(déclaration de vars requises) : à arbitrer en un seul, pas en garder trois.
 
 ---
 
