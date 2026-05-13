@@ -40,7 +40,7 @@ Mixins génériques, vivent dans `wexample_helpers` / `wexample_helpers_yaml`. I
 | Membre | Rôle |
 |---|---|
 | `env_config: dict[str, str \| None]` | Dict en mémoire, source de vérité pour cette instance |
-| `get_env_parameter(key, default=UNSET)` | Lit dans `env_config` uniquement. **Ne lit pas `os.environ`.** Raise `KeyNotFoundError` si manquant et pas de `default` |
+| `get_env_parameter(key, default=UNSET)` | Lit dans `env_config` uniquement (volontaire : voir « À retenir » plus bas). Raise `KeyNotFoundError` si manquant et pas de `default` |
 | `set_env_parameter(key, value)` / `set_env_parameters(dict)` | Écrit dans `env_config` (en mémoire seulement) |
 | `get_expected_env_keys()` | À override : liste des clés requises pour cette classe |
 | `_get_missing_env_keys(required)` | Compare aux clés requises **en regardant `os.environ` ET `env_config`** |
@@ -276,7 +276,8 @@ Donc dans un YAML, `${VAR}` résout dans cet ordre.
 
 ### Anti-pattern à éviter
 
-- Confondre « env » au sens wex (config projet) avec `os.environ` (espace POSIX). Ce sont **deux univers distincts**.
+- Confondre la **config du gestionnaire wex** (`.wex/.env`, `.wex/local/env.yml`) avec `os.environ` (espace POSIX). **Deux univers distincts.**
+- Confondre la **config du gestionnaire wex** (`.wex/.env`) avec le **`.env` applicatif** à la racine du projet. **Deux univers distincts.** Wex ne lit jamais le `.env` racine.
 - Lire une var de config wex via `os.environ.get()` dans une méthode de classe → toujours `self.get_env_parameter()`.
 - Lire une var OS-level via `self.get_env_parameter()` → utiliser `os.environ.get()` avec un commentaire qui dit pourquoi.
-- Pointer vers `.wex/.env` dans un message d'erreur pour un **secret machine**. Le secret va dans `.wex/local/env.yml` (via `core::env/configure`).
+- Pointer vers un fichier de config wex dans un message d'erreur sans préciser **quelle commande wex utiliser** pour le configurer.
