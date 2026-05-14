@@ -16,11 +16,11 @@ Topo complet de tous les mécanismes liés aux « env » dans le code. Plusieurs
 
 3. **Scope install wex — `<install_wex>/.env.yml`.** Config **globale du runtime wex**, à la racine de l'installation (`local/wex/`). Chargée au boot par `AbstractKernel._init_env_file_yaml`. Wex étant lui-même un projet python, son `APP_ENV` vit ici, ainsi que toute config globale du runtime (chemins, structures complexes…).
 
-4. **Scope projet (machine-local) — `<projet_user>/.wex/local/env.yml`.** Config wex **par projet, par machine** (gitignored). Lue par `WithEnvParametersMixin` et `kernel._init_local_env`. Contient typiquement `APP_ENV` du projet, tokens API, chemins locaux, sockets, etc. Rempli par les commandes `app::env/*`, `core::env/configure`, ou auto-détecté par les addons.
+4. **Scope projet (machine-local) — `<projet_user>/.wex/local/env.yml`.** Config wex **par projet, par machine** (gitignored). Lue par `WithSetupEnvParameterMixin` et `kernel._init_local_env`. Contient typiquement `APP_ENV` du projet, tokens API, chemins locaux, sockets, etc. Rempli par les commandes `app::env/*`, `core::env/configure`, ou auto-détecté par les addons.
 
 > **Note legacy** : avant la migration `wex 6.0.26`, le scope projet vivait dans `<projet>/.wex/.env` (dotenv). Ces fichiers existent encore physiquement sur les projets non encore migrés, mais ne sont **plus lus** par wex. Une migration de cleanup les supprimera dans ~1 an.
 
-⚠️ **Piège de naming** : `WithEnvParametersMixin` porte un nom générique. Il gère en réalité le scope projet (`<workdir>/.wex/local/env.yml`). À renommer (`WithSetupEnvParameterMixin`, cf. roadmap).
+Le nom `WithSetupEnvParameterMixin` reflète la convention interne : « setup » = `.wex/` (le répertoire de setup d'un projet wex), cohérent avec la constante `WORKDIR_SETUP_DIR`.
 
 ---
 
@@ -29,7 +29,7 @@ Topo complet de tous les mécanismes liés aux « env » dans le code. Plusieurs
 | Fichier | Scope | Format | Géré par |
 |---|---|---|---|
 | `<install_wex>/.env.yml` | Install (config runtime wex) | YAML | `AbstractKernel._init_env_file_yaml` |
-| `<projet>/.wex/local/env.yml` | Projet, machine-local | YAML | `WithEnvParametersMixin` + `kernel._init_local_env` + `WithLocalDataMixin` |
+| `<projet>/.wex/local/env.yml` | Projet, machine-local | YAML | `WithSetupEnvParameterMixin` + `kernel._init_local_env` + `WithLocalDataMixin` |
 
 Les deux sont chargés au boot par le kernel et alimentent `kernel.env_config` + `os.environ`. **YAML partout**, plus de dotenv côté wex.
 
@@ -56,7 +56,7 @@ Mixins génériques, vivent dans `wexample_helpers` / `wexample_helpers_yaml`. I
 | `_validate_env_keys()` | Raise `MissingRequiredEnvVarError` si une clé requise manque |
 
 **À retenir** :
-- `get_env_parameter()` (sur le mixin de base) ne renvoie que ce qu'il y a dans `env_config`. Il ne lit pas `os.environ` — c'est volontaire, les deux univers sont séparés. Les sous-classes (`WithEnvParametersMixin`, etc.) peuvent étendre la lecture vers d'autres sources.
+- `get_env_parameter()` (sur le mixin de base) ne renvoie que ce qu'il y a dans `env_config`. Il ne lit pas `os.environ` — c'est volontaire, les deux univers sont séparés. Les sous-classes (`WithSetupEnvParameterMixin`, etc.) peuvent étendre la lecture vers d'autres sources.
 - **`get_expected_env_keys()` est le mécanisme officiel de centralisation** des vars requises pensé pour irriguer toute l'app. À override sur chaque classe qui dépend d'une var d'env. Aujourd'hui sous-utilisé (seul `AbstractKernel` déclare `["APP_ENV"]`), mais l'intention de design est de l'employer partout — pas de le contourner avec des `os.environ.get()` ad hoc. Validation au boot via `_validate_env_keys()`, et liste exposée par la commande `core::health/check`.
 
 ### `HasEnvKeysFile`
@@ -78,11 +78,11 @@ Variante YAML : charge un YAML, met les clés dans `env_config` ET propage dans 
 
 ### À retenir sur ces deux mixins
 
-**Un seul consommateur** : `AbstractKernel`. Aucun workdir, aucun addon n'utilise `_init_env_file` ou `_init_env_file_yaml` ailleurs. Les workdirs lisent leur `.wex/.env` via un mécanisme parallèle (`WithEnvParametersMixin`, ci-dessous), pas via cette chaîne.
+**Un seul consommateur** : `AbstractKernel`. Aucun workdir, aucun addon n'utilise `_init_env_file_yaml` ailleurs. Les workdirs lisent leur `.wex/local/env.yml` via un mécanisme parallèle (`WithSetupEnvParameterMixin`, ci-dessous), pas via cette chaîne.
 
-### `WithEnvParametersMixin` — accès workdir vers `.wex/.env`
+### `WithSetupEnvParameterMixin` — accès workdir vers `.wex/local/env.yml`
 
-`packages/app/src/wexample_app/workdir/mixin/with_env_parameters_mixin.py`
+`packages/app/src/wexample_app/workdir/mixin/with_setup_env_parameter_mixin.py`
 
 Hérite de `HasEnvKeys`. Spécialise `get_env_parameter()` pour qu'il :
 1. Lise **d'abord directement le fichier `.wex/local/env.yml`** via `YamlFile.create_from_path()`
@@ -175,7 +175,7 @@ Fichier YAML, gitignored. Héberge `APP_ENV` (`local`, `dev`, `prod`…) et tout
 ### Chargement
 
 - Chemin : `<projet>/.wex/local/env.yml`
-- Lu directement par `WithEnvParametersMixin` (qui hérite de `HasEnvKeys`)
+- Lu directement par `WithSetupEnvParameterMixin` (qui hérite de `HasEnvKeys`)
 - Aussi propagé dans `os.environ` au boot par `kernel._init_local_env()` (via `WithLocalDataMixin`)
 - Référence : `core_yaml_command_runner._build_variables` utilise ce fichier comme **base de variables** pour la substitution dans les scripts YAML, surchargée par `os.environ`, surchargée par les options de commande.
 
@@ -289,11 +289,9 @@ Post-migration `wex 6.0.26` — **YAML partout** côté wex.
 
 ### Sources de confusion résiduelles
 
-- **Naming de `WithEnvParametersMixin`** : nom générique qui cache le scope réel (`<workdir>/.wex/local/env.yml`). À renommer en `WithSetupEnvParameterMixin` (cf. roadmap).
-
 - **Deux mécanismes parallèles** pour charger un fichier de config wex :
   - Côté kernel : `HasYamlEnvKeysFile._init_env_file_yaml()` → `<install_wex>/.env.yml`
-  - Côté workdir : `WithEnvParametersMixin` → `<workdir>/.wex/local/env.yml` (lecture directe)
+  - Côté workdir : `WithSetupEnvParameterMixin` → `<workdir>/.wex/local/env.yml` (lecture directe)
   
   Pas une duplication fonctionnelle (cibles différentes), mais deux chemins de code qui font la même chose mécaniquement.
 

@@ -14,16 +14,6 @@ Hors périmètre wex : `os.environ` (POSIX), `<projet>/.env` racine (applicatif)
 
 ---
 
-## Phase 2 — Renommer `WithEnvParametersMixin`
-
-Le mixin gère le scope projet wex (`<workdir>/.wex/local/env.yml`) mais son nom suggère un mixin générique d'env. À aligner sur la convention « setup = `.wex/` ».
-
-- [ ] Renommer en `WithSetupEnvParameterMixin` (cohérent avec `WORKDIR_SETUP_DIR`).
-- [ ] Mettre à jour tous les usages.
-- [ ] Mettre à jour la doc.
-
----
-
 ## Phase 4 — Messages d'erreur cohérents
 
 - [ ] Auditer tous les messages d'erreur qui mentionnent `.wex/.env` ou un nom de var :
