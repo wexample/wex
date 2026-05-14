@@ -8,7 +8,9 @@ Topo complet de tous les mécanismes liés aux « env » dans le code. Plusieurs
 
 ### Hors périmètre wex
 
-1. **`os.environ`** — espace POSIX du process, hérité du shell parent. Géré par l'OS. On y touche **uniquement** quand on lit une var qu'on sait être OS-level (`SSH_AUTH_SOCK`, `SUDO_UID`, `PATH`, etc.). **Pas le sujet de cette doc.**
+1. **`os.environ`** — espace POSIX du process, hérité du shell parent. Géré par l'OS. Ce n'est **pas un système de stockage wex** : sa seule utilité côté wex est de servir de **pont vers les sous-process** (docker compose, shell scripts) lancés depuis une commande wex. La source de vérité reste `.wex/local/env.yml`. On lit `os.environ.get()` directement uniquement pour les vars qu'on sait être OS-level (`SSH_AUTH_SOCK`, `SUDO_UID`, `PATH`, etc.).
+
+   > Le `kernel._init_local_env()` qui propage `.wex/local/env.yml` dans `os.environ` au boot ne contredit pas ce point : c'est juste une commodité pour que les sous-process lancés pendant la session voient ces vars sans qu'on ait à les passer explicitement à chaque appel. Le YAML reste l'unique source de vérité.
 
 2. **Scope applicatif — `<projet_user>/.env`** à la racine du projet. Équivalent du `.env` Symfony : consommé directement par l'application elle-même (PHP, Python, Docker compose, runtime…). **Wex ne le lit jamais.** Le projet le gère lui-même, et peut d'ailleurs utiliser n'importe quel nom de fichier (`.env`, `.env.local`, `.trilili-vars`, etc.) — c'est l'app qui décide.
 
