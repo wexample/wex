@@ -261,7 +261,68 @@ Donc dans un YAML, `${VAR}` résout dans cet ordre.
 
 ---
 
-## 8. Tableau de décision — où ranger quoi
+## 8. Déclarer les vars requises — les trois niveaux complémentaires
+
+Une var d'env peut être déclarée comme requise à **trois niveaux distincts**, selon où vit le besoin. Ce ne sont pas des alternatives concurrentes : chacune couvre un cas d'usage que les autres ne traitent pas.
+
+### Niveau classe — `get_expected_env_keys()`
+
+Une classe (workdir, gateway, connecteur…) déclare les vars qu'elle a structurellement besoin pour fonctionner. Validation au boot via `_validate_env_keys()`.
+
+**Exemple réel** — `AbstractKernel` :
+```python
+def get_expected_env_keys(self) -> list[str]:
+    return [ENV_VAR_NAME_APP_ENV]   # = ["APP_ENV"]
+```
+
+→ Au démarrage de wex, si `APP_ENV` n'est dans ni `env_config` ni `os.environ`, raise `MissingRequiredEnvVarError`. Pas de surprise plus tard dans l'exécution.
+
+**Quand l'utiliser** : la classe ne peut pas fonctionner du tout sans cette var, dans aucun workflow. Cas rare en pratique — la plupart des besoins sont conditionnels (cf. niveau commande).
+
+### Niveau addon — `get_local_configurable_keys()`
+
+Un addon déclare les vars **système** qu'il sait auto-détecter et persister dans `.wex/local/env.yml`. Triggered au boot par `kernel._auto_detect_env()` et manuellement par `core::env/configure`.
+
+**Exemple réel** — `AppAddonManager.get_local_configurable_keys()` :
+```python
+return [{
+    "key": "SSH_AUTH_SOCK",
+    "description": "SSH agent socket — required for git push/pull over SSH",
+    "detect": detect_ssh_socket,
+    "default_candidates": [
+        "/run/user/1000/keyring/ssh",
+        "/run/user/1000/gnupg/S.gpg-agent.ssh",
+    ],
+}]
+```
+
+→ Au boot, si `SSH_AUTH_SOCK` n'est pas dans `os.environ`, on essaie de le deviner via `detect_ssh_socket`. Si trouvé, on le persiste dans `.wex/local/env.yml` et on l'injecte dans `os.environ` pour la session.
+
+**Quand l'utiliser** : var système typique de la machine, détectable par heuristique, qu'on veut configurer une fois pour toutes (idéalement sans demander à l'utilisateur).
+
+### Niveau commande — `@require_local_env` (à venir, cf. roadmap Phase 7)
+
+Une commande déclare les vars qu'elle a besoin pour s'exécuter. Check effectué **avant** l'exécution ; prompt à l'utilisateur si manquante ; valeur persistée dans `.wex/local/env.yml` ; commande continue avec la nouvelle valeur disponible.
+
+**Cas d'usage cibles** (issus de l'audit Phase 5) :
+- `app::release/publish` → token de publication (PyPI, GitLab, GitHub…). Var nécessaire **uniquement** pour cette commande, pas pour toute opération sur le workdir.
+- Toute commande qui a un pré-requis ponctuel non auto-détectable.
+
+→ Couvre le cas où `get_expected_env_keys()` serait trop strict (forcerait la var au boot même si on n'utilise jamais la commande) et où `get_local_configurable_keys()` ne s'applique pas (pas d'heuristique de détection).
+
+### Tableau récapitulatif
+
+| Niveau | Mécanisme | Déclenchement | Si manquante |
+|---|---|---|---|
+| Classe | `get_expected_env_keys()` | Au boot / `_init_*` | Raise `MissingRequiredEnvVarError` |
+| Addon | `get_local_configurable_keys()` | Boot (auto-détect) ou `core::env/configure` | Auto-détection ; sinon prompt manuel |
+| Commande | `@require_local_env` (futur) | Avant exécution de la commande | Prompt l'utilisateur, persiste, continue |
+
+**Anti-pattern** : lire une var via `os.environ.get()` ou `dotenv` directement dans une méthode de classe. Ça contourne ces trois mécanismes — l'erreur sort tard, sans message exploitable, et la var n'apparaît dans aucun inventaire.
+
+---
+
+## 9. Tableau de décision — où ranger quoi
 
 Post-migration `wex 6.0.26` — **YAML partout** côté wex.
 
@@ -278,7 +339,7 @@ Post-migration `wex 6.0.26` — **YAML partout** côté wex.
 
 ---
 
-## 9. État des lieux — ce qui marche, ce qui pue
+## 10. État des lieux — ce qui marche, ce qui pue
 
 ### Justifié et propre
 
@@ -299,14 +360,7 @@ Post-migration `wex 6.0.26` — **YAML partout** côté wex.
 
 - **`get_env_parameter()` est volontairement séparé de `os.environ`.** Il renvoie la **config d'env wex** (chargée depuis les fichiers ci-dessus), pas une var système POSIX. Pour lire une var OS-level (`SSH_AUTH_SOCK`, `SUDO_UID`, etc.), on utilise `os.environ.get()` explicitement, avec un commentaire qui justifie le choix.
 
-- **Usage formel de `get_expected_env_keys()` minimal** : seul `AbstractKernel` déclare une clé (`["APP_ENV"]`). Le mécanisme est en place mais sous-utilisé. C'est l'**intention officielle** : chaque classe qui a besoin d'une var devrait la déclarer ici. Voir roadmap phase 5.
-
-- **Trois niveaux de déclaration complémentaires** (pas concurrents) :
-  - **Classe** : `get_expected_env_keys()` — besoin structurel d'une classe, validation au boot
-  - **Addon** : `get_local_configurable_keys()` — auto-détection au boot + prompt via `core::env/configure`
-  - **Commande** : `@require_local_env` (à venir) — prompt avant exécution d'une commande spécifique
-  
-  Chaque niveau couvre un cas d'usage distinct. Aucun ne remplace les autres.
+- **Usage formel de `get_expected_env_keys()` minimal** : seul `AbstractKernel` déclare une clé (`["APP_ENV"]`). Audit Phase 5 a montré qu'**aucune autre classe n'a un besoin structurel** d'une var d'env (les vrais besoins sont conditionnels → niveau commande). Donc le mécanisme reste utile pour `APP_ENV` mais ne sera pas massivement enrichi. Cf. section 8 pour le détail des trois niveaux.
 
 - **`.env.yml` au niveau install est quasi-mort** : un seul exemple (commenté) dans tout le code. Le mécanisme `HasYamlEnvKeysFile` n'est utilisé que par le kernel et n'a presque jamais servi.
 
