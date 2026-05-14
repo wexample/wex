@@ -14,17 +14,6 @@ Hors périmètre wex : `os.environ` (POSIX), `<projet>/.env` racine (applicatif)
 
 ---
 
-## Phase 4 — Messages d'erreur cohérents
-
-- [ ] Auditer tous les messages d'erreur qui mentionnent `.wex/.env` ou un nom de var :
-  pointer vers `.wex/local/env.yml` et la bonne commande wex.
-- [ ] Remplacer les messages « set env var X » par des consignes exploitables
-  sans toucher au shell : nom de commande wex à lancer.
-- [ ] Cas concret à fixer : `branch_merge_publication_strategy.py:166`
-  (« or add it to .wex/.env »).
-
----
-
 ## Phase 5 — Promouvoir `get_expected_env_keys()` et clarifier les 3 niveaux
 
 **Décision** : `get_expected_env_keys()` **n'est pas mort, il est sous-utilisé**.
