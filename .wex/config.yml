@@ -5,3 +5,5 @@ global:
   version: 6.0.72
 libraries:
 - ${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}
+wex:
+  version: 6.0.28
