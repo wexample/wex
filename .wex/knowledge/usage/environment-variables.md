@@ -263,9 +263,20 @@ Donc dans un YAML, `${VAR}` résout dans cet ordre.
 
 ---
 
-## 8. Déclarer les vars requises — les trois niveaux complémentaires
+## 8. Déclarer les vars requises — les cinq niveaux complémentaires
 
-Une var d'env peut être déclarée comme requise à **trois niveaux distincts**, selon où vit le besoin. Ce ne sont pas des alternatives concurrentes : chacune couvre un cas d'usage que les autres ne traitent pas.
+Une var d'env peut être déclarée comme requise à **cinq niveaux distincts**, selon où vit le besoin. Ce ne sont pas des alternatives concurrentes : chacune couvre un cas d'usage que les autres ne traitent pas.
+
+### Tableau récapitulatif
+
+| Niveau | Mécanisme | Format | Déclenchement | Cas d'usage |
+|---|---|---|---|---|
+| Classe | `get_expected_env_keys()` | Python (override) | Au boot / `_init_*` | Besoin structurel d'une classe |
+| Addon | `get_local_configurable_keys()` | Python (override) | Boot ou `core::env/configure` | Var système auto-détectable |
+| Commande | `@require_local_env` | Python (décorateur) | Avant exécution commande | Var nécessaire à une commande |
+| **Service** | `service.yml → vars:` | YAML déclaratif | À `service/install` | Var nécessaire au service installé |
+| **App** | `config.yml → vars:` *(à venir)* | YAML déclaratif | À `app::start` ou commandes qui en dépendent | Var spécifique à l'app, hors service |
+
 
 ### Niveau classe — `get_expected_env_keys()`
 
@@ -371,15 +382,56 @@ check_env_requirements(
 
 → Couvre le cas où `get_expected_env_keys()` serait trop strict (forcerait la var au boot même si on n'utilise jamais la commande) et où `get_local_configurable_keys()` ne s'applique pas (pas d'heuristique de détection).
 
-### Tableau récapitulatif
+### Niveau service — `service.yml → vars:`
 
-| Niveau | Mécanisme | Déclenchement | Si manquante |
-|---|---|---|---|
-| Classe | `get_expected_env_keys()` | Au boot / `_init_*` | Raise `MissingRequiredEnvVarError` |
-| Addon | `get_local_configurable_keys()` | Boot (auto-détect) ou `core::env/configure` | Auto-détection ; sinon prompt manuel |
-| Commande | `@require_local_env` (futur) | Avant exécution de la commande | Prompt l'utilisateur, persiste, continue |
+Un service déclare les vars qu'il a besoin pour fonctionner directement dans son manifest YAML. La logique de prompt+default est dans `app::service/install` (`commands/service/install.py`).
 
-**Anti-pattern** : lire une var via `os.environ.get()` ou `dotenv` directement dans une méthode de classe. Ça contourne ces trois mécanismes — l'erreur sort tard, sans message exploitable, et la var n'apparaît dans aucun inventaire.
+**Exemple réel** — `services/n8n/service.yml` :
+```yaml
+name: n8n
+vars:
+  SERVICE_N8N_BASIC_AUTH_USER:
+    required: true
+    description: "n8n basic auth username"
+  SERVICE_N8N_BASIC_AUTH_PASSWORD:
+    required: true
+    description: "n8n basic auth password"
+  SERVICE_N8N_PORT:
+    default: "5678"
+    description: "Port exposé par n8n"
+```
+
+→ Quand on lance `wex app::service/install -s n8n`, chaque var `required: true` est promptée, chaque var avec `default` est écrite silencieusement, le tout est persisté dans `.wex/local/env.yml`.
+
+**Quand l'utiliser** : configuration nécessaire à un service tiers installé. Le manifest YAML reste lisible et déclaratif, l'utilisateur du service n'a rien à coder.
+
+### Niveau app — `config.yml → vars:` *(à implémenter, cf. roadmap)*
+
+L'app déclare les vars qu'elle consomme (notamment dans son `docker-compose.yml`) et qui ne viennent ni d'un service installé ni d'une commande spécifique. Format symétrique au niveau service.
+
+**Exemple cible** — `<projet>/.wex/config.yml` :
+```yaml
+vars:
+  DOCUSIGN_ACCOUNT_ID:
+    required: true
+    description: "DocuSign account ID"
+  VITE_DOCUSIGN_DEV:
+    default: "false"
+    description: "Enable DocuSign dev mode"
+  PACKAGE_PUBLICATION_NPM_TOKEN:
+    required: true
+    description: "NPM publication token"
+    use_suite_fallback: true
+  SYRTIS_REACT_UI_PATH:
+    required: true
+    description: "Path to the local syrtis-react-ui checkout"
+```
+
+→ Check au lancement d'`app::start` (et autres commandes qui dépendent du compose). Prompt+persiste dans `.wex/local/env.yml` comme les autres niveaux.
+
+**Quand l'utiliser** : toute var spécifique à l'app qui n'est pas couverte par un service installé (`service.yml`) ni par une commande paramétrée (`@require_local_env`). En pratique, c'est la majorité des `${VAR}` qu'on trouve dans un `docker-compose.yml` custom.
+
+**Anti-pattern** : lire une var via `os.environ.get()` ou `dotenv` directement dans une méthode de classe, ou ajouter une `${VAR}` au `docker-compose.yml` sans la déclarer dans `config.yml → vars:`. Dans les deux cas l'erreur sort tard, sans message exploitable, et la var n'apparaît dans aucun inventaire.
 
 ---
 
