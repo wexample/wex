@@ -405,11 +405,13 @@ vars:
 
 **Quand l'utiliser** : configuration nécessaire à un service tiers installé. Le manifest YAML reste lisible et déclaratif, l'utilisateur du service n'a rien à coder.
 
-### Niveau app — `config.yml → vars:` *(à implémenter, cf. roadmap)*
+### Niveau app — `config.yml → vars:`
 
-L'app déclare les vars qu'elle consomme (notamment dans son `docker-compose.yml`) et qui ne viennent ni d'un service installé ni d'une commande spécifique. Format symétrique au niveau service.
+L'app déclare **explicitement** les vars qu'elle consomme (dans son `docker-compose.yml`, dans `libraries:`, ou ailleurs) et qui ne viennent ni d'un service installé ni d'une commande spécifique. Format symétrique au niveau service.
 
-**Exemple cible** — `<projet>/.wex/config.yml` :
+**Règle** : pas de scan automatique. Toute `${VAR}` utilisée par l'app et non couverte par les autres niveaux doit être listée dans `vars:`. Une seule règle, prévisible, pas de magie.
+
+**Exemple** — `<projet>/.wex/config.yml` :
 ```yaml
 vars:
   DOCUSIGN_ACCOUNT_ID:
@@ -425,13 +427,16 @@ vars:
   SYRTIS_REACT_UI_PATH:
     required: true
     description: "Path to the local syrtis-react-ui checkout"
+
+libraries:
+  - ${SYRTIS_REACT_UI_PATH}   # référencée ici, mais déclarée ci-dessus
 ```
 
 → Check au lancement d'`app::start` (et autres commandes qui dépendent du compose). Prompt+persiste dans `.wex/local/env.yml` comme les autres niveaux.
 
 **Quand l'utiliser** : toute var spécifique à l'app qui n'est pas couverte par un service installé (`service.yml`) ni par une commande paramétrée (`@require_local_env`). En pratique, c'est la majorité des `${VAR}` qu'on trouve dans un `docker-compose.yml` custom.
 
-**Anti-pattern** : lire une var via `os.environ.get()` ou `dotenv` directement dans une méthode de classe, ou ajouter une `${VAR}` au `docker-compose.yml` sans la déclarer dans `config.yml → vars:`. Dans les deux cas l'erreur sort tard, sans message exploitable, et la var n'apparaît dans aucun inventaire.
+**Anti-pattern** : lire une var via `os.environ.get()` ou `dotenv` directement dans une méthode de classe, ou ajouter une `${VAR}` au `docker-compose.yml`/`libraries:`/etc. sans la déclarer dans `config.yml → vars:`. Dans tous les cas l'erreur sort tard, sans message exploitable, et la var n'apparaît dans aucun inventaire.
 
 ---
 
