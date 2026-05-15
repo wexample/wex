@@ -31,12 +31,13 @@ appelle `check_app_vars_requirements()` juste après le check `APP_ENV`, avant
 tout subprocess docker. La boucle services existante a aussi été migrée sur
 `process_vars_declarations` pour cohérence.
 
-### Phase 3 — Intégration `libraries:` (✅)
+### Phase 3 — Intégration `libraries:` (✅ — décision : pas d'auto-déclaration)
 
-Toute `${VAR}` trouvée dans `config.yml → libraries:` est auto-déclarée
-comme `required: true` dans le check, **sauf** si déjà déclarée explicitement
-dans `vars:` (override possible). Couvre `${SYRTIS_REACT_UI_PATH}`,
-`${PDF_GENERATOR_PATH}` etc. sans redéclaration manuelle.
+Étudié puis **retiré**. Auto-déclarer les `${VAR}` vues dans `libraries:`
+était conceptuellement équivalent au scan automatique du compose qu'on avait
+explicitement écarté plus tôt (« on déclare ce dont on a besoin, on ne devine pas »).
+Règle finale : toute var référencée dans `libraries:` doit être **explicitement**
+déclarée dans `vars:`. Une seule règle uniforme, pas de magie.
 
 ### Phase 4 — Script d'aide à la migration (✅)
 
