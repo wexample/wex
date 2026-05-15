@@ -19,7 +19,7 @@
   - apt-get remove -y wex
 .on_master:
   only:
-  - master
+  - main
 build_apt:
   extends:
   - .on_master
