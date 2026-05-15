@@ -302,13 +302,72 @@ return [{
 
 **Quand l'utiliser** : var système typique de la machine, détectable par heuristique, qu'on veut configurer une fois pour toutes (idéalement sans demander à l'utilisateur).
 
-### Niveau commande — `@require_local_env` (à venir, cf. roadmap Phase 7)
+### Niveau commande — `@require_local_env`
 
 Une commande déclare les vars qu'elle a besoin pour s'exécuter. Check effectué **avant** l'exécution ; prompt à l'utilisateur si manquante ; valeur persistée dans `.wex/local/env.yml` ; commande continue avec la nouvelle valeur disponible.
 
-**Cas d'usage cibles** (issus de l'audit Phase 5) :
-- `app::release/publish` → token de publication (PyPI, GitLab, GitHub…). Var nécessaire **uniquement** pour cette commande, pas pour toute opération sur le workdir.
-- Toute commande qui a un pré-requis ponctuel non auto-détectable.
+**API du décorateur** :
+```python
+@require_local_env(
+    key="GITLAB_API_TOKEN",                # str | Callable[**kwargs] -> str | None
+    description="GitLab API token",
+    ask_question="Paste your GitLab API token:",
+    on_missing="ask",                       # "ask" | "error"
+    use_suite_fallback=False,              # remonte au workdir suite si dispo
+)
+@middleware(middleware=AppMiddleware)
+@command(...)
+def my_command(...): ...
+```
+
+Trois particularités :
+
+1. **`key` accepte un callable** pour les cas où le nom de la var ne se résout qu'à l'exécution (ex. token dont le nom dépend du remote détecté). Le callable reçoit `app_workdir` + les `function_kwargs` filtrés selon sa signature.
+
+2. **Le callable peut retourner `None`** pour signaler « pas requis dans ce contexte » — le requirement est alors **skippé** silencieusement. Exemple : pas de token nécessaire si la stratégie de publication est `main_push`.
+
+3. **`use_suite_fallback=True`** active le lookup `get_env_parameter_or_suite_fallback()` quand le workdir est dans une suite de packages : la var peut alors être définie au niveau suite (parent commun) plutôt que sur chaque package enfant. Raise propre si le workdir ne supporte pas ce mécanisme.
+
+**Exemple réel — `app::release/publish`** (deux décorateurs cumulés, l'un pour le token git remote dynamique, l'autre pour `PIPY_TOKEN` avec fallback suite) :
+```python
+def _resolve_publish_remote_token_var(app_workdir):
+    strategy = app_workdir.get_config().search("git.publication_strategy").get_str_or_default("main_push")
+    if strategy != "branch_merge":
+        return None   # main_push n'a pas besoin de token API
+    # ... détection du remote → renvoie f"{TYPE}_API_TOKEN"
+
+def _resolve_publish_pipy_token_var(app_workdir):
+    # Skip si pas un PythonPackageWorkdir ou si registry privée (publication via CI)
+    if not isinstance(app_workdir, PythonPackageWorkdir):
+        return None
+    if app_workdir.search_app_or_suite_runtime_config("pdm.repository.url", default=None).get_str_or_none():
+        return None
+    return "PIPY_TOKEN"
+
+@require_local_env(key=_resolve_publish_remote_token_var, description="...", on_missing="ask")
+@require_local_env(key=_resolve_publish_pipy_token_var, description="...", on_missing="ask", use_suite_fallback=True)
+@middleware(middleware=AppMiddleware)
+@command(...)
+def app__release__publish(...): ...
+```
+
+**Usage direct sans décorateur** (utile dans des contextes où le décorateur n'est pas applicable) :
+```python
+from wexample_wex_addon_app.decorator.require_local_env import check_env_requirements
+
+check_env_requirements(
+    requirements=[{
+        "key": token_env_var,
+        "description": "...",
+        "ask_question": "...",
+        "on_missing": "ask",
+        "use_suite_fallback": False,
+    }],
+    app_workdir=self.workdir,
+    io=self.workdir.io,
+    function_kwargs={},
+)
+```
 
 → Couvre le cas où `get_expected_env_keys()` serait trop strict (forcerait la var au boot même si on n'utilise jamais la commande) et où `get_local_configurable_keys()` ne s'applique pas (pas d'heuristique de détection).
 
