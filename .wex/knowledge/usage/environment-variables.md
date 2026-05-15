@@ -35,6 +35,8 @@ Le nom `WithSetupEnvParameterMixin` reflète la convention interne : « setup »
 
 Les deux sont chargés au boot par le kernel et alimentent `kernel.env_config` + `os.environ`. **YAML partout**, plus de dotenv côté wex.
 
+Pour les apps Docker, un **troisième fichier dérivé** est produit à la demande (`app::config/build`) : `<projet>/.wex/tmp/docker.env` (dotenv généré, non versionné, jamais édité à la main). Il agrège le flatten du `config.yml` interpolé + le `.wex/local/env.yml` et sert d'`--env-file` à `docker compose`. Détails section 8.
+
 > Les fichiers `.env` à la racine d'un projet utilisateur restent du ressort de l'application elle-même (Symfony, runtime…). Wex ne les lit jamais.
 
 ---
@@ -263,7 +265,39 @@ Donc dans un YAML, `${VAR}` résout dans cet ordre.
 
 ---
 
-## 8. Déclarer les vars requises — les cinq niveaux complémentaires
+## 8. `docker.env` (Docker apps) — flatten du `config.yml` vers les vars Docker
+
+Pour les apps qui démarrent un compose Docker (cas le plus fréquent), `app::config/build` produit `<projet>/.wex/tmp/docker.env`. C'est le fichier passé à `docker compose --env-file` au démarrage des containers. Son contenu est le **flatten** du `config.yml` du projet (déjà interpolé `${VAR}`) sur lequel on superpose le `.wex/local/env.yml` du projet.
+
+### Convention de namespaces
+
+Chaque **clé top-level** de `config.yml` devient un préfixe d'env var. Le flatten est récursif (`a.b.c` → `A_B_C`).
+
+| Top-level `config.yml` | Préfixe env var | Source / rôle |
+|---|---|---|
+| `global:` | `GLOBAL_*` | Identité de l'app (`GLOBAL_NAME`, `GLOBAL_VERSION`, `GLOBAL_TYPE`, `GLOBAL_MAIN_SERVICE`) |
+| `service:` | `SERVICE_*` | Config des services (`SERVICE_N8N_BASIC_AUTH_USER`, `SERVICE_POSTGRES_HOST`, …) |
+| `docker:` | `DOCKER_*` | Config Docker brute (`DOCKER_COMPOSE_STDIN_OPEN`, `DOCKER_MAIN_CONTAINER`, …) |
+| `wex:` | `WEX_*` | Métadonnées wex (`WEX_VERSION`) |
+| `app:` *(réservé)* | `APP_*` | **Runtime-only** — injecté par `config/build.py:_runtime`, **pas** dans `config.yml` |
+
+Le namespace `app.*` n'est **plus** une copie du `config.yml` : il sert uniquement aux vars produites dynamiquement à chaque build (`APP_ENV`, `APP_NAME`, `APP_PROJECT_NAME`, `APP_HOST_IP`, `APP_STARTED`, `APP_PATH`, `APP_SETUP_PATH`, `APP_DOMAIN(S)`).
+
+> **Avant migration 6.0.28** : `app.*` recopiait tout le `config.yml`, produisant des doublons `APP_GLOBAL_*`, `APP_SERVICE_*`, `APP_DOCKER_*`, `APP_WEX_*` à côté des `GLOBAL_*`, `SERVICE_*`, etc. La migration `wex_6_0_28` réécrit ces références dans les compose users (`${APP_DOCKER_X}` → `${DOCKER_X}`, etc.) en préservant les vraies vars runtime (`APP_ENV`, `APP_PATH`, …).
+
+### Comment une valeur arrive dans `docker.env`
+
+Trois sources, par priorité **croissante** (la dernière gagne) :
+
+1. **Default service** — `services/<name>/service.yml → install_config:` écrit dans `config.yml` au moment de `service/install`. Ex. `postgres` pose `service.postgres.host: localhost`, qui devient `SERVICE_POSTGRES_HOST=localhost` dans `docker.env` (et permet à un autre service comme `listmonk` de consommer `${SERVICE_POSTGRES_HOST}` dans son compose).
+2. **`config.yml` édité à la main** — la même clé écrasée par l'utilisateur.
+3. **`.wex/local/env.yml`** — flatten en dernier, donc les vars locales (tokens, mots de passe…) écrasent toujours le `config.yml`.
+
+L'interpolation `${VAR}` dans `config.yml` (notamment dans `install_config:`) est résolue **avant** le flatten, contre les env params du workdir. C'est ce qui permet à un service de déclarer `service.{{ name }}.user: "${SERVICE_N8N_BASIC_AUTH_USER}"` et de laisser l'utilisateur saisir la vraie valeur dans `local/env.yml`.
+
+---
+
+## 9. Déclarer les vars requises — les cinq niveaux complémentaires
 
 Une var d'env peut être déclarée comme requise à **cinq niveaux distincts**, selon où vit le besoin. Ce ne sont pas des alternatives concurrentes : chacune couvre un cas d'usage que les autres ne traitent pas.
 
@@ -382,9 +416,9 @@ check_env_requirements(
 
 → Couvre le cas où `get_expected_env_keys()` serait trop strict (forcerait la var au boot même si on n'utilise jamais la commande) et où `get_local_configurable_keys()` ne s'applique pas (pas d'heuristique de détection).
 
-### Niveau service — `service.yml → vars:`
+### Niveau service — `service.yml → vars:` + `install_config:`
 
-Un service déclare les vars qu'il a besoin pour fonctionner directement dans son manifest YAML. La logique de prompt+default est dans `app::service/install` (`commands/service/install.py`).
+Un service déclare les vars qu'il a besoin pour fonctionner directement dans son manifest YAML. La logique de prompt/default/generated est dans `helpers/vars_declaration.py`, déclenchée par `app::service/install` (`commands/service/install.py`).
 
 **Exemple réel** — `services/n8n/service.yml` :
 ```yaml
@@ -392,16 +426,32 @@ name: n8n
 vars:
   SERVICE_N8N_BASIC_AUTH_USER:
     required: true
+    default: "admin"
     description: "n8n basic auth username"
   SERVICE_N8N_BASIC_AUTH_PASSWORD:
-    required: true
-    description: "n8n basic auth password"
+    generated: token
+    description: "n8n basic auth password (auto-generated)"
   SERVICE_N8N_PORT:
     default: "5678"
     description: "Port exposé par n8n"
+install_config:
+  "service.{{ name }}.basic_auth.user": "${SERVICE_N8N_BASIC_AUTH_USER}"
+  "service.{{ name }}.basic_auth.password": "${SERVICE_N8N_BASIC_AUTH_PASSWORD}"
 ```
 
-→ Quand on lance `wex app::service/install -s n8n`, chaque var `required: true` est promptée, chaque var avec `default` est écrite silencieusement, le tout est persisté dans `.wex/local/env.yml`.
+**Champs de `vars:`** :
+
+| Champ | Effet |
+|---|---|
+| `required: true` | Var indispensable. Si absente : prompt à l'install. Si `default:` aussi présent, le default est proposé comme valeur initiale du prompt |
+| `default: "..."` | Sans `required`, écrit silencieusement dans `.wex/local/env.yml` à l'install si absent |
+| `generated: token \| hex \| urlsafe` | Génère un secret aléatoire à l'install (resp. `string_random_token`, `secrets.token_hex(32)`, `secrets.token_urlsafe(24)`). Pas de prompt |
+| `use_suite_fallback: true` | Cherche aussi dans le workdir suite parent avant de considérer la var manquante |
+| `description:` | Affiché dans le prompt et les outils d'inventaire |
+
+Ordre de résolution à `service/install` : **(1)** `generated:` produit la valeur si la var n'existe pas encore — **(2)** `default:` non-required écrits silencieusement — **(3)** required absents prompttés à l'utilisateur. Le tout persisté dans `<projet>/.wex/local/env.yml`.
+
+**`install_config:`** — clés à injecter dans `<projet>/.wex/config.yml` à l'install. Les `${VAR}` y sont des **placeholders** : ils sont écrits littéralement dans `config.yml` puis interpolés à chaque `app::config/build` contre les env params (cf. section 8). C'est par ce biais qu'un service partage sa config avec un autre — typiquement `postgres` pose `service.postgres.host`, lu par `listmonk` via `${SERVICE_POSTGRES_HOST}` dans son compose.
 
 **Quand l'utiliser** : configuration nécessaire à un service tiers installé. Le manifest YAML reste lisible et déclaratif, l'utilisateur du service n'a rien à coder.
 
@@ -440,7 +490,7 @@ libraries:
 
 ---
 
-## 9. Tableau de décision — où ranger quoi
+## 10. Tableau de décision — où ranger quoi
 
 Post-migration `wex 6.0.26` — **YAML partout** côté wex.
 
@@ -457,7 +507,7 @@ Post-migration `wex 6.0.26` — **YAML partout** côté wex.
 
 ---
 
-## 10. État des lieux — ce qui marche, ce qui pue
+## 11. État des lieux — ce qui marche, ce qui pue
 
 ### Justifié et propre
 
@@ -478,11 +528,13 @@ Post-migration `wex 6.0.26` — **YAML partout** côté wex.
 
 - **`get_env_parameter()` est volontairement séparé de `os.environ`.** Il renvoie la **config d'env wex** (chargée depuis les fichiers ci-dessus), pas une var système POSIX. Pour lire une var OS-level (`SSH_AUTH_SOCK`, `SUDO_UID`, etc.), on utilise `os.environ.get()` explicitement, avec un commentaire qui justifie le choix.
 
-- **Usage formel de `get_expected_env_keys()` minimal** : seul `AbstractKernel` déclare une clé (`["APP_ENV"]`). Audit Phase 5 a montré qu'**aucune autre classe n'a un besoin structurel** d'une var d'env (les vrais besoins sont conditionnels → niveau commande). Donc le mécanisme reste utile pour `APP_ENV` mais ne sera pas massivement enrichi. Cf. section 8 pour le détail des trois niveaux.
+- **Usage formel de `get_expected_env_keys()` minimal** : seul `AbstractKernel` déclare une clé (`["APP_ENV"]`). Audit Phase 5 a montré qu'**aucune autre classe n'a un besoin structurel** d'une var d'env (les vrais besoins sont conditionnels → niveau commande). Donc le mécanisme reste utile pour `APP_ENV` mais ne sera pas massivement enrichi. Cf. section 9 pour le détail des cinq niveaux.
 
 - **`.env.yml` au niveau install est quasi-mort** : un seul exemple (commenté) dans tout le code. Le mécanisme `HasYamlEnvKeysFile` n'est utilisé que par le kernel et n'a presque jamais servi.
 
 - **Les checks de présence sont parfois trop tardifs** : un token absent peut n'être détecté qu'au milieu d'une commande long-running (cf. `branch_merge_publication_strategy` qui découvrait le token manquant à l'étape 7/7 d'un release). Solution prévue : décorateur `@require_local_env` (roadmap), bloqué tant que le ménage des fichiers n'est pas fait.
+
+- **`docker.env` post-6.0.28** : `app.*` n'est plus un miroir du `config.yml`. Les vars sont produites uniquement à partir des namespaces top-level (`global.*`, `service.*`, `docker.*`, `wex.*`) et `APP_*` est réservé au runtime. La migration 6.0.28 réécrit les compose users (`${APP_DOCKER_X}` → `${DOCKER_X}`, etc.) ; les valeurs runtime réelles (`APP_ENV`, `APP_DOMAIN`, `APP_PATH`, …) sont préservées.
 
 ### Anti-pattern à éviter
 
