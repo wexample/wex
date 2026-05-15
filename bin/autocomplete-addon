@@ -1,0 +1,91 @@
+#!/usr/bin/env python3
+"""Fast autocomplete for addon commands — reads autocomplete.json cache, no kernel."""
+import json
+import sys
+from pathlib import Path
+
+_CACHE = Path(__file__).resolve().parent.parent / "tmp" / "autocomplete.json"
+_SEP = "::"
+
+
+def _parse_args() -> tuple[str, int]:
+    search, cursor = "", 0
+    args = sys.argv[1:]
+    i = 0
+    while i < len(args):
+        if args[i] == "-s" and i + 1 < len(args):
+            search = args[i + 1]
+            i += 2
+        elif args[i] == "-c" and i + 1 < len(args):
+            cursor = int(args[i + 1])
+            i += 2
+        else:
+            i += 1
+    return search, cursor
+
+
+def suggest(search: str, cursor: int) -> str:
+    if not _CACHE.exists():
+        return ""
+
+    cache = json.loads(_CACHE.read_text())
+    all_cmds = cache.get("commands", [])
+    all_aliases = cache.get("aliases", [])
+
+    # Addon commands: contain "::" and start with a-z
+    addon_cmds = [c for c in all_cmds if _SEP in c and c[0].islower()]
+
+    search_split = search.split() if search.strip() else [""]
+    first = search_split[0] if search_split else ""
+
+    # Only handle addon commands (start with a-z)
+    if not first or not first[0].islower():
+        return ""
+
+    sep_idx = next((i for i, s in enumerate(search_split) if s == _SEP), None)
+
+    if sep_idx is not None:
+        # After "::" — suggest group/command for the matched addon prefix
+        addon_prefix = "".join(search_split[:sep_idx]) + _SEP
+        post = search_split[cursor] if cursor < len(search_split) else ""
+        matches = sorted({
+            c[len(addon_prefix):]
+            for c in addon_cmds
+            if c.startswith(addon_prefix) and c[len(addon_prefix):].startswith(post)
+        })
+        return " ".join(matches)
+
+    # Before "::" — suggest addon names or unqualified group/command
+    typed = "".join(search_split[: cursor + 1])
+    results: list[str] = []
+
+    # Addon names — append "::" only when single unambiguous match
+    seen: set[str] = set()
+    for cmd in addon_cmds:
+        addon_name = cmd[: cmd.index(_SEP)]
+        if addon_name not in seen and addon_name.startswith(typed):
+            seen.add(addon_name)
+    addon_name_matches = sorted(seen)
+    if len(addon_name_matches) == 1:
+        results.append(addon_name_matches[0] + _SEP)
+    else:
+        results.extend(addon_name_matches)
+
+    # Aliases (short forms without :: prefix, starting with a-z)
+    for alias in all_aliases:
+        if alias.startswith(typed) and _SEP not in alias and alias[0:1].islower():
+            results.append(alias)
+
+    # Unqualified commands: group/name without addon:: prefix
+    if typed and _SEP not in typed:
+        unqualified = sorted({c.split(_SEP)[1] for c in addon_cmds if c.split(_SEP)[1].startswith(typed)})
+        results.extend(unqualified)
+
+    return " ".join(sorted(set(results)))
+
+
+if __name__ == "__main__":
+    search, cursor = _parse_args()
+    result = suggest(search, cursor)
+    if result:
+        print(result)

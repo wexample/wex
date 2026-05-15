@@ -1,5 +1,0 @@
-services:
-  symfony:
-    extends:
-      file: ${RUNTIME_SERVICE_SYMFONY_YML_ENV}
-      service: symfony
