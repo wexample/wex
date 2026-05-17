@@ -70,16 +70,15 @@ echo "Cleanup..."
 rm -f "${WEX_DIR_ROOT}tmp/registry.yml"
 
 echo "Configuring..."
-WEX_ENV_PATH="${WEX_DIR_ROOT}.env"
+WEX_ENV_PATH="${WEX_DIR_ROOT}.env.yml"
 touch "${WEX_ENV_PATH}"
-# Ensure APP_ENV is set to prod (overwrite any existing value, e.g. "local" from dev)
-sed -i '/^APP_ENV=/d' "${WEX_ENV_PATH}"
-echo "APP_ENV=prod" >> "${WEX_ENV_PATH}"
+# Ensure APP_ENV is set to prod (overwrite any existing value, e.g. "local" from dev).
+# Kernel reads .env.yml since wex 6.0.26 (legacy .env is no longer consumed).
+sed -i '/^APP_ENV:/d' "${WEX_ENV_PATH}"
+echo "APP_ENV: prod" >> "${WEX_ENV_PATH}"
 
-# Load env to read APP_ENV
-# shellcheck disable=SC1090
-. "${WEX_ENV_PATH}"
-export APP_ENV
+# Export APP_ENV for the rest of this script (registry build, etc.)
+export APP_ENV=prod
 
 echo "Installing symlink..."
 ln -sf "${WEX_DIR_CLI}wex" /usr/local/bin/wex
