@@ -2,8 +2,8 @@ git:
   publication_strategy: branch_merge
 global:
   name: wex
-  version: 6.0.77
+  version: 6.0.78
 libraries:
-- ${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}
+  - ${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}
 wex:
   version: 6.0.28

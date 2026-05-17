@@ -1,38 +1,37 @@
 .checkup_install:
   extends:
-  - .on_master
+    - .on_master
   needs:
-  - deploy
+    - deploy
   script:
-  - set -e
-  - apt-get update -qq
-  - apt-get install -y gnupg2 wget
-  - wget -O - https://apt.wexample.com/gpg | gpg --dearmor -o /etc/apt/trusted.gpg.d/wexample.gpg
-  - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
-  - apt-get update -qq
-  - apt-get install -y wex
-  - wex hi
-  - BUILD_VERSION=$(cat version.txt)
-  - INSTALLED_VERSION=$(wex version)
-  - echo "Expected ${BUILD_VERSION}, got ${INSTALLED_VERSION}"
-  - test "${BUILD_VERSION}" = "${INSTALLED_VERSION}"
-  - apt-get remove -y wex
+    - set -e
+    - apt-get update -qq
+    - apt-get install -y gnupg2 wget
+    - wget -O - https://apt.wexample.com/gpg | gpg --dearmor -o /etc/apt/trusted.gpg.d/wexample.gpg
+    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
+    - apt-get update -qq
+    - apt-get install -y wex
+    - wex hi
+    - BUILD_VERSION=$(cat version.txt)
+    - INSTALLED_VERSION=$(wex version)
+    - echo "Expected ${BUILD_VERSION}, got ${INSTALLED_VERSION}"
+    - test "${BUILD_VERSION}" = "${INSTALLED_VERSION}"
+    - apt-get remove -y wex
 .on_master:
   only:
-  - main
+    - main
 build_apt:
   extends:
-  - .on_master
+    - .on_master
   image: gitlab-docker.wexample.com/wexample/wex/wex-build:build
   script:
-  - BUILD_VERSION=$(cat version.txt)
-  - mkdir -p /var/tmp/build
-  - cp -r .git /var/tmp/build
-  - cd /var/tmp/build
-  - git fetch && git checkout build
-  - ln -s ${CI_PROJECT_DIR} source
-  - sudo python3 /var/tmp/build/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk
-    ${WEX_BUILD_TOKEN} -v ${BUILD_VERSION}
+    - BUILD_VERSION=$(cat version.txt)
+    - mkdir -p /var/tmp/build
+    - cp -r .git /var/tmp/build
+    - cd /var/tmp/build
+    - git fetch && git checkout build
+    - ln -s ${CI_PROJECT_DIR} source
+    - sudo python3 /var/tmp/build/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk ${WEX_BUILD_TOKEN} -v ${BUILD_VERSION}
   stage: build_apt
 checkup_install_debian:
   extends: .checkup_install
@@ -44,17 +43,17 @@ checkup_install_ubuntu:
   stage: checkup_install
 deploy:
   extends:
-  - .on_master
+    - .on_master
   image: curlimages/curl
   needs:
-  - build_apt
+    - build_apt
   script:
-  - BUILD_VERSION=$(cat version.txt)
-  - curl --fail "http://151.80.23.108:7654/webhook/app/prod/wex-apt-repo/apt/publish?_token=${WEX_WEBHOOK_TOKEN}&project=${CI_PROJECT_ID}&version=${BUILD_VERSION}&_async=0"
+    - BUILD_VERSION=$(cat version.txt)
+    - curl --fail "http://151.80.23.108:7654/webhook/app/prod/wex-apt-repo/apt/publish?_token=${WEX_WEBHOOK_TOKEN}&project=${CI_PROJECT_ID}&version=${BUILD_VERSION}&_async=0"
   stage: deploy
 stages:
-- build_apt
-- deploy
-- checkup_install
+  - build_apt
+  - deploy
+  - checkup_install
 variables:
   MAIN_BRANCH_NAME: main
