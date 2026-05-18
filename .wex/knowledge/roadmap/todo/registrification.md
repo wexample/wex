@@ -119,7 +119,7 @@ Lien direct avec [async.md](async.md) Phase 1.5.
 
 Ordre proposé (par criticité + indépendance) :
 
-- [ ] **#1 ScriptRunnerRegistry** — `AbstractScriptRunner` implémente `Registrable`, `kernel.get_registry("script_runners")`, 4 defaults déplacés dans `core_addon_manager.get_script_runner_classes()`.
+- [x] **#1 ScriptRunnerRegistry** — `AbstractScriptRunner` implémente `Registrable`, `kernel._init_script_runner_registry` utilise `SingletonRegistry[AbstractScriptRunner]`, 4 defaults inline dans le kernel (à déplacer dans `core_addon_manager.get_script_runner_classes()` plus tard). Classe custom supprimée. Validé via `wex demo::yaml/hello`.
 - [ ] **#2 StepGuardRegistry** — idem. ⚠️ passage **list → dict** : vérifier qu'aucun call site ne dépend de l'ordre d'insertion.
 - [ ] **#5 Webhook type_resolvers** — dict rebuilt à chaque démarrage daemon → bon candidat.
 - [ ] **#3 RunnerRegistry** (packages/runner) — singleton statique à exposer via container.
