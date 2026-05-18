@@ -9,6 +9,18 @@ set -e
 
 case "$1" in
   configure)
+    # Defensive kill — handles bootstrap when the previous version's prerm
+    # did not stop the daemon. Old in-memory process must not survive the
+    # venv rebuild.
+    if pgrep -f 'core::webhook/listen' >/dev/null 2>&1; then
+      pkill -TERM -f 'core::webhook/listen' || true
+      for _ in 1 2 3 4 5; do
+        pgrep -f 'core::webhook/listen' >/dev/null 2>&1 || break
+        sleep 1
+      done
+      pkill -KILL -f 'core::webhook/listen' >/dev/null 2>&1 || true
+    fi
+
     if [ -x "/usr/lib/wex/bin/install" ]; then
       # Avoid any interactive prompts and apt calls during dpkg configuration.
       export DEBIAN_FRONTEND=noninteractive
@@ -17,6 +29,17 @@ case "$1" in
       chmod 0755 /usr/lib/wex/bin/install
       # Run installer to create Python venv and finalize setup
       bash "/usr/lib/wex/bin/install"
+    fi
+
+    # Restart the webhook daemon if the marker says it should be running.
+    MARKER="/usr/lib/wex/.wex/webhook.enabled"
+    if [ -f "$MARKER" ]; then
+      PORT=$(head -n1 "$MARKER" | tr -d '[:space:]')
+      if [ -n "$PORT" ]; then
+        /usr/local/bin/wex core::webhook/listen --asynchronous --port "$PORT" || true
+      else
+        /usr/local/bin/wex core::webhook/listen --asynchronous || true
+      fi
     fi
     ;;
 esac
