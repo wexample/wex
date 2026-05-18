@@ -2,53 +2,71 @@
 
 ## Objectif
 
-Unifier toutes les collections de type "liste de classes / singletons" derrière le pattern standard `Registry[T]` + `RegistryContainerMixin`, et y centraliser :
+Unifier toutes les collections de type "liste de classes / singletons" derrière `Registry[T]` + `RegistryContainerMixin` ([registry.py](../../../../../../../PACKAGES/PYTHON/packages/helpers/src/wexample_helpers/service/registry.py), [registry_container_mixin.py](../../../../../../../PACKAGES/PYTHON/packages/helpers/src/wexample_helpers/service/mixins/registry_container_mixin.py)), et y centraliser :
 1. **L'init** (sync ou async).
 2. **La résolution de dépendances** entre items.
 
-## Constat
+---
 
-Le pattern standard existe :
-- [registry.py](../../../../../../../PACKAGES/PYTHON/packages/helpers/src/wexample_helpers/service/registry.py) — `Registry[T]` : dict + `get/has/register/get_all/all_keys`.
-- [registry_container_mixin.py](../../../../../../../PACKAGES/PYTHON/packages/helpers/src/wexample_helpers/service/mixins/registry_container_mixin.py) — Container avec `_registries: dict[str, Registry]`.
-- [service_container_mixin.py](../../../../../../../PACKAGES/PYTHON/packages/app/src/wexample_app/service/mixins/service_container_mixin.py) — Extension pour services.
+## Audit (FAIT)
 
-**Bon élève** : `kernel._init_addons` et `kernel._init_middlewares` passent par `register_items("addons", ...)` / `register_items("middlewares", ...)`.
+Critères retenus (cumulatifs, ≥3/4) : collection d'items même type, remplie à l'init puis read-only, lookup par clé OU itération, sources multiples possibles.
 
-**Mauvais élèves** :
-- [kernel.py:577 _init_script_runner_registry](../../../../../../../PACKAGES/PYTHON/wex/wex-core/src/wexample_wex_core/common/kernel.py#L577) → instancie une classe custom [script_runner_registry.py](../../../../../../../PACKAGES/PYTHON/wex/wex-core/src/wexample_wex_core/yaml/script_runner_registry.py) avec `dict[str, runner]` ad-hoc + `_register_defaults()` qui hard-code les runners par défaut.
-- [kernel.py:582 _init_step_guard_registry](../../../../../../../PACKAGES/PYTHON/wex/wex-core/src/wexample_wex_core/common/kernel.py#L582) → instancie [step_guard_registry.py](../../../../../../../PACKAGES/PYTHON/wex/wex-core/src/wexample_wex_core/yaml/step_guard_registry.py) qui est en plus une **liste** (pas un dict), avec `register(guard)` signature différente.
+### Vrais candidats à migrer
 
-Conséquences :
-- Deux interfaces parallèles à maintenir (`all()` vs `get_all()`, `register(item)` vs `register(key, item)`).
-- Aucun accès uniforme via `kernel.get_item("script_runners", "bash")`.
-- L'init async (roadmap [async.md](async.md)) doit être pensé deux fois si on garde le double pattern.
+| # | Nom | Fichier | État | Criticité | Source des items |
+|---|-----|---------|------|-----------|------------------|
+| 1 | `ScriptRunnerRegistry._runners` | [yaml/script_runner_registry.py:17](../../../../../../../PACKAGES/PYTHON/wex/wex-core/src/wexample_wex_core/yaml/script_runner_registry.py#L17) | CUSTOM | HAUTE | 4 defaults hard-codés + addons |
+| 2 | `StepGuardRegistry._guards` | [yaml/step_guard_registry.py:18](../../../../../../../PACKAGES/PYTHON/wex/wex-core/src/wexample_wex_core/yaml/step_guard_registry.py#L18) | CUSTOM (list!) | HAUTE | Addons via `get_step_guard_classes()` |
+| 3 | `RunnerRegistry._runners` | [packages/runner/runner_registry.py:16](../../../../../../../PACKAGES/PYTHON/packages/runner/src/wexample_runner/runner_registry.py#L16) | CUSTOM | MOYENNE | `register(name, runner)` |
+| 4 | `EventDispatcher._event_listeners` | [packages/event/common/dispatcher.py:44](../../../../../../../PACKAGES/PYTHON/packages/event/src/wexample_event/common/dispatcher.py#L44) | HYBRID | HAUTE | `add_event_listener()` (dynamique) |
+| 5 | Webhook `type_resolvers` | [webhook/handler.py:96](../../../../../../../PACKAGES/PYTHON/wex/wex-core/src/wexample_wex_core/webhook/handler.py#L96) | INLINE | MOYENNE | `_load_type_resolvers()` (listen.py:138) |
+| 6 | `SpinnerPool._spinners` | [packages/prompt/common/spinner_pool.py:98](../../../../../../../PACKAGES/PYTHON/packages/prompt/src/wexample_prompt/common/spinner_pool.py#L98) | CUSTOM | BASSE | `get(key)` lazy |
+| 7 | `WithConfigRegistry._registry` | [packages/pseudocode/common/with_config_registry.py:17](../../../../../../../PACKAGES/PYTHON/packages/pseudocode/src/wexample_pseudocode/common/with_config_registry.py#L17) | INLINE | BASSE | Hard-codé `__init__` |
+
+### Déjà conformes (STANDARD)
+
+- ✅ Kernel `addons` (`REGISTRY_KERNEL_ADDON`) — [kernel.py:150](../../../../../../../PACKAGES/PYTHON/wex/wex-core/src/wexample_wex_core/common/kernel.py#L150)
+- ✅ Kernel `middlewares` — [kernel.py:548](../../../../../../../PACKAGES/PYTHON/wex/wex-core/src/wexample_wex_core/common/kernel.py#L548)
+- ✅ `RegistryContainerMixin._registries` — le méta-registre lui-même.
+
+### Cas spéciaux à traiter à part
+
+- **`KernelRegistry`** [registry/kernel_registry.py:28](../../../../../../../PACKAGES/PYTHON/wex/wex-core/src/wexample_wex_core/registry/kernel_registry.py#L28) — HYBRID, HAUTE. Spécifique : persistance fichier (`registry.json`), hydratation via resolvers. **À garder isolé** car son cycle de vie diffère. Pourra implémenter le Protocol `Registrable` sans casser sa persistance.
+- **Options nested dans `wexample_config`** [config_option/abstract_nested_config_option.py:32](../../../../../../../PACKAGES/PYTHON/packages/config/src/wexample_config/config_option/abstract_nested_config_option.py#L32) — plutôt **composition d'options typées** qu'un registre. Décision reportée → audit ciblé Phase 1bis.
+
+### Faux positifs (NE PAS migrer)
+
+- ❌ Webhook `_counters` / `_duration_sum` / `_duration_count` — métriques runtime mutables.
+- ❌ `_REGISTRY_CACHE` (abstract_nested_config_option.py:7) — cache de perf, pas registre.
+- ❌ `AbstractResult.operations` (filestate) — résultat de build, accumulé puis consommé.
+- ❌ App registry (`with_app_registry_mixin.py`) — config sérialisée vers/depuis YAML.
+
+### Pattern récurrent identifié
+
+Motif `for addon in kernel.get_addons().values(): collect addon.get_X_classes()` présent dans :
+- `_init_middlewares` ✅ déjà standard
+- `_init_step_guard_registry` ❌ #2
+- `_init_resolvers` → à vérifier
+- `_load_type_resolvers` (webhook) ❌ #5
+
+→ Un seul mécanisme générique `Registry.populate_from_addons(method_name)` pourrait remplacer ces 4+ boucles.
 
 ---
 
-## Phase 1 — Audit complet des "registres cachés"
+## Phase 1bis — Audits restants
 
-- [ ] Lister tous les `dict[str, X]` ou `list[X]` du kernel + addons qui ont une sémantique "registre" (collection de classes/instances enregistrées à l'init).
-- [ ] Candidats déjà connus :
-  - [ ] `ScriptRunnerRegistry`
-  - [ ] `StepGuardRegistry`
-  - [ ] `KernelRegistry` (cas spécial : persistance fichier — peut-être à laisser à part)
-  - [ ] `resolvers` (kernel) — vérifier comment c'est stocké
-  - [ ] `webhook type_resolvers` (handler.py:160) — `dict[str, AddonWebhookTypeResolver]` construit ad-hoc
-  - [ ] Dans wex-addon-app : registries de services, builds, containers
-- [ ] Établir critère explicite : "qu'est-ce qui mérite d'être un Registry ?"
-  - Plusieurs items du même type
-  - Enregistrés à l'init (pas mutables après usage normal)
-  - Lookup par clé string
-  - Peuvent provenir de plusieurs sources (core + addons)
+- [ ] Trancher : `wexample_config` options nested = registre ou composition ?
+- [ ] Vérifier `_init_resolvers` du kernel (STANDARD ou pas ?).
+- [ ] Re-grep `wex-addon-app` : services, builds, containers.
 
 ---
 
 ## Phase 2 — Mixin `Registrable` avec dépendances
 
-Aujourd'hui `RegistrableType = TypeVar("RegistrableType")` est juste un TypeVar, donc aucun contrat sur les items. À remplacer par un **mixin/Protocol** explicite :
+`RegistrableType = TypeVar("RegistrableType")` est aujourd'hui vide. À remplacer par un Protocol/Mixin explicite.
 
-- [ ] Créer `Registrable` (mixin ou Protocol) dans `wexample_helpers/service/registrable.py` avec :
+- [ ] Créer `Registrable` dans `wexample_helpers/service/registrable.py` :
   ```python
   class Registrable:
       @classmethod
@@ -61,73 +79,64 @@ Aujourd'hui `RegistrableType = TypeVar("RegistrableType")` est juste un TypeVar,
 - [ ] `Registry.register(item)` (signature simplifiée) → dérive la clé via `item.get_registry_key()`.
 - [ ] `Registry.resolve_init_order()` → tri topologique des items selon `dependencies()`.
 - [ ] Détection des cycles → exception explicite avec la chaîne fautive.
-- [ ] Conserver l'API actuelle `register(key, item)` en surcharge pour rétro-compat (déprécation douce).
-
-Discussion :
-- **Protocol** (PEP 544) plus souple : pas d'héritage forcé, juste duck typing.
-- **Mixin** plus explicite : `class BashScriptRunner(Registrable, AbstractScriptRunner)`.
-- → On part sur **Protocol** par défaut pour ne pas forcer la hiérarchie, sauf si on a besoin d'attributs partagés.
+- [ ] Conserver `register(key, item)` en surcharge (déprécation douce).
+- [ ] **Choix Protocol vs Mixin** : penche Protocol (PEP 544) pour ne pas forcer l'héritage.
 
 ---
 
 ## Phase 3 — Init async dans Registry
 
-Le registre devient le point d'entrée pour l'init async (lien direct avec [async.md](async.md) Phase 1.5).
+Lien direct avec [async.md](async.md) Phase 1.5.
 
-- [ ] Méthode `Registry.init_all_async()` :
-  - Résout l'ordre topologique via `dependencies()`.
-  - Calcule les **couches indépendantes** (items sans deps entre eux → même couche).
-  - Pour chaque couche : `await asyncio.gather(*[item.init_async() for item in layer])`.
-  - Les couches s'enchaînent séquentiellement (dep avant dépendant).
-- [ ] Méthode `Registry.init_all_sync()` (fallback / mode debug) : init dans l'ordre topologique sans parallélisme.
-- [ ] `RegistryContainerMixin.init_all_registries_async()` qui parallélise aussi entre registres indépendants.
-- [ ] Mesurer : sur le bootstrap kernel, combien de % du temps est gagné ?
+- [ ] `Registry.init_all_async()` :
+  - Résolution topologique via `dependencies()`.
+  - Calcul des **couches indépendantes** → `await asyncio.gather(*layer)`.
+  - Couches enchaînées séquentiellement.
+- [ ] `Registry.init_all_sync()` (fallback / debug).
+- [ ] `RegistryContainerMixin.init_all_registries_async()` qui parallélise entre registres indépendants.
+- [ ] Mesurer le gain sur bootstrap kernel.
 
 ---
 
-## Phase 4 — Migration des registres existants
+## Phase 4 — Migration des registres (1 commit par item)
 
-Une fois la base prête, on bascule un par un (chacun en un commit séparé pour pouvoir bisecter) :
+Ordre proposé (par criticité + indépendance) :
 
-- [ ] **ScriptRunnerRegistry** :
-  - Faire hériter `AbstractScriptRunner` du Protocol `Registrable`.
-  - Supprimer la classe `ScriptRunnerRegistry`, remplacer par `kernel.get_registry("script_runners", Registry[AbstractScriptRunner])`.
-  - Les 4 runners par défaut (bash, docker, exec, python) sont enregistrés dans `core_addon_manager.get_script_runner_classes()` (à créer) au lieu de `_register_defaults()`.
-  - Adapter les call sites (grep `script_runner_registry`).
-- [ ] **StepGuardRegistry** :
-  - Idem. Note : passage **list → dict** — vérifier que personne ne dépend de l'ordre d'insertion (sinon préserver via `OrderedDict` ou `dependencies()`).
-- [ ] **Webhook type_resolvers** (handler.py:160) :
-  - Le dict est rebuilt à chaque démarrage du daemon. Bonne occasion d'en faire un registre proper.
-- [ ] **Autres candidats identifiés en Phase 1** : un par un.
+- [ ] **#1 ScriptRunnerRegistry** — `AbstractScriptRunner` implémente `Registrable`, `kernel.get_registry("script_runners")`, 4 defaults déplacés dans `core_addon_manager.get_script_runner_classes()`.
+- [ ] **#2 StepGuardRegistry** — idem. ⚠️ passage **list → dict** : vérifier qu'aucun call site ne dépend de l'ordre d'insertion.
+- [ ] **#5 Webhook type_resolvers** — dict rebuilt à chaque démarrage daemon → bon candidat.
+- [ ] **#3 RunnerRegistry** (packages/runner) — singleton statique à exposer via container.
+- [ ] **#4 EventDispatcher** — plus complexe (registration dynamique, priorité via `_ORDER_ATTR`, thread-safety). À évaluer après les autres.
+- [ ] **#6 SpinnerPool** — BASSE priorité, à faire en passant.
+- [ ] **#7 WithConfigRegistry** (pseudocode) — BASSE priorité.
+- [ ] **Cas spécial KernelRegistry** — implémente `Registrable` mais garde sa persistance fichier.
 
 ---
 
 ## Phase 5 — Documentation & garde-fous
 
-- [ ] Décision écrite dans `.wex/knowledge/decisions/registry-pattern.md` : pourquoi tout registre passe par `Registry[T]` + `Registrable` Protocol.
-- [ ] Linter custom (ou simple grep CI) : interdire toute nouvelle classe `*Registry` qui ne dérive pas de `Registry[T]`.
-- [ ] Documenter l'API pour les auteurs d'addons : "comment créer un nouveau type de registre dans ton addon".
+- [ ] Décision écrite dans `.wex/knowledge/decisions/registry-pattern.md`.
+- [ ] Grep CI : interdire toute nouvelle classe `*Registry` qui ne dérive pas de `Registry[T]`.
+- [ ] Doc auteurs d'addons : "comment créer un nouveau type de registre".
 
 ---
 
-## Liens avec autres roadmaps
-
-- [async.md](async.md) **Phase 1.5** (imports addons) — pourra être réécrit comme un cas particulier d'init de registre une fois la base posée. À voir lequel des deux on attaque en premier.
-- [publication-strategies-pipeline.md](publication-strategies-pipeline.md) — les stratégies de publication sont aussi un cas typique de registre (déjà ?).
-
----
-
-## Décisions encore ouvertes
+## Décisions ouvertes
 
 - [ ] **Protocol vs Mixin** pour `Registrable` ? (penche Protocol)
-- [ ] **Ordre d'attaque** entre cette roadmap et async.md ? (Faire d'abord registrification permet de centraliser l'async dans Registry — plus propre. Mais plus long avant de voir un gain.)
-- [ ] **`KernelRegistry`** (commands) — cas spécial avec persistance fichier — on l'embarque ou on le laisse à part ?
-- [ ] **Rétro-compat** : on garde `register(key, item)` en plus de `register(item)` ou on casse direct ?
+- [ ] **Ordre d'attaque** registrification vs async.md ? (registrification d'abord = base async centralisée, plus propre mais plus long avant gain visible)
+- [ ] **`KernelRegistry`** — embarqué dans Phase 4 ou laissé à part ?
+- [ ] **Rétro-compat** sur `register(key, item)` — déprécation douce ou cassure directe ?
 
 ---
+
+## Liens
+
+- [async.md](async.md) Phase 1.5 (imports addons) — pourra être réécrit comme cas particulier d'init de registre.
+- [publication-strategies-pipeline.md](publication-strategies-pipeline.md) — stratégies de publication = cas typique de registre, à vérifier.
 
 ## Notes
 
-- Ce refacto est **prérequis** pour rendre l'init async propre et généralisable. Sans lui, on disperse la logique async dans N classes Registry custom.
-- Effort estimé : Phases 1-3 ≈ 1-2 jours focus, Phase 4 ≈ 2-4 heures par registre migré, Phase 5 ≈ 1-2h.
-- Risque principal : casser des call sites externes (addons tiers, code utilisateur). À atténuer via dépréciation douce et tests.
+- Prérequis pour rendre l'init async propre et généralisable. Sans cette base, on disperse l'async dans N classes custom.
+- Effort estimé : Phases 2-3 ≈ 1-2 jours focus, Phase 4 ≈ 2-4h par registre migré, Phase 5 ≈ 1-2h.
+- Risque principal : casser des call sites externes → atténué par déprécation douce + tests.
