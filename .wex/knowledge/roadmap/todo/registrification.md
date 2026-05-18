@@ -60,6 +60,16 @@ Motif `for addon in kernel.get_addons().values(): collect addon.get_X_classes()`
 - [ ] Vérifier `_init_resolvers` du kernel (STANDARD ou pas ?).
 - [ ] Re-grep `wex-addon-app` : services, builds, containers.
 
+### Candidat additionnel — Suite packages
+
+**[FrameworkPackagesSuiteWorkdir](../../../../../../../PACKAGES/PYTHON/wex/wex-addon-app/src/wexample_wex_addon_app/workdir/framework_packages_suite_workdir.py)** : la liste de packages d'une suite est un registre déguisé.
+
+- Items même type (workdirs de packages), itérations multiples (build, publish, version bump...).
+- **Dépendances inter-packages** existent → tri topologique utile pour ordre de build/publish.
+- Découverte par filesystem (paths), pas par `register()` explicite.
+
+→ Possible nouvelle variante **`FilesystemDiscoveredRegistry`** OU méthode `populate_from_paths(paths, item_class)` sur `SingletonRegistry`. À décider au moment de la migration.
+
 ---
 
 ## Phase 2 — Protocol `Registrable` avec dépendances
