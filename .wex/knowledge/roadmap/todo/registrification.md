@@ -130,9 +130,9 @@ Lien direct avec [async.md](async.md) Phase 1.5.
 Ordre proposé (par criticité + indépendance) :
 
 - [x] **#1 ScriptRunnerRegistry** — `AbstractScriptRunner` implémente `Registrable`, `kernel._init_script_runner_registry` utilise `SingletonRegistry[AbstractScriptRunner]`, 4 defaults inline dans le kernel (à déplacer dans `core_addon_manager.get_script_runner_classes()` plus tard). Classe custom supprimée. Validé via `wex demo::yaml/hello`.
-- [ ] **#2 StepGuardRegistry** — idem. ⚠️ passage **list → dict** : vérifier qu'aucun call site ne dépend de l'ordre d'insertion.
+- [x] **#2 StepGuardRegistry** — `AbstractStepGuard` implémente `Registrable`. `StepGuardRegistry` hérite désormais de `SingletonRegistry[AbstractStepGuard]` et conserve ses méthodes métier (`should_skip_step`, `get_all_step_options`). Passage **list → dict** sans casse (any() court-circuite, get_all_step_options agrège). Validé via `wex demo::yaml/hello`.
 - [ ] **#5 Webhook type_resolvers** — dict rebuilt à chaque démarrage daemon → bon candidat.
-- [ ] **#3 RunnerRegistry** (packages/runner) — singleton statique à exposer via container.
+- [x] **#3 RunnerRegistry** (packages/runner) — hérite désormais de `Registry[AbstractRunner]` (instance-based, items pré-configurés), garde `get_or_raise` et `status` comme méthodes métier. Singleton statique abandonné (aucun consommateur externe — l'API était définie mais inutilisée). Validé via test direct.
 - [ ] **#4 EventDispatcher** — plus complexe (registration dynamique, priorité via `_ORDER_ATTR`, thread-safety). À évaluer après les autres.
 - [ ] **#6 SpinnerPool** — BASSE priorité, à faire en passant.
 - [ ] **#7 WithConfigRegistry** (pseudocode) — BASSE priorité.
