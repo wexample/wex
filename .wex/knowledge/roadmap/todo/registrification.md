@@ -100,23 +100,20 @@ Variante orthogonale qui ajoute un mode "instance partagée accessible globaleme
 - Mode instance dédiée préservé : `MyRegistry()` crée toujours une instance neuve.
 - `reset_shared()` exposé pour les tests.
 
-## Phase 2bis — `DiskPersistedRegistry` (abstraction du cas KernelRegistry)
+## Phase 2bis — `DiskPersistedRegistry` (FAIT)
 
-Plutôt que de garder `KernelRegistry` à part, créer une abstraction réutilisable.
+- ✅ Créé `DiskPersistedRegistry(Registry[T])` dans `wexample_helpers/service/disk_persisted_registry.py`.
+- ✅ Accepte un duck-typed file avec `read_parsed()`/`write_parsed()`/`get_local_file().is_empty()` — compatible avec `JsonFile`/`YamlFile` de filestate.
+- ✅ `is_persisted()` tolère fichier inexistant.
+- ✅ `load()` no-op si fichier absent.
+- ✅ Validé via `AppsRegistry` (cf Phase 4 #candidat additionnel).
 
-- [ ] Créer `DiskPersistedRegistry(Registry[T])` dans `wexample_helpers/service/disk_persisted_registry.py` :
-  ```python
-  class DiskPersistedRegistry(Registry[T]):
-      def __init__(self, container: Any, file: StructuredFile):
-          super().__init__(container)
-          self._file = file
-      def save(self) -> None: ...    # serialize items → file.write_parsed()
-      def load(self) -> None: ...    # file.read_parsed() → hydrate items
-      def is_persisted(self) -> bool: return not self._file.get_local_file().is_empty()
-  ```
-- [ ] Le `StructuredFile` (alias générique pour `YamlFile | JsonFile`) est passé en construction.
-- [ ] Sérialisation/hydratation déléguée aux items (méthodes `serialize()`/`hydrate(data)` sur Registrable).
-- [ ] **Bénéfice** : KernelRegistry devient un `DiskPersistedRegistry[CommandData](file=KernelRegistryFile)`. Ouvre la porte à d'autres caches persistés (apps_registry, autocomplete cache, etc.).
+## Phase 2quater — `WithFileLockMixin` (FAIT)
+
+- ✅ Créé dans `wexample_helpers/service/with_file_lock_mixin.py`.
+- ✅ Context manager `file_lock()` via `fcntl.flock` cross-process.
+- ✅ `_get_locked_resource_path()` à implémenter par la classe utilisatrice (sinon NotImplementedError explicite).
+- ✅ Validé via `AppsRegistry` (composition `WithFileLockMixin + SharedRegistry + DiskPersistedRegistry`).
 
 ---
 
@@ -145,7 +142,8 @@ Ordre proposé (par criticité + indépendance) :
 - [ ] **#4 EventDispatcher** — plus complexe (registration dynamique, priorité via `_ORDER_ATTR`, thread-safety). À évaluer après les autres.
 - [ ] **#6 SpinnerPool** — BASSE priorité, à faire en passant.
 - [ ] **#7 WithConfigRegistry** (pseudocode) — BASSE priorité.
-- [ ] **Cas spécial KernelRegistry** — implémente `Registrable` mais garde sa persistance fichier.
+- [ ] **Cas spécial KernelRegistry** — laissé tel quel (modèle métier persisté distinct du pattern dict<key,item>, `SerializableMixin` suffit). À revisiter seulement si refacto de fond.
+- [x] **Candidat additionnel — AppsRegistry** (apps_registry.py de wex-addon-app) — réécrit comme `AppsRegistry(WithFileLockMixin, SharedRegistry[dict], DiskPersistedRegistry[dict])`. Lock cross-process pour writes, format on-disk `{"apps": ...}` préservé. Validé via `wex app/list` + tests directs (load/add/remove/format on-disk).
 
 ---
 
