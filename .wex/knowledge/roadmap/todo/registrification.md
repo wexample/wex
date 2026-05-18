@@ -62,25 +62,42 @@ Motif `for addon in kernel.get_addons().values(): collect addon.get_X_classes()`
 
 ---
 
-## Phase 2 — Mixin `Registrable` avec dépendances
+## Phase 2 — Protocol `Registrable` avec dépendances
 
-`RegistrableType = TypeVar("RegistrableType")` est aujourd'hui vide. À remplacer par un Protocol/Mixin explicite.
+`RegistrableType = TypeVar("RegistrableType")` est aujourd'hui vide. À remplacer par un Protocol explicite (fallback Mixin si trop restrictif à l'usage).
 
-- [ ] Créer `Registrable` dans `wexample_helpers/service/registrable.py` :
+- [ ] Créer `Registrable` Protocol dans `wexample_helpers/service/registrable.py` :
   ```python
-  class Registrable:
+  @runtime_checkable
+  class Registrable(Protocol):
       @classmethod
       def get_registry_key(cls) -> str: ...
       @classmethod
-      def dependencies(cls) -> list[type[Registrable]]: return []
+      def dependencies(cls) -> list[type[Registrable]]: ...
       def init_sync(self) -> None: ...
-      async def init_async(self) -> None: ...  # default = run sync in thread
+      async def init_async(self) -> None: ...
   ```
-- [ ] `Registry.register(item)` (signature simplifiée) → dérive la clé via `item.get_registry_key()`.
+- [ ] `Registry.register(item)` : signature simplifiée, dérive la clé via `item.get_registry_key()`. **Pas de rétro-compat** sur `register(key, item)`.
 - [ ] `Registry.resolve_init_order()` → tri topologique des items selon `dependencies()`.
 - [ ] Détection des cycles → exception explicite avec la chaîne fautive.
-- [ ] Conserver `register(key, item)` en surcharge (déprécation douce).
-- [ ] **Choix Protocol vs Mixin** : penche Protocol (PEP 544) pour ne pas forcer l'héritage.
+
+## Phase 2bis — `DiskPersistedRegistry` (abstraction du cas KernelRegistry)
+
+Plutôt que de garder `KernelRegistry` à part, créer une abstraction réutilisable.
+
+- [ ] Créer `DiskPersistedRegistry(Registry[T])` dans `wexample_helpers/service/disk_persisted_registry.py` :
+  ```python
+  class DiskPersistedRegistry(Registry[T]):
+      def __init__(self, container: Any, file: StructuredFile):
+          super().__init__(container)
+          self._file = file
+      def save(self) -> None: ...    # serialize items → file.write_parsed()
+      def load(self) -> None: ...    # file.read_parsed() → hydrate items
+      def is_persisted(self) -> bool: return not self._file.get_local_file().is_empty()
+  ```
+- [ ] Le `StructuredFile` (alias générique pour `YamlFile | JsonFile`) est passé en construction.
+- [ ] Sérialisation/hydratation déléguée aux items (méthodes `serialize()`/`hydrate(data)` sur Registrable).
+- [ ] **Bénéfice** : KernelRegistry devient un `DiskPersistedRegistry[CommandData](file=KernelRegistryFile)`. Ouvre la porte à d'autres caches persistés (apps_registry, autocomplete cache, etc.).
 
 ---
 
@@ -121,12 +138,12 @@ Ordre proposé (par criticité + indépendance) :
 
 ---
 
-## Décisions ouvertes
+## Décisions actées
 
-- [ ] **Protocol vs Mixin** pour `Registrable` ? (penche Protocol)
-- [ ] **Ordre d'attaque** registrification vs async.md ? (registrification d'abord = base async centralisée, plus propre mais plus long avant gain visible)
-- [ ] **`KernelRegistry`** — embarqué dans Phase 4 ou laissé à part ?
-- [ ] **Rétro-compat** sur `register(key, item)` — déprécation douce ou cassure directe ?
+- ✅ **Protocol** pour `Registrable`, fallback Mixin si trop restrictif à l'usage.
+- ✅ **Ordre d'attaque** : registrification → async sur `_create_options` (Phase 1.7 d'[async.md](async.md)) → migration des autres registres.
+- ✅ **`KernelRegistry`** → réécrit en tant que `DiskPersistedRegistry` (Phase 2bis).
+- ✅ **Pas de rétro-compat** : cassure directe, on corrige tous les call sites en même temps.
 
 ---
 
