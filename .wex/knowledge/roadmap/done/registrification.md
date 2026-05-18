@@ -169,8 +169,25 @@ Ordre proposé (par criticité + indépendance) :
 - [async.md](async.md) Phase 1.5 (imports addons) — pourra être réécrit comme cas particulier d'init de registre.
 - [publication-strategies-pipeline.md](publication-strategies-pipeline.md) — stratégies de publication = cas typique de registre, à vérifier.
 
-## Notes
+## Notes finales (clôture)
 
-- Prérequis pour rendre l'init async propre et généralisable. Sans cette base, on disperse l'async dans N classes custom.
-- Effort estimé : Phases 2-3 ≈ 1-2 jours focus, Phase 4 ≈ 2-4h par registre migré, Phase 5 ≈ 1-2h.
-- Risque principal : casser des call sites externes → atténué par déprécation douce + tests.
+### Ce qui a été livré
+
+- Protocol `Registrable` (`get_registry_key`, `dependencies`, `init_sync`, `init_async`).
+- **4 variantes Registry** dans `wexample_helpers/service/` :
+  - `Registry[T]` — base générique, `register(item, key=None)` avec auto-derive.
+  - `SingletonRegistry[T]` — classes instanciées avec init topologique sync/async.
+  - `SharedRegistry[T]` — instance partagée per-class via `.shared()`, isolée entre sous-classes.
+  - `DiskPersistedRegistry[T]` — persistance via `StructuredContentFile` (JsonFile/YamlFile).
+- 1 mixin composable : `WithFileLockMixin` (fcntl cross-process).
+- **6 migrations validées** : ScriptRunner #1, StepGuard #2, Runner #3, Webhook type_resolvers #5, SpinnerPool #6, WithConfigRegistry #7.
+- **1 bonus** : `AppsRegistry` (composition des 3 variantes + mixin, démontre la composabilité).
+- #4 EventDispatcher : classé HORS SCOPE (pattern Pub/Sub, pas Registry).
+
+### Résidus reportés (non bloquants)
+
+- Phase 1bis audits (config nested options, `_init_resolvers`, services/builds/containers wex-addon-app).
+- Phase 3 (init async dans Registry) : `SingletonRegistry.init_all_async()` est livré, mais le hook `RegistryContainerMixin.init_all_registries_async()` n'a pas été ajouté — utile uniquement si un cas d'usage le réclame.
+- Phase 5 (doc + lint CI + decision file) : la doc émerge des roadmaps déjà écrites ; un decision file et un lint CI peuvent attendre un vrai besoin.
+- Candidat additionnel "Suite packages" (`FrameworkPackagesSuiteWorkdir`) : à creuser dans une roadmap spécifique si besoin.
+- KernelRegistry : laissé tel quel volontairement (modèle métier persisté ≠ pattern dict<key,item>).

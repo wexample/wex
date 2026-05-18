@@ -79,23 +79,30 @@ Async aide uniquement pour de l'I/O concurrent (disque, réseau, subprocess). Pa
 - [ ] Idéalement passer `ThreadingHTTPServer` → `aiohttp` ou `asgiref` (plus structurel, peut être différé).
 - **Gain attendu : x2 à x10 sous charge concurrente.**
 
-### 1.7 config — `_create_options` récursif (identifié par profiling)
+### 1.7 config — `_create_options` récursif (ABANDONNÉ après profiling)
 
 [abstract_nested_config_option.py:136](../../../../../../../PACKAGES/PYTHON/packages/config/src/wexample_config/config_option/abstract_nested_config_option.py#L136)
 
-**Contexte mesuré** : `WexWorkdir.configure()` prend 135ms à chaque démarrage. Tout va dans `set_value()` → `_create_options(config)` qui, pour chaque option class du registry :
-1. Appelle `resolve_config(config)` (ajoute des clés implicites).
-2. Instancie l'enfant (`option_class(parent=self)`).
-3. Appelle récursivement `configure()` sur les enfants nested.
+**Hypothèse initiale** : les 135ms de `WexWorkdir.configure()` étaient dans l'instanciation récursive d'options → candidat parfait pour `asyncio.gather`.
 
-Les enfants à un même niveau sont **indépendants** entre eux — c'est le profil idéal pour `asyncio.gather`.
+**Réalité mesurée via cProfile** :
 
-- [ ] Bascule la boucle `for option_class in options.values():` en `await asyncio.gather(*[create_option_async(c) for c in options.values()])`.
-- [ ] La récursion `configure()` → `_create_options()` devient async, parallélisme par niveau de profondeur.
-- [ ] Attention à l'ordre des callbacks (`resolve_config` peut muter `config`) : si dépendances entre options, batcher en couches comme pour la registrification (Phase 2 de [registrification.md](registrification.md)).
-- [ ] Si lazy filesystem ajouté plus tard (cf. note finale), gather peut paralléliser les I/O réels — gain compound.
-- **Gain attendu : 135ms → 30-50ms** sur le configure du kernel workdir (gain réel sur `wex hi` après Tier 2 actuel à 400ms : ~350ms voire moins).
-- **Bénéfice généralisé** : profite à TOUS les `workdir.configure()` du projet, pas seulement au kernel.
+| Sous-poste | Temps | Type |
+|---|---|---|
+| Lecture/parse YAML (`read_parsed` + `yaml.loads`) | **~90ms** | I/O + parsing |
+| Imports lazy de modules (filestate, config) | 30-50ms | I/O disque + bytecode |
+| `get_allowed_options_registry/_options` | ~36ms | CPU + scan provider |
+| `_create_options` (instanciation pure) | **~40ms** | **CPU pur** |
+| `set_value` (cascade) | ~20ms | CPU pur |
+
+→ **Asyncio sur `_create_options` ne gagne rien** : le code visé est CPU pur (GIL sérialise) et ne représente que 40ms sur 220ms total. Les vrais coûts sont dans le parsing YAML et les imports — pas paralélisables proprement (3 reads trop courts, overhead event loop > gain).
+
+**Pistes alternatives non retenues** :
+- **Cache structurel persisté** (sérialiser le tree configuré) → gain potentiel ~130ms, **mais** invalidation à hasher tous les `.py` contributeurs (option classes, providers, addons, workdir, env, version wex) — trop fragile pour 130ms.
+- **Lazy imports** : reporter imports lourds hors du chemin critique de `setup()`. Gain ~30-50ms, faible risque. **À envisager si on veut continuer perf démarrage.**
+- **Précompil YAML → JSON** au build : ~90ms → ~10ms. Mais demande un step build supplémentaire.
+
+→ **Décision : on arrête le sujet perf démarrage ici.** Le Tier 2 actuel (gain ~100ms via configure=False + bypass shortcut) est ce qu'on peut raisonnablement obtenir sans complexification disproportionnée.
 
 ---
 
@@ -193,11 +200,30 @@ Les enfants à un même niveau sont **indépendants** entre eux — c'est le pro
 
 ---
 
-## Notes
+## Notes finales
 
-- **Priorité ABSOLUE (révisée par profiling) = Phase 1.7 (`_create_options` async)** : profilé à 135ms par `wex hi`. Phase 1.5 (imports addons) ne représente que 12-21ms en réalité — gain bien plus faible que pressenti.
-- Priorité forte sur **filestate (1.1 + 1.2)** : bénéficie à toutes les commandes qui rectifient des arbres (la majorité des `app/*`).
-- Le décorateur `@async` sur les commandes (sujet initial) sera traité dans une **roadmap séparée** une fois cette base posée — les deux sujets sont indépendants.
-- Aucun calcul CPU lourd détecté → pas besoin de `multiprocessing`, asyncio suffit.
-- **Tier 1 (FAIT)** : suppression de `workdir.apply()` au démarrage (gain ~50-150ms).
-- **Tier 2 (FAIT)** : `configure=False` sur kernel workdir + bypass `get_shortcut(registry)` (gain net ~80-100ms). Reste 135ms dans `_create_options` → cible de Phase 1.7.
+### Ce qui a été FAIT sur la perf démarrage
+
+- **Tier 1** : suppression de `workdir.apply()` au démarrage (gain ~50-150ms).
+- **Tier 2** : `configure=False` sur kernel workdir + bypass `get_shortcut("registry")` + suppression complète du mécanisme shortcut legacy (gain net ~80-100ms).
+
+**Total mesuré** : `wex hi` passé de ~500ms à ~390ms (gain ~22%).
+
+### Ce qui a été abandonné après profiling
+
+- **Phase 1.7** (`_create_options` async) : profilé CPU pur sur 40ms / 220ms → asyncio sans gain.
+- **Phase 1.5** (imports addons async) : profilé à 12-21ms réels (pas 500ms-2s comme estimé initialement) — gain max <20ms, négligeable.
+
+### Roadmap async hors démarrage encore valide
+
+Les phases 1.1 à 1.4 et 2.x identifient des hotspots dans des **commandes longues** (image/build, db/dump, packages_execute, etc.) où le profil "I/O concurrent" est réel et le gain potentiel mesurable. À reprendre quand le sujet "command perf" devient prioritaire.
+
+### Pistes hors-async pour la perf démarrage (si reprise plus tard)
+
+- **Lazy imports** : reporter les imports lourds (`wexample_filestate`, `wexample_config`) hors du chemin critique de `setup()`. Gain estimé ~30-50ms, faible risque, zéro maintenance.
+- Cache structurel : écarté (invalidation trop fragile pour le gain).
+- Précompil YAML→JSON au build : possible mais demande infra build.
+
+### Lien avec la registrification
+
+Le décorateur CLI `@async` sur les commandes (sujet initial) reste **hors scope** de cette roadmap — à traiter dans une roadmap dédiée si reprise.
