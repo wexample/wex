@@ -261,7 +261,7 @@ wexample-runner==0.0.5
     # via
     #   wexample-filestate
     #   wexample-wex-addon-app
-wexample-wex-addon-app==16.4.0
+wexample-wex-addon-app==16.5.0
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-dev-css
