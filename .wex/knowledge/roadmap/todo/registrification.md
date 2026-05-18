@@ -137,11 +137,11 @@ Ordre proposé (par criticité + indépendance) :
 
 - [x] **#1 ScriptRunnerRegistry** — `AbstractScriptRunner` implémente `Registrable`, `kernel._init_script_runner_registry` utilise `SingletonRegistry[AbstractScriptRunner]`, 4 defaults inline dans le kernel (à déplacer dans `core_addon_manager.get_script_runner_classes()` plus tard). Classe custom supprimée. Validé via `wex demo::yaml/hello`.
 - [x] **#2 StepGuardRegistry** — `AbstractStepGuard` implémente `Registrable`. `StepGuardRegistry` hérite désormais de `SingletonRegistry[AbstractStepGuard]` et conserve ses méthodes métier (`should_skip_step`, `get_all_step_options`). Passage **list → dict** sans casse (any() court-circuite, get_all_step_options agrège). Validé via `wex demo::yaml/hello`.
-- [ ] **#5 Webhook type_resolvers** — dict rebuilt à chaque démarrage daemon → bon candidat.
+- [x] **#5 Webhook type_resolvers** — `_load_type_resolvers` retourne désormais un `Registry[WebhookTypeResolver]`, `WebhookHttpRequestHandler.type_resolvers` typé Registry. API consumer (`.get(command_type)`) inchangée. Validé via `wex core::webhook/listen --dry-run`.
 - [x] **#3 RunnerRegistry** (packages/runner) — hérite désormais de `SharedRegistry[AbstractRunner]` (mode singleton via `.shared()` préservé + mode instance dédiée disponible), garde `get_or_raise` et `status` comme méthodes métier. Validé via test direct (shared singleton, instance dédiée, reset, isolation entre sous-classes).
-- [ ] **#4 EventDispatcher** — plus complexe (registration dynamique, priorité via `_ORDER_ATTR`, thread-safety). À évaluer après les autres.
-- [ ] **#6 SpinnerPool** — BASSE priorité, à faire en passant.
-- [ ] **#7 WithConfigRegistry** (pseudocode) — BASSE priorité.
+- [~] **#4 EventDispatcher** — **HORS SCOPE** (faux candidat) : c'est un pattern Pub/Sub (`dict<event, list<listener>>` avec mutations runtime, tri par priorité, bubbling, async dispatch), pas un Registry. Mériterait sa propre roadmap si on veut le standardiser.
+- [x] **#6 SpinnerPool** — hérite désormais de `SharedRegistry[Spinner]`. Méthodes classmethod ad-hoc remplacées par méthodes d'instance avec `get_or_create()` pour la lazy creation. RLock préservé. 2 call sites mis à jour (`SpinnerPool.next()` → `SpinnerPool.shared().next()`).
+- [x] **#7 WithConfigRegistry** (pseudocode) — Refacto `is-a` → `has-a` : `CodeGenerator` instancie un `Registry[type]` au lieu d'hériter d'un mixin. Mixin `WithConfigRegistry` supprimé. Validé via génération YAML → Python.
 - [ ] **Cas spécial KernelRegistry** — laissé tel quel (modèle métier persisté distinct du pattern dict<key,item>, `SerializableMixin` suffit). À revisiter seulement si refacto de fond.
 - [x] **Candidat additionnel — AppsRegistry** (apps_registry.py de wex-addon-app) — réécrit comme `AppsRegistry(WithFileLockMixin, SharedRegistry[dict], DiskPersistedRegistry[dict])`. Lock cross-process pour writes, format on-disk `{"apps": ...}` préservé. Validé via `wex app/list` + tests directs (load/add/remove/format on-disk).
 
