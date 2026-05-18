@@ -1,0 +1,16 @@
+[Unit]
+Description=Wex webhook HTTP daemon
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/wex core::webhook/listen --port 7654
+Restart=on-failure
+RestartSec=5
+User=root
+Group=root
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

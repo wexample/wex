@@ -4,19 +4,6 @@ set -e
 
 case "$1" in
   remove|upgrade|deconfigure)
-    # Stop the webhook daemon if running. Do NOT touch the marker file
-    # (/usr/lib/wex/.wex/webhook.enabled) — postinst reads it to decide whether
-    # to restart the daemon after the upgrade.
-    if pgrep -f 'core::webhook/listen' >/dev/null 2>&1; then
-      pkill -TERM -f 'core::webhook/listen' || true
-      # Wait up to 5s for graceful shutdown
-      for _ in 1 2 3 4 5; do
-        pgrep -f 'core::webhook/listen' >/dev/null 2>&1 || break
-        sleep 1
-      done
-      pkill -KILL -f 'core::webhook/listen' >/dev/null 2>&1 || true
-    fi
-
     if [ -x "/usr/lib/wex/bin/uninstall" ]; then
       bash "/usr/lib/wex/bin/uninstall"
     fi
@@ -24,5 +11,7 @@ case "$1" in
   failed-upgrade)
     ;;
 esac
+
+#DEBHELPER#
 
 exit 0
