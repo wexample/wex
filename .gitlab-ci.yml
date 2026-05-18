@@ -3,6 +3,7 @@
     - .on_master
   needs:
     - deploy
+    - wait_for_pypi
   script:
     - set -e
     - apt-get update -qq
@@ -51,9 +52,19 @@ deploy:
     - BUILD_VERSION=$(cat version.txt)
     - curl --fail "http://151.80.23.108:7654/webhook/app/prod/wex-apt-repo/apt/publish?_token=${WEX_WEBHOOK_TOKEN}&project=${CI_PROJECT_ID}&version=${BUILD_VERSION}&_async=0"
   stage: deploy
+wait_for_pypi:
+  extends:
+    - .on_master
+  image: python:3.11-slim
+  needs:
+    - deploy
+  script:
+    - python ci/wait_for_pypi_versions.py requirements.txt
+  stage: wait_for_pypi
 stages:
   - build_apt
   - deploy
+  - wait_for_pypi
   - checkup_install
 variables:
   MAIN_BRANCH_NAME: main
