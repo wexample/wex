@@ -79,6 +79,24 @@ Async aide uniquement pour de l'I/O concurrent (disque, réseau, subprocess). Pa
 - [ ] Idéalement passer `ThreadingHTTPServer` → `aiohttp` ou `asgiref` (plus structurel, peut être différé).
 - **Gain attendu : x2 à x10 sous charge concurrente.**
 
+### 1.7 config — `_create_options` récursif (identifié par profiling)
+
+[abstract_nested_config_option.py:136](../../../../../../../PACKAGES/PYTHON/packages/config/src/wexample_config/config_option/abstract_nested_config_option.py#L136)
+
+**Contexte mesuré** : `WexWorkdir.configure()` prend 135ms à chaque démarrage. Tout va dans `set_value()` → `_create_options(config)` qui, pour chaque option class du registry :
+1. Appelle `resolve_config(config)` (ajoute des clés implicites).
+2. Instancie l'enfant (`option_class(parent=self)`).
+3. Appelle récursivement `configure()` sur les enfants nested.
+
+Les enfants à un même niveau sont **indépendants** entre eux — c'est le profil idéal pour `asyncio.gather`.
+
+- [ ] Bascule la boucle `for option_class in options.values():` en `await asyncio.gather(*[create_option_async(c) for c in options.values()])`.
+- [ ] La récursion `configure()` → `_create_options()` devient async, parallélisme par niveau de profondeur.
+- [ ] Attention à l'ordre des callbacks (`resolve_config` peut muter `config`) : si dépendances entre options, batcher en couches comme pour la registrification (Phase 2 de [registrification.md](registrification.md)).
+- [ ] Si lazy filesystem ajouté plus tard (cf. note finale), gather peut paralléliser les I/O réels — gain compound.
+- **Gain attendu : 135ms → 30-50ms** sur le configure du kernel workdir (gain réel sur `wex hi` après Tier 2 actuel à 400ms : ~350ms voire moins).
+- **Bénéfice généralisé** : profite à TOUS les `workdir.configure()` du projet, pas seulement au kernel.
+
 ---
 
 ## Phase 2 — Gains MOYENS (priorité moyenne)
@@ -177,7 +195,9 @@ Async aide uniquement pour de l'I/O concurrent (disque, réseau, subprocess). Pa
 
 ## Notes
 
-- Priorité ABSOLUE = **Phase 1.5 (imports addons)** : c'est le coût payé par *toute* invocation `wex`, même `--help`.
+- **Priorité ABSOLUE (révisée par profiling) = Phase 1.7 (`_create_options` async)** : profilé à 135ms par `wex hi`. Phase 1.5 (imports addons) ne représente que 12-21ms en réalité — gain bien plus faible que pressenti.
 - Priorité forte sur **filestate (1.1 + 1.2)** : bénéficie à toutes les commandes qui rectifient des arbres (la majorité des `app/*`).
 - Le décorateur `@async` sur les commandes (sujet initial) sera traité dans une **roadmap séparée** une fois cette base posée — les deux sujets sont indépendants.
 - Aucun calcul CPU lourd détecté → pas besoin de `multiprocessing`, asyncio suffit.
+- **Tier 1 (FAIT)** : suppression de `workdir.apply()` au démarrage (gain ~50-150ms).
+- **Tier 2 (FAIT)** : `configure=False` sur kernel workdir + bypass `get_shortcut(registry)` (gain net ~80-100ms). Reste 135ms dans `_create_options` → cible de Phase 1.7.
