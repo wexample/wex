@@ -91,6 +91,15 @@ Motif `for addon in kernel.get_addons().values(): collect addon.get_X_classes()`
 - [ ] `Registry.resolve_init_order()` → tri topologique des items selon `dependencies()`.
 - [ ] Détection des cycles → exception explicite avec la chaîne fautive.
 
+## Phase 2ter — `SharedRegistry` (accès singleton par classe)
+
+Variante orthogonale qui ajoute un mode "instance partagée accessible globalement", sans renoncer au mode instance-based standard. Utile quand un registre doit être atteint depuis n'importe où sans passer une référence (cas typique : registres de niveau process comme runners de packages externes).
+
+- ✅ Créé dans `wexample_helpers/service/shared_registry.py`.
+- API : `MyRegistry.shared()` retourne l'instance partagée (lazy-créée, isolée par sous-classe).
+- Mode instance dédiée préservé : `MyRegistry()` crée toujours une instance neuve.
+- `reset_shared()` exposé pour les tests.
+
 ## Phase 2bis — `DiskPersistedRegistry` (abstraction du cas KernelRegistry)
 
 Plutôt que de garder `KernelRegistry` à part, créer une abstraction réutilisable.
@@ -132,7 +141,7 @@ Ordre proposé (par criticité + indépendance) :
 - [x] **#1 ScriptRunnerRegistry** — `AbstractScriptRunner` implémente `Registrable`, `kernel._init_script_runner_registry` utilise `SingletonRegistry[AbstractScriptRunner]`, 4 defaults inline dans le kernel (à déplacer dans `core_addon_manager.get_script_runner_classes()` plus tard). Classe custom supprimée. Validé via `wex demo::yaml/hello`.
 - [x] **#2 StepGuardRegistry** — `AbstractStepGuard` implémente `Registrable`. `StepGuardRegistry` hérite désormais de `SingletonRegistry[AbstractStepGuard]` et conserve ses méthodes métier (`should_skip_step`, `get_all_step_options`). Passage **list → dict** sans casse (any() court-circuite, get_all_step_options agrège). Validé via `wex demo::yaml/hello`.
 - [ ] **#5 Webhook type_resolvers** — dict rebuilt à chaque démarrage daemon → bon candidat.
-- [x] **#3 RunnerRegistry** (packages/runner) — hérite désormais de `Registry[AbstractRunner]` (instance-based, items pré-configurés), garde `get_or_raise` et `status` comme méthodes métier. Singleton statique abandonné (aucun consommateur externe — l'API était définie mais inutilisée). Validé via test direct.
+- [x] **#3 RunnerRegistry** (packages/runner) — hérite désormais de `SharedRegistry[AbstractRunner]` (mode singleton via `.shared()` préservé + mode instance dédiée disponible), garde `get_or_raise` et `status` comme méthodes métier. Validé via test direct (shared singleton, instance dédiée, reset, isolation entre sous-classes).
 - [ ] **#4 EventDispatcher** — plus complexe (registration dynamique, priorité via `_ORDER_ATTR`, thread-safety). À évaluer après les autres.
 - [ ] **#6 SpinnerPool** — BASSE priorité, à faire en passant.
 - [ ] **#7 WithConfigRegistry** (pseudocode) — BASSE priorité.
