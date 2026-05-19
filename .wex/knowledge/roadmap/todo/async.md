@@ -210,36 +210,34 @@ Async aide uniquement pour de l'I/O concurrent (disque, réseau, subprocess). Pa
 
 Suite à un audit codebase et aux retours user. Trois axes priorisés :
 
-### Axe A — Utilitaire de parcours/map parallèle (FONDATION)
+### Axe A — Utilitaire de parcours/map parallèle (FONDATION) ✅ LIVRÉ (2026-05-18)
 
 **But** : factoriser le pattern "boucle séquentielle sur N items I/O-bound" qui apparaît partout. Un seul outil testé, réutilisable.
 
-[wexample_helpers/helpers/parallel.py](../../../../../../../PACKAGES/PYTHON/packages/helpers/src/wexample_helpers/helpers/parallel.py) (à créer)
+[wexample_helpers/helpers/parallel.py](../../../../../../../PACKAGES/PYTHON/packages/helpers/src/wexample_helpers/helpers/parallel.py)
 
-- [ ] `parallel_map(items, fn, *, max_workers=8) -> list` — `ThreadPoolExecutor`, ordre d'entrée préservé en sortie, exceptions propagées.
-- [ ] `parallel_for_each(items, fn, *, max_workers=8) -> None` — variante sans retour.
-- [ ] Comportement vide (`items=[]`) → retour vide sans démarrer de pool.
-- [ ] Comportement single-item → exec directe sans pool (évite overhead).
-- [ ] Test unitaire (correctness + propagation d'exception).
+- [x] `parallel_map(items, fn, *, max_workers=8) -> list` — `ThreadPoolExecutor`, ordre d'entrée préservé en sortie, exceptions propagées.
+- [x] `parallel_for_each(items, fn, *, max_workers=8) -> None` — variante sans retour.
+- [x] Comportement vide (`items=[]`) → retour vide sans démarrer de pool.
+- [x] Comportement single-item → exec directe sans pool (évite overhead).
+- [x] Test unitaire (correctness + propagation d'exception). **7/7 tests passent.**
 
-**Sites de migration possibles une fois A livré** :
-- `wexample_helpers/helpers/directory.py` → `directory_list_files`, `directory_empty_dir`
-- `wexample_helpers/helpers/file.py` → `file_chown_recursive`, `file_get_dir_size`, `file_copytree_merge_yaml`
-- `wexample_filestate/option/children_filter_option.py:58` → `generate_children`
-- `wexample_filestate/option/children_file_factory_option.py:90` → `_generate_children_recursive`
-- `wexample_filestate-python/helpers/package.py:25` → `package_get_dependencies`
-- `wexample_wex_addon_app/app_addon_manager.py:151` → `find_services_by_tag`
+**Sites de migration restants** (à appliquer au fur et à mesure) :
+- [ ] `wexample_helpers/helpers/directory.py` → `directory_list_files`, `directory_empty_dir`
+- [ ] `wexample_helpers/helpers/file.py` → `file_chown_recursive`, `file_get_dir_size`, `file_copytree_merge_yaml`
+- [ ] `wexample_filestate/option/children_filter_option.py:58` → `generate_children`
+- [ ] `wexample_filestate/option/children_file_factory_option.py:90` → `_generate_children_recursive`
+- [ ] `wexample_filestate-python/helpers/package.py:25` → `package_get_dependencies`
+- [ ] `wexample_wex_addon_app/app_addon_manager.py:151` → `find_services_by_tag`
 
 ### Axe B — Batch sur items de suite (commandes `package__suite__*`)
 
 **Pattern** : commandes qui itèrent N packages d'une suite, **sans dépendance entre items**, chaque itération = 1-2 subprocess git + lecture pyproject.toml.
 
-[wex-addon-package/commands/suite/status.py](../../../../../../../PACKAGES/PYTHON/wex/wex-addon-package/src/wexample_wex_addon_package/commands/suite/status.py)
-
-- [ ] `package__suite__status` : boucle `for package in packages` → `has_changes_since_last_publication_tag()` (git) + `classify_version_bump()` (git). Parallélisable trivialement via Axe A.
+- [x] `package__suite__status` : boucle migrée sur `parallel_map`. Gain wall-clock vs séquentiel = vrai mais masqué par le bootstrap (cf. Bonus session 2026-05-18). [status.py](../../../../../../../PACKAGES/PYTHON/wex/wex-addon-package/src/wexample_wex_addon_package/commands/suite/status.py)
 - [ ] `package__suite__packages` : boucle similaire avec `get_setup_version()` (lecture pyproject.toml).
 - [ ] Vérifier les autres commandes du dossier (`shell.py`, `run.py`) — `shell` et `run` exécutent du code sur chaque item, **potentiellement avec logs entrelacés** : décider si parallélisation ou option `--parallel` opt-in.
-- [ ] Bench sur une suite de 10-50 packages.
+- [ ] Bench sur une suite de 10-50 packages (le bench global wall-clock est dominé par d'autres facteurs ; isoler la collecte).
 
 ### Axe C — Détection de dépendances circulaires (chemin à confirmer)
 
@@ -254,6 +252,33 @@ Suite à un audit codebase et aux retours user. Trois axes priorisés :
 - **Publication par layers** (topo sort des packages, publier en parallèle ce qui est leaf, puis leaf+1...) : **rejeté** pour l'instant. Coûts cachés trop élevés vs gain : logs entrelacés impossibles à lire dans le shell, erreurs partielles non-rollbackables sur PyPI, reproductibilité dégradée, UI spinner non prête pour N flux concurrents. À reconsidérer si on construit une UI dédiée (1 ligne par package mise à jour en place).
 - **Voie par défaut = ThreadPoolExecutor** plutôt qu'`async def` cascade : moins invasif sur le code sync existant. `asyncio` réservé aux cas qui sont déjà async-friendly (HTTP polling, subprocess pipelines).
 - **50k async tasks** théoriquement OK (coroutines = quelques KB), mais throttle naturel via `ThreadPoolExecutor` (default 32 threads) + `Semaphore` explicite si gather d'asyncio. Limite réelle = `RLIMIT_NOFILE` si beaucoup d'`open()` simultanés (~1024 par défaut).
+
+### Bonus livrés en session 2026-05-18 / 2026-05-19 (hors scope async initial)
+
+Bien que hors du périmètre "async" strict, ces refactors ont été livrés sur le même chemin critique et ont produit l'essentiel du gain wall-clock sur les commandes de suite.
+
+**1. Cache module-level pour YamlFile / JsonFile** ([with_yaml_files.py](../../../../../../../PACKAGES/PYTHON/packages/app/src/wexample_app/workdir/mixin/with_yaml_files.py))
+- Avant : `get_yaml_file_from_path` recréait une instance fraîche à chaque appel → cache `_parsed_cache` par-instance jamais réutilisé → 4267 parses YAML pour un seul `wex package::suite/status`.
+- Après : helpers `get_or_create_yaml_file` / `get_or_create_json_file` cachés par path.
+- Gain mesuré : `wex package::suite/status` 78s → 23s.
+
+**2. Lazy filestate item tree** ([item_target_directory.py](../../../../../../../PACKAGES/PYTHON/packages/filestate/src/wexample_filestate/item/item_target_directory.py))
+- Avant : `FileStateManager.configure()` déclenchait un `build_item_tree()` qui descendait récursivement → 11352 items créés systématiquement au bootstrap.
+- Après : flag `_tree_built`, build à la demande via `get_children_list()`, descente récursive supprimée de `ChildrenOption.build_item_tree`. `find_all_by_type` reçoit `stop_at_match=True` pour ne pas réveiller les sous-arbres.
+- Gain mesuré : `wex package::suite/status` 23s → 7.7s. `wex app::info/show` ~0.84s (était plusieurs secondes).
+- Propriété acquise : le coût d'instanciation devient indépendant de la taille du workdir sur disque.
+
+**3. Eager opt-in** (couvre les besoins fail-fast / "old school")
+- `configure(config, eager=True)` et `create_from_path(path, eager=True)` forcent une matérialisation récursive complète (= comportement pre-refactor).
+- Méthode publique `build_item_tree_recursive()` exposée pour les cas où on veut matérialiser explicitement.
+- 1 test (`test_configure_class_unexpected`) mis à jour pour utiliser `eager=True` et préserver son intention.
+
+**4. Fix dump lazy-aware** ([abstract_item_target.py](../../../../../../../PACKAGES/PYTHON/packages/filestate/src/wexample_filestate/item/abstract_item_target.py))
+- `dump()` déclenche le build lazy avant de dumper → sémantique "voir ce qui est configuré" préservée.
+
+**5. Fix private_field manquants** ([file_change_mode_operation.py](../../../../../../../PACKAGES/PYTHON/packages/filestate/src/wexample_filestate/operation/file_change_mode_operation.py))
+- 3 `private_field` (`_original_uid`, `_original_gid`, `_original_octal_mode`) sans `default=` → attrs n'initialisait pas → 7 tests filestate cassés. Fix `default=None` ajouté.
+- 20 → 13 tests filestate cassés (les 13 restants sont des bugs hétérogènes pré-existants, pas notre faute).
 
 ### Zones non couvertes par l'audit (à creuser avant clôture)
 
