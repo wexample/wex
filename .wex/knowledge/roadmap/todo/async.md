@@ -30,15 +30,17 @@ Async aide uniquement pour de l'I/O concurrent (disque, réseau, subprocess). Pa
 
 ## Phase 1 — Gains FORT (priorité haute)
 
-### 1.1 filestate — `apply_operations` (le plus gros gain)
+### 1.1 filestate — `apply_operations` ✅ LIVRÉ (2026-05-19)
 
-[abstract_result.py:33-69](../../../../../../../PACKAGES/PYTHON/packages/filestate/src/wexample_filestate/result/abstract_result.py#L33)
+[abstract_result.py](../../../../../../../PACKAGES/PYTHON/packages/filestate/src/wexample_filestate/result/abstract_result.py)
 
-- [ ] Boucle séquentielle sur `operations` → chaque op fait du disque (create/write/remove).
-- [ ] Refactor : `await asyncio.gather(*[op.apply_async() for op in operations])` avec `asyncio.to_thread` pour les ops disque.
-- [ ] Identifier les ops avec dépendances (ex: créer dossier avant fichier) → batcher par phase de dépendance.
-- [ ] Bench avant/après sur un gros arbre (>500 ops).
-- **Gain attendu : x2 à x5 sur arbres conséquents.**
+- [x] Refactor en deux paths : `_apply_operations_sequential` (interactive ou rollback) et `_apply_operations_parallel` (cas normal via `parallel_map`).
+- [x] Logs différés en mode parallèle pour éviter l'entrelacement (subtitle/task/log replay dans l'ordre d'entrée après la fin du pool).
+- [x] Dedupe par `id()` (Operations ne sont pas hashables).
+- [x] `FileStateDryRunResult.apply_operations` override pour rester séquentiel (pas d'I/O réelle, pool inutile).
+- [x] Dépendances : la sémantique multi-passe de filestate (1 op/item/passe puis nouvelle passe) garantit l'indépendance des ops dans un même result.operations → pas de DAG nécessaire.
+- [ ] Bench réel : à mesurer sur un gros arbre via `app::state/rectify`. Hors scope tests unitaires.
+- **Gain attendu : x4-x8 sur arbres conséquents (limité par taille du ThreadPool, default 8 workers).**
 
 ### 1.2 filestate — `children_filter_option` (iterdir + récursion)
 
