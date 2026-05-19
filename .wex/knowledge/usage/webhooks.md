@@ -13,13 +13,13 @@ ou tout outil capable de faire une requête GET.
 
 ```bash
 # En arrière-plan
-wex core::webhook/listen --asynchronous
+wex core::webhook/listen --async
 
 # En avant-plan (pour débugger)
 wex core::webhook/listen
 
 # Forcer le redémarrage si le port est déjà occupé
-wex core::webhook/listen --asynchronous --force
+wex core::webhook/listen --async --force
 
 # Timeout custom (défaut 300s, 0 = pas de limite)
 wex core::webhook/listen --worker-timeout 600
@@ -240,7 +240,7 @@ Résolveurs enregistrés au démarrage du daemon dans `listen.py` :
 | Option | Défaut | Description |
 |--------|--------|-------------|
 | `--port` | `6543` | Port d'écoute |
-| `--asynchronous` | `false` | Lance en subprocess background |
+| `--async` | `false` | Lance en subprocess background |
 | `--force` | `false` | Tue le process existant sur le port |
 | `--worker-timeout` | `300` | Timeout subprocess sync en secondes (0 = infini) |
 | `--dry-run` | `false` | Bind le socket sans servir (tests) |
