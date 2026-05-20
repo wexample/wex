@@ -102,7 +102,7 @@ Variante orthogonale qui ajoute un mode "instance partagée accessible globaleme
 
 ## Phase 2bis — `DiskPersistedRegistry` (FAIT)
 
-- ✅ Créé `DiskPersistedRegistry(Registry[T])` dans `wexample_helpers/service/disk_persisted_registry.py`.
+- ✅ Créé `DiskPersistedRegistry(Registry[T])`. Déplacé le 2026-05-20 de `wexample_helpers/service/disk_persisted_registry.py` vers `wexample_filestate/service/disk_persisted_registry.py` pour résoudre un cycle de dépendances (la classe est intrinsèquement couplée à `StructuredContentFile` qui vit dans filestate).
 - ✅ Accepte un duck-typed file avec `read_parsed()`/`write_parsed()`/`get_local_file().is_empty()` — compatible avec `JsonFile`/`YamlFile` de filestate.
 - ✅ `is_persisted()` tolère fichier inexistant.
 - ✅ `load()` no-op si fichier absent.
