@@ -49,7 +49,7 @@ Heuristique de validation avant de paralléliser :
 | Phase 1.1 filestate `apply_operations` parallèle | Touche au tree filestate (options, batch caches, IoManager) — silent exits, "trous" dans la sortie, dette debug ingérable. |
 | Phase 2.4 filestate `build_operations` parallèle | Même cause. Inspection items = traversée du tree mutable partagé. |
 
-Code revenu à `_apply_operations` séquentiel pur et `build_operations` récursif simple. `inspect_for_operation` helper conservé (neutre, peut servir hors parallel).
+Code revenu à `_apply_operations` séquentiel pur et `build_operations` récursif simple. Helper `inspect_for_operation` (ajouté pour Phase 2.4) supprimé : son commentaire "safe for parallel" était trompeur (la chaîne d'inspection touche au tree filestate) et personne d'autre ne l'appelait.
 
 ---
 
