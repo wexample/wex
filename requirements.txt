@@ -294,11 +294,11 @@ wexample-wex-addon-package==6.0.31
     # via wex (pyproject.toml)
 wexample-wex-addon-services-collab==10.0.0
     # via wex (pyproject.toml)
-wexample-wex-addon-services-db==9.1.3
+wexample-wex-addon-services-db==10.0.0
     # via wex (pyproject.toml)
-wexample-wex-addon-services-monitoring==7.1.10
+wexample-wex-addon-services-monitoring==7.2.0
     # via wex (pyproject.toml)
-wexample-wex-addon-services-platform==9.1.3
+wexample-wex-addon-services-platform==10.0.0
     # via wex (pyproject.toml)
 wexample-wex-core==22.0.0
     # via
