@@ -138,12 +138,24 @@ Async aide uniquement pour de l'I/O concurrent (disque, réseau, subprocess). Pa
 - [ ] `os.listdir` + checks séquentiels par item.
 - [ ] Gather sur `_should_process_item` quand checks I/O.
 
-### 2.4 filestate — `item_target_directory.build_operations`
+### 2.4 filestate — `item_target_directory.build_operations` ✅ LIVRÉ (2026-05-20)
 
-[item_target_directory.py:54-90](../../../../../../../PACKAGES/PYTHON/packages/filestate/src/wexample_filestate/item/item_target_directory.py#L54)
+[item_target_directory.py](../../../../../../../PACKAGES/PYTHON/packages/filestate/src/wexample_filestate/item/item_target_directory.py)
 
-- [ ] Récursion séquentielle sur enfants.
-- [ ] Paralléliser les branches indépendantes de l'arbre.
+Refacto en deux paths :
+- [x] **Path séquentiel** (`_build_operations_sequential`) : conservé tel quel, utilisé quand `max=` est passé (besoin d'un count précis pour stopper early) — préserve aussi le spinner per-item.
+- [x] **Path parallèle** (`_build_operations_parallel`) : flatten + UN seul pool + sort by path.
+  - `_collect_inspectable_items` walk DFS respectant `filter_paths` (early-skip subtree).
+  - `inspect_for_operation` helper pur sur `AbstractItemTarget` (no UI side effects) — safe pour thread pool.
+  - Sort déterministe par path absolu avant émission des `task` logs.
+- [x] Default pool size = 32 (`PARALLEL_DEFAULT_MAX_WORKERS`) — aligné sur le cap Python pour I/O.
+- [x] Tests filestate : 13 failed = baseline (zéro régression introduite).
+
+**Limitations connues** (à traiter plus tard) :
+- Pas de progress spinner per-item en mode parallèle (multiple items checkent simultanément).
+- → **Sujet "screen UI thread-safe"** prévu en feature à part : pattern docker (N lignes mises à jour live), partagé avec Phase 1.1 pour l'apply.
+
+**À mesurer** : bench réel sur `app::state/rectify --dry-run` sur arbre conséquent (≥50 items).
 
 ### 2.5 helpers-git — Checks parallèles
 
