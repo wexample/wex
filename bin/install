@@ -87,6 +87,22 @@ echo "Installing autocomplete..."
 chmod +x "${WEX_DIR_CLI}autocomplete" "${WEX_DIR_CLI}autocomplete-handler" "${WEX_DIR_CLI}autocomplete-addon"
 echo ". ${WEX_DIR_CLI}autocomplete-handler" > /etc/bash_completion.d/wex
 
+echo "Installing shell prompt handler..."
+chmod +x "${WEX_DIR_CLI}terminal-handler"
+cat > /etc/profile.d/wex.sh <<EOF
+# Source the wex shell prompt handler if present.
+if [ -f "${WEX_DIR_CLI}terminal-handler" ]; then
+    . "${WEX_DIR_CLI}terminal-handler"
+fi
+EOF
+# Ensure each bashrc sources it so interactive (non-login) shells get the prompt too.
+SOURCE_LINE=". /etc/profile.d/wex.sh"
+for BASHRC in "/root/.bashrc" "/home/${INSTALL_USER}/.bashrc"; do
+    if [ -f "${BASHRC}" ] && ! grep -qxF "${SOURCE_LINE}" "${BASHRC}"; then
+        echo "${SOURCE_LINE}" >> "${BASHRC}"
+    fi
+done
+
 # On dev machine, install local editable packages over the venv
 if [ "${APP_ENV}" = "local" ]; then
     echo "Installing local dev packages..."

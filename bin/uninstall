@@ -16,6 +16,16 @@ rm -f /usr/local/bin/wex
 echo "Removing autocomplete handler..."
 rm -f /etc/bash_completion.d/wex
 
+echo "Removing shell prompt handler..."
+rm -f /etc/profile.d/wex.sh
+DEV_SOURCE_LINE=". ${WEX_DIR_CLI}terminal-handler"
+SYSTEM_SOURCE_LINE=". /etc/profile.d/wex.sh"
+for BASHRC in /root/.bashrc /home/*/.bashrc; do
+    [ -f "${BASHRC}" ] || continue
+    sed -i "\|^${SYSTEM_SOURCE_LINE}\$|d" "${BASHRC}"
+    sed -i "\|^${DEV_SOURCE_LINE}\$|d" "${BASHRC}"
+done
+
 # On purge: remove the venv and generated files
 # dpkg calls postrm with "purge" as first argument
 if [ "${1}" = "purge" ]; then

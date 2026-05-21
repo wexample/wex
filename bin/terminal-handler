@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Customize the shell prompt with a colored env tag so the user always knows
+# whether they are on local/dev/prod. Sourced by /etc/profile.d/wex on login.
+
+WEX_DIR_ROOT="$(dirname "${BASH_SOURCE[0]}")/../"
+
+# Bail out silently if the env file is missing (e.g. on a stale install).
+if [ ! -f "${WEX_DIR_ROOT}.env" ]; then
+    return 0 2>/dev/null || exit 0
+fi
+
+# shellcheck disable=SC1091
+. "${WEX_DIR_ROOT}.env"
+
+PREFIX=${APP_ENV^^}
+if [ -e /.dockerenv ]; then
+    COLOR="\033[1;90m"
+    PREFIX="~${PREFIX,,}>"
+else
+    case "${APP_ENV}" in
+        local) COLOR="\033[0;32m" ;;
+        dev|test) COLOR="\033[0;33m" ;;
+        *) COLOR="\033[0;31m" ;;
+    esac
+    PREFIX="[${PREFIX,,}]"
+fi
+
+export PS1="\[${COLOR}\]${PREFIX}\[\033[0m\] \\u:\\W\\$ "
