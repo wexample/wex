@@ -32,7 +32,7 @@ autoflake==2.3.3
     # via wexample-filestate-python
 bcrypt==5.0.0
     # via paramiko
-black==26.3.1
+black==26.5.1
     # via wexample-filestate-python
 cattrs==26.1.0
     # via
@@ -57,7 +57,7 @@ cattrs==26.1.0
     #   wexample-wex-addon-dev-python
     #   wexample-wex-addon-filestate
     #   wexample-wex-core
-certifi==2026.2.25
+certifi==2026.5.20
     # via requests
 cffi==2.0.0
     # via
@@ -65,7 +65,7 @@ cffi==2.0.0
     #   pynacl
 charset-normalizer==3.4.7
     # via requests
-click==8.3.2
+click==8.4.0
     # via
     #   black
     #   wexample-wex-core
@@ -73,7 +73,7 @@ colorama==0.4.6
     # via
     #   griffecli
     #   wexample-prompt
-cryptography==46.0.7
+cryptography==48.0.0
     # via paramiko
 dill==0.4.1
     # via pylint
@@ -83,7 +83,7 @@ flynt==1.0.6
     # via wexample-filestate-python
 gitdb==4.0.12
     # via gitpython
-gitpython==3.1.46
+gitpython==3.1.50
     # via wexample-helpers-git
 griffe==2.0.2
     # via wexample-wex-addon-dev-python
@@ -93,7 +93,7 @@ griffelib==2.0.2
     # via
     #   griffe
     #   griffecli
-idna==3.11
+idna==3.15
     # via requests
 inquirerpy==0.3.4
     # via wexample-prompt
@@ -119,13 +119,13 @@ networkx==3.6.1
     # via wexample-wex-addon-dev-python
 nodeenv==1.10.0
     # via pyright
-packaging==26.1
+packaging==26.2
     # via
     #   black
     #   wexample-filestate-python
-paramiko==4.0.0
+paramiko==5.0.0
     # via wexample-runner
-pathspec==1.0.4
+pathspec==1.1.1
     # via black
 pfzy==0.3.4
     # via inquirerpy
@@ -139,9 +139,9 @@ psutil==7.2.2
     # via wexample-wex-core
 pycparser==3.0
     # via cffi
-pydantic==2.13.0
+pydantic==2.13.4
     # via wexample-config
-pydantic-core==2.46.0
+pydantic-core==2.46.4
     # via pydantic
 pyflakes==3.4.0
     # via autoflake
@@ -149,7 +149,7 @@ pylint==4.0.5
     # via wexample-wex-addon-dev-python
 pynacl==1.6.2
     # via paramiko
-pyright==1.1.408
+pyright==1.1.409
     # via wexample-wex-addon-dev-python
 python-dotenv==1.2.2
     # via
@@ -167,7 +167,7 @@ pyyaml==6.0.3
     #   wexample-migration
 readchar==4.2.2
     # via wexample-prompt
-requests==2.33.1
+requests==2.34.2
     # via
     #   wexample-api
     #   wexample-app
@@ -183,7 +183,7 @@ tomli==2.4.1
     # via
     #   wex (pyproject.toml)
     #   wexample-filestate-python
-tomlkit==0.14.0
+tomlkit==0.15.0
     # via
     #   pylint
     #   wexample-filestate
@@ -197,13 +197,13 @@ typing-extensions==4.15.0
     #   typing-inspection
 typing-inspection==0.4.2
     # via pydantic
-urllib3==2.6.3
+urllib3==2.7.0
     # via requests
-wcwidth==0.6.0
+wcwidth==0.7.0
     # via
     #   prompt-toolkit
     #   wexample-prompt
-wexample-api==6.1.0
+wexample-api==6.1.4
     # via
     #   wexample-filestate-git
     #   wexample-filestate-python
@@ -211,11 +211,11 @@ wexample-app==15.0.0
     # via wexample-wex-core
 wexample-config==6.4.1
     # via wexample-filestate
-wexample-event==0.0.82
+wexample-event==6.0.32
     # via wexample-filestate
-wexample-file==6.5.1
+wexample-file==6.6.0
     # via wexample-filestate
-wexample-filestate==11.1.0
+wexample-filestate==11.1.1
     # via
     #   wexample-app
     #   wexample-filestate-git
@@ -247,7 +247,7 @@ wexample-helpers-git==6.9.1
     # via
     #   wexample-filestate-git
     #   wexample-wex-core
-wexample-helpers-yaml==6.0.21
+wexample-helpers-yaml==6.0.34
     # via
     #   wexample-app
     #   wexample-filestate
@@ -284,7 +284,7 @@ wexample-wex-addon-dev-javascript==7.7.1
     #   wexample-wex-addon-dev-php
 wexample-wex-addon-dev-php==8.2.2
     # via wex (pyproject.toml)
-wexample-wex-addon-dev-python==8.5.1
+wexample-wex-addon-dev-python==8.6.0
     # via wex (pyproject.toml)
 wexample-wex-addon-filestate==6.2.2
     # via wex (pyproject.toml)
