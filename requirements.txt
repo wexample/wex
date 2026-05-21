@@ -224,7 +224,7 @@ wexample-filestate==11.1.0
     #   wexample-filestate-python
     #   wexample-migration
     #   wexample-wex-core
-wexample-filestate-git==7.2.0
+wexample-filestate-git==7.3.0
     # via wexample-wex-core
 wexample-filestate-javascript==6.3.0
     # via wexample-wex-addon-dev-javascript
@@ -290,7 +290,7 @@ wexample-wex-addon-filestate==6.2.2
     # via wex (pyproject.toml)
 wexample-wex-addon-master==6.2.1
     # via wex (pyproject.toml)
-wexample-wex-addon-package==6.0.31
+wexample-wex-addon-package==6.1.0
     # via wex (pyproject.toml)
 wexample-wex-addon-services-collab==10.0.3
     # via wex (pyproject.toml)
@@ -300,7 +300,7 @@ wexample-wex-addon-services-monitoring==7.2.3
     # via wex (pyproject.toml)
 wexample-wex-addon-services-platform==10.0.3
     # via wex (pyproject.toml)
-wexample-wex-core==22.2.0
+wexample-wex-core==22.2.1
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-ai
