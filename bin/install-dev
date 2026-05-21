@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
+# Dev installation: editable install of all local wexample packages from sources.
+#
+# Unlike bin/install (which wipes the venv and pulls every dep from PyPI), this
+# script keeps the venv as-is and overlays local sources in editable mode using
+# --no-deps so that already-installed third-party deps are not disturbed.
+#
+# Run this:
+#   - to repair a broken venv where some local packages are missing
+#   - after pulling new code, to make sure your editable installs are up to date
 
-# Alias for: wex app::setup/install --env local
-# Use this when wex itself is broken and cannot be invoked directly.
+set -e
 
 WEX_DIR_CLI="$(realpath "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")/"
 WEX_DIR_ROOT=$(realpath "${WEX_DIR_CLI}../")/
@@ -9,12 +17,57 @@ WEX_DIR_ROOT=$(realpath "${WEX_DIR_CLI}../")/
 VENV_PIP="${WEX_DIR_ROOT}.venv/bin/pip"
 VENV_PYTHON="${WEX_DIR_ROOT}.venv/bin/python"
 
-if "${VENV_PYTHON}" -c "import wexample_wex_addon_app" 2>/dev/null; then
-    wex app::setup/install --env local
-else
-    # wex itself is broken — emergency editable install of all local packages
-    . "${WEX_DIR_ROOT}.wex/.env"
-    for dir in $(ls -d "${LOCAL_PIP_PACKAGES_PATH}"*/); do
-        "${VENV_PIP}" install --no-cache-dir -q -e "${dir}" --no-deps
-    done
+# Source .wex/.env to get PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH
+# shellcheck disable=SC1091
+. "${WEX_DIR_ROOT}.wex/.env"
+
+if [ -z "${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}" ]; then
+    echo "ERROR: PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH not set in .wex/.env" >&2
+    exit 1
 fi
+
+LIB_PATH="${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH%/}"
+
+if [ ! -d "${LIB_PATH}" ]; then
+    echo "ERROR: source library path does not exist: ${LIB_PATH}" >&2
+    exit 1
+fi
+
+if [ ! -x "${VENV_PYTHON}" ]; then
+    echo "ERROR: venv missing at ${WEX_DIR_ROOT}.venv — run bin/install first" >&2
+    exit 1
+fi
+
+# Make sure third-party deps from requirements.txt are present (no-op if already
+# installed). This catches the case where the venv is missing transitive deps
+# after a botched install.
+echo "Ensuring third-party deps from requirements.txt..."
+"${VENV_PIP}" install -q -r "${WEX_DIR_ROOT}requirements.txt"
+
+echo "Discovering local packages in ${LIB_PATH}..."
+# Packages live exactly 3 levels deep: <LIB_PATH>/{packages,wex}/<name>/pyproject.toml
+mapfile -t PKG_DIRS < <(find "${LIB_PATH}" -mindepth 3 -maxdepth 3 -name pyproject.toml \
+    -not -path "*/.venv/*" -not -path "*/.pdm-build/*" -not -path "*/.wex/*" \
+    -exec dirname {} \; | sort)
+
+if [ "${#PKG_DIRS[@]}" -eq 0 ]; then
+    echo "ERROR: no packages found under ${LIB_PATH}" >&2
+    exit 1
+fi
+
+echo "Installing ${#PKG_DIRS[@]} local packages in editable mode (--no-deps)..."
+for pkg_dir in "${PKG_DIRS[@]}"; do
+    echo "  -e ${pkg_dir}"
+    "${VENV_PIP}" install --no-cache-dir -q -e "${pkg_dir}" --no-deps
+done
+
+# Install shell prompt handler directly in the current user's bashrc (no sudo).
+chmod +x "${WEX_DIR_CLI}terminal-handler"
+SOURCE_LINE=". ${WEX_DIR_CLI}terminal-handler"
+BASHRC="${HOME}/.bashrc"
+if [ -f "${BASHRC}" ] && ! grep -qxF "${SOURCE_LINE}" "${BASHRC}"; then
+    echo "${SOURCE_LINE}" >> "${BASHRC}"
+    echo "Added shell prompt handler to ${BASHRC} (open a new terminal to see it)."
+fi
+
+echo "Done."
