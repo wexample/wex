@@ -65,7 +65,7 @@ cffi==2.0.0
     #   pynacl
 charset-normalizer==3.4.7
     # via requests
-click==8.4.0
+click==8.4.1
     # via
     #   black
     #   wexample-wex-core
@@ -93,7 +93,7 @@ griffelib==2.0.2
     # via
     #   griffe
     #   griffecli
-idna==3.15
+idna==3.16
     # via requests
 inquirerpy==0.3.4
     # via wexample-prompt
@@ -278,11 +278,11 @@ wexample-wex-addon-app==19.0.0
     #   wexample-wex-addon-services-platform
 wexample-wex-addon-dev-css==6.0.40
     # via wex (pyproject.toml)
-wexample-wex-addon-dev-javascript==7.7.2
+wexample-wex-addon-dev-javascript==7.8.0
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-dev-php
-wexample-wex-addon-dev-php==8.2.3
+wexample-wex-addon-dev-php==8.3.0
     # via wex (pyproject.toml)
 wexample-wex-addon-dev-python==8.6.1
     # via wex (pyproject.toml)
@@ -296,9 +296,9 @@ wexample-wex-addon-services-collab==11.0.0
     # via wex (pyproject.toml)
 wexample-wex-addon-services-db==11.0.0
     # via wex (pyproject.toml)
-wexample-wex-addon-services-monitoring==7.2.4
+wexample-wex-addon-services-monitoring==7.3.0
     # via wex (pyproject.toml)
-wexample-wex-addon-services-platform==11.0.0
+wexample-wex-addon-services-platform==11.1.0
     # via wex (pyproject.toml)
 wexample-wex-core==23.0.0
     # via
