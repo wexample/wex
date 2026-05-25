@@ -4,7 +4,7 @@ build-backend = "pdm.backend"
 
 [project]
 name = "wex"
-version = "6.0.94"
+version = "6.0.95"
 description = "A friendly CLI"
 authors = [
     { name = "weeger", email = "contact@wexample.com" },
@@ -13,20 +13,20 @@ requires-python = ">=3.10"
 classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent"]
 dependencies = [
     "tomli",
-    "wexample-wex-addon-ai>=6.0.35",
-    "wexample-wex-addon-app>=19.2.0",
+    "wexample-wex-addon-ai>=6.0.36",
+    "wexample-wex-addon-app>=19.2.1",
     "wexample-wex-addon-dev-css>=6.0.42",
     "wexample-wex-addon-dev-javascript>=7.9.0",
     "wexample-wex-addon-dev-php>=8.4.0",
     "wexample-wex-addon-dev-python>=8.7.0",
-    "wexample-wex-addon-filestate>=6.2.4",
+    "wexample-wex-addon-filestate>=6.2.5",
     "wexample-wex-addon-master>=6.4.0",
     "wexample-wex-addon-package>=6.2.0",
-    "wexample-wex-addon-services-collab>=11.1.0",
-    "wexample-wex-addon-services-db>=11.1.0",
-    "wexample-wex-addon-services-monitoring>=7.4.0",
-    "wexample-wex-addon-services-platform>=11.2.0",
-    "wexample-wex-core>=24.0.0",
+    "wexample-wex-addon-services-collab>=11.1.1",
+    "wexample-wex-addon-services-db>=11.1.1",
+    "wexample-wex-addon-services-monitoring>=7.4.1",
+    "wexample-wex-addon-services-platform>=11.2.1",
+    "wexample-wex-core>=24.1.0",
 ]
 
 [project.readme]
