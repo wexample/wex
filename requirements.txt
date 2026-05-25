@@ -209,6 +209,8 @@ wexample-api==6.1.5
     #   wexample-filestate-python
 wexample-app==15.0.2
     # via wexample-wex-core
+wexample-cli==0.0.3
+    # via wexample-wex-core
 wexample-config==6.4.2
     # via wexample-filestate
 wexample-event==6.0.33
@@ -300,7 +302,7 @@ wexample-wex-addon-services-monitoring==7.3.1
     # via wex (pyproject.toml)
 wexample-wex-addon-services-platform==11.1.1
     # via wex (pyproject.toml)
-wexample-wex-core==23.0.1
+wexample-wex-core==23.0.2
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-ai
