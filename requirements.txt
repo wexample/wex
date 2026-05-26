@@ -204,23 +204,23 @@ wcwidth==0.7.0
     # via
     #   prompt-toolkit
     #   wexample-prompt
-wexample-api==6.1.5
+wexample-api==6.1.6
     # via
     #   wexample-filestate-git
     #   wexample-filestate-python
-wexample-app==15.1.0
+wexample-app==15.2.0
     # via
     #   wexample-cli
     #   wexample-wex-core
-wexample-cli==0.2.0
+wexample-cli==0.3.0
     # via wexample-wex-core
-wexample-config==6.4.2
+wexample-config==6.4.3
     # via wexample-filestate
-wexample-event==6.0.33
+wexample-event==6.0.34
     # via wexample-filestate
-wexample-file==6.6.2
+wexample-file==6.6.3
     # via wexample-filestate
-wexample-filestate==11.2.0
+wexample-filestate==11.2.1
     # via
     #   wexample-app
     #   wexample-filestate-git
@@ -237,7 +237,7 @@ wexample-filestate-php==6.3.2
     # via wexample-wex-addon-dev-php
 wexample-filestate-python==6.8.1
     # via wexample-wex-addon-dev-python
-wexample-helpers==13.0.2
+wexample-helpers==13.1.0
     # via
     #   wexample-api
     #   wexample-cli
@@ -249,22 +249,22 @@ wexample-helpers==13.0.2
     #   wexample-migration
     #   wexample-prompt
     #   wexample-runner
-wexample-helpers-git==6.9.2
+wexample-helpers-git==6.9.3
     # via
     #   wexample-filestate-git
     #   wexample-wex-core
-wexample-helpers-yaml==6.1.0
+wexample-helpers-yaml==6.1.1
     # via
     #   wexample-app
     #   wexample-filestate
-wexample-migration==9.3.1
+wexample-migration==9.3.2
     # via wexample-wex-addon-app
-wexample-prompt==9.0.2
+wexample-prompt==9.1.0
     # via
     #   wexample-api
     #   wexample-cli
     #   wexample-filestate
-wexample-runner==9.0.2
+wexample-runner==9.0.3
     # via
     #   wexample-filestate
     #   wexample-wex-addon-app
@@ -295,19 +295,19 @@ wexample-wex-addon-dev-python==8.7.0
     # via wex (pyproject.toml)
 wexample-wex-addon-filestate==6.2.5
     # via wex (pyproject.toml)
-wexample-wex-addon-master==6.4.0
+wexample-wex-addon-master==6.5.0
     # via wex (pyproject.toml)
 wexample-wex-addon-package==6.2.0
     # via wex (pyproject.toml)
-wexample-wex-addon-services-collab==11.1.1
+wexample-wex-addon-services-collab==11.2.0
     # via wex (pyproject.toml)
 wexample-wex-addon-services-db==11.1.1
     # via wex (pyproject.toml)
-wexample-wex-addon-services-monitoring==7.4.1
+wexample-wex-addon-services-monitoring==7.5.0
     # via wex (pyproject.toml)
-wexample-wex-addon-services-platform==11.2.1
+wexample-wex-addon-services-platform==11.3.0
     # via wex (pyproject.toml)
-wexample-wex-core==24.1.0
+wexample-wex-core==24.1.1
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-ai
