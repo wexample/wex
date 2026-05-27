@@ -305,7 +305,7 @@ wexample-wex-addon-services-db==11.2.0
     # via wex (pyproject.toml)
 wexample-wex-addon-services-monitoring==7.5.2
     # via wex (pyproject.toml)
-wexample-wex-addon-services-platform==11.5.0
+wexample-wex-addon-services-platform==11.6.0
     # via wex (pyproject.toml)
 wexample-wex-core==24.1.2
     # via
