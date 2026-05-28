@@ -68,7 +68,33 @@ Vision : depuis le master, en quelques commandes :
 
 Ça vient naturellement une fois (1), (4), (5) en place.
 
-### 7. (Stretch) Déploiement Syrtis en wex 6
+### 6.5. `wex upgrade` partout
+
+Système pour maintenir le CLI wex à jour de manière coordonnée sur tous les serveurs (prod, dev, runners, futurs hosts). Aujourd'hui chaque serveur a une version wex qui peut différer (la dev était en 5.0.163, prod en 6.0.101, mon local en 6.0.102 — tout ça à un instant donné).
+
+Objectif : depuis le master, `wex master::servers/upgrade` qui :
+- ssh sur chaque remote (déclaré dans les remotes des apps déjà connues)
+- exécute un `apt update && apt install -y wex` (ou équivalent)
+- rapporte version avant/après par host
+
+Bonus : check de compatibilité (si le CLI passe à 6.X.Y, les apps stampées à 6.X-1.Z doivent rester compatibles ou être migrées en même temps).
+
+Découvert pendant la migration dev TPA (mai 2026) : install nécessite `python3.11-venv` comme dépendance non-déclarée — à fixer côté package debian aussi (déclarer en deps strictes dans `debian/control`).
+
+### 7. Commandes de maintenance des apps
+
+Set d'opérations cross-env qu'on fait à la main aujourd'hui et qu'on devrait pouvoir scripter :
+
+- **Sync data prod → dev** : dump BDD prod, restore en dev (cas typique : tester une migration sur des données réelles, refresh un staging stale)
+- **Sync data dev → prod** : plus rare mais utile pour seed initial
+- **Backup ponctuel** : déclencher un backup nommé (avant migration risquée), pas le cron auto
+- **Restore depuis backup** : sélectionner un backup, restore-le dans un env donné
+
+Pré-requis : chaque app/service doit savoir décrire ses "ressources persistantes" (BDD, volumes, secrets) et exposer ses primitives dump/restore. Cf. chantier (5) — déjà touché pour les updates de service.
+
+Spec ergonomique cible : `wex app::data/sync --from prod --to dev` (ou similaire).
+
+### 9. (Stretch) Déploiement Syrtis en wex 6
 
 Syrtis n'est pas encore déployable via wex 6 — c'est un déploiement de stack (multi-services interdépendants), pas une app simple. Étudier :
 
@@ -76,7 +102,7 @@ Syrtis n'est pas encore déployable via wex 6 — c'est un déploiement de stack
 - Quelles primitives manquent
 - Roadmap dédié si confirmé
 
-### 8. Nouveaux services à installer
+### 10. Nouveaux services à installer
 
 - **PostHog** sur Syrtis (analytics produit)
 - **OpenClaw #2** sur Syrtis pour Gabriel
@@ -88,4 +114,4 @@ Chaque install = nouvelle app wex 6, à monter selon le template standard.
 ## Notes
 
 - Liste non-exhaustive — à étoffer au fil de l'eau
-- Priorité par défaut : (2) CI/CD TPA d'abord (bloquant pour la prod TPA au quotidien), puis (1) remotes, puis (4)/(5) outillage, puis (3) updates et (8) nouveaux services en parallèle
+- Priorité par défaut : (2) CI/CD TPA d'abord (bloquant pour la prod TPA au quotidien), puis (1) remotes, puis (4)/(5)/(7) outillage, puis (3) updates et (10) nouveaux services en parallèle
