@@ -4,25 +4,19 @@
 
 Migration TPA terminée en wex 6 (prod fin mai, dev 2026-05-28). Cette todo recense les pendings techniques qu'on a contournés ou pas finalisés pendant le rush, à reprendre proprement.
 
-## Bugs / fixes pas encore publiés dans le package apt
+## Bugs / fixes ✅ publiés dans wex 6.0.104
 
-### 1. Hot-patch `app_readme_config_value.py`
+### 1. Hot-patch `app_readme_config_value.py` ✅
+Le try/except TypeError sur `_append_template_path_from_module` est dans 6.0.104.
 
-- **Symptôme** : `TypeError: '...app_readme_config_value' is not a package` au `wex app::app/start` quand le walker README essaie de lire son template depuis un module non-package.
-- **Fix** : try/except TypeError dans `_append_template_path_from_module` ([app_readme_config_value.py:32-44](/home/weeger/Desktop/WIP/WEB/WEXAMPLE/PACKAGES/PYTHON/wex/wex-addon-app/src/wexample_wex_addon_app/config_value/app_readme_config_value.py)).
-- **État** : commit local, **hot-patché à la main sur dev** (`/usr/lib/wex/.venv/lib/python3.11/site-packages/...`), idem sur prod en cours de session précédente.
-- **Action** : intégrer dans le prochain build apt wex (6.0.103+) pour que la prochaine install propre porte le fix.
+### 2. Migrations 6.0.103 + 6.0.104 ✅
+Publiées dans le package. À déclencher sur les apps prod TPA pour dedup les `server.ip` orphelins (cf. plus bas).
 
-### 2. Migrations 6.0.103 + 6.0.104 absentes du package
+### 3. `python3.11-venv` en dépendance ⏳
+Toujours pas déclaré explicitement comme dépendance stricte de `debian/control`. Découvert pendant l'install dev TPA. À fixer.
 
-- `migration_6_0_103__1.py` (dedup server.ip ↔ remotes[].host) et `migration_6_0_104__1.py` (drop des skeletons `host: ''`) ont été créées dans le source local mais pas encore dans le package wex apt.
-- **Action** : prochain release wex bump version + publish.
-- **Conséquence actuelle** : sur dev TPA, seule la migration 6.0.90 a tourné. Les configs ont encore `server.ip` + `remotes[].host: ''` orphelins (parasites mais non-bloquants).
-
-### 3. `python3.11-venv` pas en dépendance déclarée du paquet wex
-
-- L'install `apt install wex` sur dev a échoué initialement parce que `python3.11-venv` n'était pas installé. Le post-install (venv creation) a foiré, package en état "iF" (installed, half-configured).
-- **Action** : ajouter `python3.11-venv` comme dépendance stricte dans `debian/control` du package wex.
+### 4. nginx-proxy:1.3 → 1.11 ✅
+Le sample compose du service proxy est passé à `:1.11` dans 6.0.104. Évite le bug de bootstrap des certs sur les nouveaux vhosts (well-known intercept conditionnel sur cert_ok dans 1.3).
 
 ## Certs dev TPA — provisioning incomplet
 
@@ -37,11 +31,21 @@ Cause probable du 404 : la location `/.well-known/acme-challenge/` dans nginx ro
 
 ## TPA prod — propagations encore à faire
 
-### Migrations wex sur prod
+### Migrations wex sur prod ⏳
 
-- Les 6 apps TPA prod sont stampées à `6.0.101` (avant la création des migrations 103/104).
-- Au prochain release apt wex, faire `git pull` + `wex app::migration/run` sur chaque app prod pour dedup `server:` et drop les skeletons restants.
-- Côté serveur ssh : `ssh weeger@51.210.104.199` + boucle sur `/var/www/prod/{listmonk,baserow,matomo,gitlab,n8n,tpa}` (oscar a été viré).
+- wex CLI sur les 4 serveurs est à **6.0.104** ✅
+- Mais les **apps** prod TPA (6 sur 51.210.104.199) sont stampées à `6.0.101` (pré-migrations 103/104).
+- Action : `wex app::migration/run` sur chaque app prod pour appliquer les migrations 6.0.103 + 6.0.104 (dedup `server:` + drop skeletons orphelins).
+- Côté serveur : `ssh weeger@51.210.104.199` + boucle sur `/var/www/prod/{listmonk,baserow,matomo,gitlab,n8n,tpa}` (oscar a été viré).
+- Idem sur Wexample (151.80.23.108) et Syrtis (79.137.89.25) qui ont aussi des apps à 6.0.101.
+
+### Symlinks acme manquants — pattern à surveiller ⚠️
+
+Manager.thephotoacademy.com servait le SAN cert de `de.thephotoacademy.com` au lieu de son propre cert pour une seule raison : **les symlinks top-level (`<domain>.{crt,key,chain.pem,dhparam.pem}`) n'avaient jamais été créés** alors que l'acme dir avec les certs existait. Recréés à la main 2026-05-28. Cause originelle inconnue (héritage migration wex 6 ?).
+
+À auditer : les autres apps prod TPA (listmonk, matomo, n8n, gitlab) ont-elles toutes leurs symlinks ? Si non, elles servent silencieusement le default cert. Test rapide : `ssh weeger@<serveur> "sudo ls /var/www/prod/wex-proxy/proxy/certs/*.crt"`. Si une app a sa dir acme mais pas son symlink top-level, c'est le même cas.
+
+Aussi : Baserow était `exited+unhealthy` sur prod sans avoir alerté qui que ce soit. Crash silencieux. Si ça récidive, investiguer mémoire / DB / etc.
 
 ### Backups prod nettoyés ✅ 2026-05-28
 
