@@ -6,9 +6,9 @@ Version: 6.0.111
 
 - [Introduction](#introduction)
 
-# Define if wex scripts are installed
+## Check if wex is installed
 
 ```bash
-wex hi # returns "hi!"
-wex -v # returns the version numbers
+wex hi    # prints "hi!" if installed
+wex -v    # prints the version number (e.g. 6.0.152)
 ```
