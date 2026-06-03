@@ -1,1 +1,1 @@
-This project is managed by the wex script.
+See AGENTS.md — no Claude-specific instructions.

@@ -1,11 +1,3 @@
-# wex
-
-Version: 6.0.112
-
-## Table of Contents
-
-- [Introduction](#introduction)
-
 ## Check if wex is installed
 
 ```bash
