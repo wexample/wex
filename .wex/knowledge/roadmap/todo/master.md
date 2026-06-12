@@ -155,6 +155,12 @@ Le stretch initial. Maintenant éclairé par les deux précédents : si on sait 
 
 Ce sera probablement un chantier de plusieurs semaines. Approche incrémentale : commencer par 1+2+3 (provisionner un host vide depuis le master), puis ajouter les couches.
 
+### 9.5. Webhook listener : persistence au boot
+
+Le daemon `wex core::webhook/listen --port 7654` (déclencheur des deploys CI → `app::release/deploy`) est lancé **à la main** sur TPA prod (51.210.104.199) et Syrtis prod (79.137.89.25, ajouté 2026-06-12 pour bdo-letters). Aucune unit systemd, aucun cron `@reboot`, rien dans wex-core ni dans le packaging debian → **un reboot serveur casse silencieusement tous les déploiements automatiques**.
+
+Sujet déjà traité plusieurs fois par le passé sans jamais aboutir (à creuser pourquoi avant de re-implémenter). Fix cible : le package debian wex installe une unit `wex-webhook.service` (enabled par défaut ou via une commande type `core::webhook/install`).
+
 ### 10. Nouveaux services à installer
 
 - ✅ **Plausible TPA** (`plausible.thephotoacademy.com`) — déployé sur prod 2026-05-28
