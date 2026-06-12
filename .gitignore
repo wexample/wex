@@ -67,3 +67,5 @@ coverage*.lcov
 .pdm-python
 .python-version
 /coverage.json
+htmlcov/
+.coverage

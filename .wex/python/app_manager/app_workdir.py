@@ -43,7 +43,13 @@ class AppWorkdir(PythonWorkdir):
         # detection on the wex directory alone would miss them — always force bump.
         return super().bump(interactive=interactive, force=True, **kwargs)
 
-    def release(self, force: bool = False, interactive: bool = True, has_changes=None) -> None:
+    def release(
+        self,
+        force: bool = False,
+        interactive: bool = True,
+        has_changes=None,
+        skip_test: bool = False,
+    ) -> None:
         from wexample_wex_addon_app.commands.library.sync import app__library__sync
         from wexample_wex_addon_package.commands.suite.publish import (
             package__suite__publish,
@@ -52,11 +58,19 @@ class AppWorkdir(PythonWorkdir):
         library_path = self.get_env_parameter("PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH")
 
         if library_path:
+            arguments = ["--yes"]
+            if skip_test:
+                arguments.append("--skip-test")
             self.manager_run_command_from_path(
                 command=package__suite__publish,
                 path=library_path,
-                arguments=["--yes"],
+                arguments=arguments,
             )
             self.manager_run_command(command=app__library__sync)
 
-        super().release(force=force, interactive=interactive, has_changes=has_changes)
+        super().release(
+            force=force,
+            interactive=interactive,
+            has_changes=has_changes,
+            skip_test=skip_test,
+        )
