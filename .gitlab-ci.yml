@@ -66,5 +66,27 @@ stages:
   - deploy
   - wait_for_pypi
   - checkup_install
+  - build_docker
+build_docker:
+  extends:
+    - .on_master
+  stage: build_docker
+  image: docker:27
+  services:
+    - docker:27-dind
+  needs:
+    - checkup_install_debian
+    - checkup_install_ubuntu
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  script:
+    - BUILD_VERSION=$(cat version.txt)
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build
+        --tag $CI_REGISTRY_IMAGE:$BUILD_VERSION
+        --tag $CI_REGISTRY_IMAGE:latest
+        -f ci/Dockerfile .
+    - docker push $CI_REGISTRY_IMAGE:$BUILD_VERSION
+    - docker push $CI_REGISTRY_IMAGE:latest
 variables:
   MAIN_BRANCH_NAME: main
