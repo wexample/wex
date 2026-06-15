@@ -72,13 +72,9 @@ build_docker:
     - .on_master
   stage: build_docker
   image: docker:27
-  services:
-    - docker:27-dind
   needs:
     - checkup_install_debian
     - checkup_install_ubuntu
-  variables:
-    DOCKER_TLS_CERTDIR: "/certs"
   script:
     - BUILD_VERSION=$(cat version.txt)
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
