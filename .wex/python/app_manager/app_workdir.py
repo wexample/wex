@@ -38,6 +38,15 @@ class AppWorkdir(PythonWorkdir):
     def get_package_name(self) -> str:
         return "wex"
 
+    def get_src_import_name(self) -> str | None:
+        # wex is a CLI app, not a distributable package — `src/` contains
+        # `common/`, `workdir/`, etc. directly, no single `src/wex/` module.
+        # Returning None tells PythonPyprojectTomlFile to skip the
+        # packaging/coverage enforces that would otherwise write
+        # `packages=[{include: 'wex', from: 'src'}]` and
+        # `coverage.source = ['wex']` — both nonsensical here.
+        return None
+
     def bump(self, interactive: bool = False, force: bool = False, **kwargs) -> bool:
         # wex changes are driven by its packages (separate repos), so git change
         # detection on the wex directory alone would miss them — always force bump.
