@@ -69,3 +69,13 @@ coverage*.lcov
 /coverage.json
 htmlcov/
 .coverage
+/logs/
+/log/
+/.cache/
+/cache/
+/tmp/
+/temp/
+/build/
+/dist/
+/out/
+/coverage/
