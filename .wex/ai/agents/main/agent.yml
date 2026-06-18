@@ -1,0 +1,4 @@
+description: Generalist agent, no specialization.
+modes:
+  - talk
+  - structured
