@@ -3,8 +3,6 @@
 Opened: 2026-08-19
 Updated: 2026-08-19
 
-# Roadmap : Réorganisation de la documentation
-
 **Lieu unique du chantier.** Tout ce qui concerne le système de documentation se
 gère ici. Consolide `.wex/knowledge/state-of-the-art.md` et
 `.wex/knowledge/knowledge-system-proposal.md` (supprimés).
@@ -70,6 +68,56 @@ de les produire depuis des `.j2` : reprise en phase 5.
 **3. Les migrations existent mais ne sont pas propagées.** Constat récurrent :
 `6.0.112-2` (roadmap → journal) n'a jamais tourné sur plusieurs packages, et les
 deux nouvelles n'ont tourné que sur `wex`.
+
+---
+
+## Les chemins de lecture (inventaire vérifié)
+
+Qui lit le knowledge, par quel mécanisme, et dans quel état. C'est la carte qui
+pilote les phases 5 et 6.
+
+**A. `README.md` généré — le seul agrégateur en état de marche.**
+`AppReadmeConfigValue`, déclenché au `state/rectify`. Recherche à 4 niveaux, rendu
+Jinja2 (détail plus haut). **Sous-alimenté** : ne lit que `readme/`, jamais `usage/`
+ni `contributing/` ni `specifications/` ; aucune donnée produite (commandes,
+services, packages enfants) n'y entre ; `wex` n'a plus qu'un fragment.
+→ Premier cas à traiter.
+
+**B. `AGENTS.md` / `CLAUDE.md` — l'agent qui ne connaît pas wex.**
+Chaîne Python hardcodée (`with_ai_workdir_mixin.py:15`), écrite dans chaque workdir,
+qui dit désormais « browse `.wex/knowledge/` ». C'est ce qui remplace les
+entrypoints/summaries supprimés, et ça ne sait rien du contenu réel du dossier.
+
+**C. L'humain qui ouvre le fichier.** Fonctionne, rien à faire.
+Contrainte à graver : **un fragment converti en `.j2` cesse d'être lisible sur
+place**. C'est le prix du templating ; à arbitrer dossier par dossier, pas
+globalement. Statu quo décidé pour l'instant.
+
+**D. Les agents wex — le trou.** Deux surfaces :
+`_knowledge_index()` (`abstract_agent.py:677`) liste des identifiants
+`<service>:<section>` dans le system prompt sans lire le contenu ; `app::knowledge/read`
+(`AGENT_SAFE`) résout `find_service_dir()` puis lit `<service_dir>/knowledge/<section>.md`
+en texte brut, sans rendu de template.
+**Les deux ne visent que le knowledge des *services*. Le `.wex/knowledge/` de l'app
+elle-même n'a aucun chemin de lecture programmatique** — un agent ne peut pas
+atteindre `contributing/architecture.md`.
+À côté, la cascade `context.j2` (5 niveaux, `abstract_agent.py:444-558`) est le seul
+précédent de contexte compilé au moment de la lecture, mais elle ne rend que les
+fichiers littéralement nommés `context.j2` (`_render_context_template():1335`) et
+n'injecte jamais de knowledge.
+
+**E. `journal/todo|done` — le seul circuit complet.**
+`todo/write|done|list` sont `HUMAN_ONLY` **délibérément** (`todo/write.py:45`) : les
+agents y accèdent par les outils `todo_write`/`todo_list`, qui gèrent en plus la pile
+de sujets. `analysis/report` est le pendant `AGENT_SAFE`, en écriture vers
+`journal/analysis/`.
+**Il y a donc deux surfaces d'exposition distinctes** — commandes MCP filtrées par
+tags, et outils d'agent dédiés — à ne pas confondre en phase 6.
+
+**Ce que la carte montre** : un agrégateur (A) et un circuit agent complet (E), et
+entre les deux un trou (D). Traiter A proprement force à définir la brique
+réutilisable — résolution multi-niveaux + rendu j2 + injection de données produites —
+dont B et D ont besoin.
 
 ---
 
@@ -145,9 +193,16 @@ de Pydantic alors que le code est passé sur attrs / `base_class` / `public_fiel
 
 ## Phase 5 — README + templating multi-app
 
+Premier cas de lecture traité (cas A), et prétexte à extraire la brique commune.
+
+- [ ] Remettre le README de `wex` en état : aujourd'hui un seul fragment
+- [ ] Décider ce qui alimente le README au-delà de `readme/` — sections tirées de
+      `usage/` / `specifications/` ? références seulement ?
+- [ ] Injecter des données produites : commandes, services, packages enfants
 - [ ] Généraliser l'agrégation multi-niveaux à n'importe quelle cible, pas que README
-- [ ] Faire produire `AGENTS.md` / `CLAUDE.md` par ce système, depuis des fragments
-- [ ] Basculer les fragments `.md` restants en `.j2`
+- [ ] Faire produire `AGENTS.md` / `CLAUDE.md` par ce système (cas B)
+- [ ] Ouvrir un chemin de lecture sur le `.wex/knowledge/` de l'app (cas D)
+- [ ] Basculer les fragments `.md` restants en `.j2` — arbitrer avec le cas C
 - [ ] Décider si les `.md` exportés sont des artefacts générés versionnés ou non
 
 ## Phase 6 — Prompts d'agents à contexte dynamique
@@ -183,5 +238,7 @@ de Pydantic alors que le code est passé sur attrs / `base_class` / `public_fiel
 
 Phase 1 bouclée, phase 2 bouclée pour `wex` et la suite Python. Le `knowledge/` de
 wex est conforme à la structure cible (13 fichiers, 4 dossiers).
+Les chemins de lecture sont inventoriés et vérifiés dans le code.
 Rien n'est committé.
-Prochaine étape : phase 3, ou la propagation des migrations.
+Prochaine étape : phase 5, cas A (README de `wex`), qui sert de banc d'essai à la
+brique d'agrégation réutilisable.
