@@ -1,4 +1,4 @@
-# Système Webhook — wex
+# Système Webhook
 
 Expose des commandes wex via HTTP pour les déclencher depuis un CI/CD, un serveur distant,
 ou tout outil capable de faire une requête GET.
