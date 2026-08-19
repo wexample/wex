@@ -6,5 +6,5 @@ global:
 libraries:
   - ${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}
 wex:
-  migration: 0
-  version: 6.0.129
+  migration: 1
+  version: 6.0.130
