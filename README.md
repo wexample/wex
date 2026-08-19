@@ -4,8 +4,32 @@ Version: 6.0.129
 
 ## Table of Contents
 
+- [Installation](#installation)
 - [Check Installation](#check-installation)
 - [Testing](#testing)
+
+## Installation
+
+Install wex globally. The script installs the apt requirements, creates
+the virtual environment and registers the `wex` command:
+
+```bash
+sudo bash bin/install
+```
+
+To work on wex itself, overlay the local sources in editable mode. This
+keeps the existing virtual environment and does not touch third-party
+dependencies:
+
+```bash
+bash bin/install-dev
+```
+
+To remove it:
+
+```bash
+sudo bash bin/uninstall
+```
 
 ## Check Installation
 

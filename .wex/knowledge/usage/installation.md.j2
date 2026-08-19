@@ -1,0 +1,34 @@
+## Installation
+
+Install {{ package_name }} globally. The script installs the apt requirements, creates
+the virtual environment and registers the `wex` command:
+
+```bash
+sudo bash {{ path("bin/install") }}
+```
+
+To work on {{ package_name }} itself, overlay the local sources in editable mode. This
+keeps the existing virtual environment and does not touch third-party
+dependencies:
+
+```bash
+bash {{ path("bin/install-dev") }}
+```
+
+To remove it:
+
+```bash
+sudo bash {{ path("bin/uninstall") }}
+```
+
+## Check Installation
+
+Test if the core command works using these methods:
+
+```bash
+# Once installed globally
+wex hi  # Returns "hi!"
+
+# From wex directory (no global install required)
+bash {{ path("bin/wex") }} hi  # Returns "hi!"
+```
