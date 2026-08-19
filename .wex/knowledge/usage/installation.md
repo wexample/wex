@@ -1,4 +1,4 @@
-## Check Wex Installation
+## Check Installation
 
 Test if the core command works using these methods:
 

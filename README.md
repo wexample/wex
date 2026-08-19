@@ -2,8 +2,12 @@
 
 Version: 6.0.129
 
+## Table of Contents
 
-## Check Wex Installation
+- [Check Installation](#check-installation)
+
+
+## Check Installation
 
 Test if the core command works using these methods:
 
