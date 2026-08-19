@@ -6,7 +6,6 @@ Version: 6.0.129
 
 - [Check Installation](#check-installation)
 
-
 ## Check Installation
 
 Test if the core command works using these methods:
