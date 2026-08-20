@@ -2,10 +2,10 @@
   "engram_version": 1,
   "source_key": ".wex/knowledge/usage/installation.md.j2",
   "cache_nonce": "default",
-  "last_visited_at": "2026-08-20T08:31:31+00:00",
-  "last_rev": "7e9c95531d7d63afe029bf8118e11bf65579e769",
+  "last_visited_at": "2026-08-20T08:35:16+00:00",
+  "last_rev": "72749e9acc2b55acaab57811f9b398ebacc44ec6",
   "last_decision": "skip",
   "kinds": [],
-  "notes": "prose correctly spelled; only typo is Jinja var `package_naem`, out of domain",
+  "notes": "no misspellings in prose; Jinja expressions are code, left as-is",
   "in_progress": null
 }
