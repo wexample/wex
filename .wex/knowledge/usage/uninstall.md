@@ -1,0 +1,29 @@
+## Uninstall
+
+Remove the `wex` command and all files the installer placed on your machine:
+
+```bash
+sudo bash bin/uninstall
+```
+
+To also delete the virtual environment and generated files, pass `purge`:
+
+```bash
+sudo bash bin/uninstall purge
+```
+
+## What the uninstaller removes
+
+- `/usr/local/bin/wex` — the global symlink
+- `/etc/bash_completion.d/wex` — the tab-completion handler
+- `/etc/profile.d/wex.sh` — the shell prompt handler
+- `/root/.bashrc` and `/home/<user>/.bashrc` — the lines that sourced `/etc/profile.d/wex.sh` or `bin/terminal-handler` directly (dev install)
+
+## Additional removals on purge
+
+Passing `purge` as the first argument removes files that are generated at runtime and
+are not touched by a plain uninstall:
+
+- `.venv/` — the Python virtual environment
+- `.wex/.env` — the generated environment file
+- `tmp/registry.yml` — the generated command registry
