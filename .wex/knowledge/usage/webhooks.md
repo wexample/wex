@@ -85,7 +85,7 @@ wex app::webhook/token-generate --command-name .release/deploy
 # Générer pour toutes les commandes @webhook de l'app d'un coup
 wex app::webhook/token-generate --all
 
-# Regénérer (écraser l'existant)
+# Régénérer (écraser l'existant)
 wex app::webhook/token-generate --command-name .release/deploy --force
 
 # Voir le token complet d'une commande

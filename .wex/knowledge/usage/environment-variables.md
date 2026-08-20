@@ -449,7 +449,7 @@ install_config:
 | `use_suite_fallback: true` | Cherche aussi dans le workdir suite parent avant de considérer la var manquante |
 | `description:` | Affiché dans le prompt et les outils d'inventaire |
 
-Ordre de résolution à `service/install` : **(1)** `generated:` produit la valeur si la var n'existe pas encore — **(2)** `default:` non-required écrits silencieusement — **(3)** required absents prompttés à l'utilisateur. Le tout persisté dans `<projet>/.wex/local/env.yml`.
+Ordre de résolution à `service/install` : **(1)** `generated:` produit la valeur si la var n'existe pas encore — **(2)** `default:` non-required écrits silencieusement — **(3)** required absents promptés à l'utilisateur. Le tout persisté dans `<projet>/.wex/local/env.yml`.
 
 **`install_config:`** — clés à injecter dans `<projet>/.wex/config.yml` à l'install. Les `${VAR}` y sont des **placeholders** : ils sont écrits littéralement dans `config.yml` puis interpolés à chaque `app::config/build` contre les env params (cf. section 8). C'est par ce biais qu'un service partage sa config avec un autre — typiquement `postgres` pose `service.postgres.host`, lu par `listmonk` via `${SERVICE_POSTGRES_HOST}` dans son compose.
 
