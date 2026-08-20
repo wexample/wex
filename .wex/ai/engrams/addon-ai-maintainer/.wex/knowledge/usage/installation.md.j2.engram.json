@@ -1,0 +1,17 @@
+{
+  "engram_version": 1,
+  "source_key": ".wex/knowledge/usage/installation.md.j2",
+  "cache_nonce": "default",
+  "last_visited_at": "2026-08-20T10:40:40+00:00",
+  "last_rev": "71f9a1ddfaeda572df10137105d4b29df80bd698",
+  "source_revs": {
+    "file:bin/install": "f00640ae6552a64016ef35bff2ee01e1151cd5c3",
+    "file:bin/install-dev": "9bd6305333b4d94bbcb9a1be707f1b48273e1562",
+    "file:bin/uninstall": "7e63d781e63e3bf122252a2a6df7a6c515a57c14",
+    "file:bin/wex": "e693084bd7028f80d744abf52ba76a44a52fa25f"
+  },
+  "last_decision": "skip",
+  "kinds": [],
+  "notes": "all target claims about bin/install (Python 3.11+, venv creation, wex symlink, sudo) remain accurate after the change",
+  "in_progress": null
+}

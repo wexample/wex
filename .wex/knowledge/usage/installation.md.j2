@@ -1,15 +1,16 @@
 ## Installation
 
-Install {{ package_name }} globally. The script installs the apt requirements, creates
-the virtual environment and registers the `wex` command:
+Install {{ package_name }} globally. The script requires Python 3.11 or later to be
+installed, creates the virtual environment and registers the `wex` command:
 
 ```bash
 sudo bash {{ path("bin/install") }}
 ```
 
 To work on {{ package_name }} itself, overlay the local sources in editable mode. This
-keeps the existing virtual environment and does not touch third-party
-dependencies:
+keeps the existing virtual environment, ensures the requirements.txt dependencies are
+present, and installs local packages in editable mode without pulling additional
+third-party dependencies:
 
 ```bash
 bash {{ path("bin/install-dev") }}
