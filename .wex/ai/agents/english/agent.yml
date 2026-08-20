@@ -1,7 +1,0 @@
-description: Translates documentation prose to English, the written norm
-model: claude-opus-5
-modes: structured
-todos: false
-allowed_tools:
-  - Read
-  - Edit
