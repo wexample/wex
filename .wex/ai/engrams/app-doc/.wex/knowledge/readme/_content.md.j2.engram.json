@@ -1,0 +1,11 @@
+{
+  "engram_version": 1,
+  "source_key": ".wex/knowledge/readme/_content.md.j2",
+  "cache_nonce": "default",
+  "last_visited_at": "2026-08-20T08:42:17+00:00",
+  "last_rev": "9ba6183d0fb610866b16f81639ada08c9608e230",
+  "last_decision": "skip",
+  "kinds": [],
+  "notes": "File is pure Jinja scaffolding (extends/block/knowledge calls), no prose to spell-check",
+  "in_progress": null
+}
