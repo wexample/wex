@@ -293,7 +293,7 @@ Trois sources, par priorité **croissante** (la dernière gagne) :
 2. **`config.yml` édité à la main** — la même clé écrasée par l'utilisateur.
 3. **`.wex/local/env.yml`** — flatten en dernier, donc les vars locales (tokens, mots de passe…) écrasent toujours le `config.yml`.
 
-L'interpolation `${VAR}` dans `config.yml` (notamment dans `install_config:`) est résolue **avant** le flatten, contre les env params du workdir. C'est ce qui permet à un service de déclarer `service.{{ name }}.user: "${SERVICE_N8N_BASIC_AUTH_USER}"` et de laisser l'utilisateur saisir la vraie valeur dans `local/env.yml`.
+L'interpolation `${VAR}` dans `config.yml` (notamment dans `install_config:`) est résolue **avant** le flatten, contre les env params du workdir. C'est ce qui permet à un service de déclarer `service.{% raw %}{{ name }}{% endraw %}.user: "${SERVICE_N8N_BASIC_AUTH_USER}"` et de laisser l'utilisateur saisir la vraie valeur dans `local/env.yml`.
 
 ---
 
@@ -435,8 +435,8 @@ vars:
     default: "5678"
     description: "Port exposé par n8n"
 install_config:
-  "service.{{ name }}.basic_auth.user": "${SERVICE_N8N_BASIC_AUTH_USER}"
-  "service.{{ name }}.basic_auth.password": "${SERVICE_N8N_BASIC_AUTH_PASSWORD}"
+  "service.{% raw %}{{ name }}{% endraw %}.basic_auth.user": "${SERVICE_N8N_BASIC_AUTH_USER}"
+  "service.{% raw %}{{ name }}{% endraw %}.basic_auth.password": "${SERVICE_N8N_BASIC_AUTH_PASSWORD}"
 ```
 
 **Champs de `vars:`** :

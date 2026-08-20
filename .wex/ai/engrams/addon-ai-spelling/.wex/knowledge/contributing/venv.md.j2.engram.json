@@ -1,6 +1,6 @@
 {
   "engram_version": 1,
-  "source_key": ".wex/knowledge/contributing/venv.md",
+  "source_key": ".wex/knowledge/contributing/venv.md.j2",
   "cache_nonce": "default",
   "last_visited_at": "2026-08-20T08:42:08+00:00",
   "last_rev": "d485c83e334b3f50921d78cb87263a81c7a761dd",
