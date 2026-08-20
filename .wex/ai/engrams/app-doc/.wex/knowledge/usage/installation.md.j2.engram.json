@@ -2,10 +2,10 @@
   "engram_version": 1,
   "source_key": ".wex/knowledge/usage/installation.md.j2",
   "cache_nonce": "default",
-  "last_visited_at": "2026-08-20T07:53:41+00:00",
+  "last_visited_at": "2026-08-20T08:31:31+00:00",
   "last_rev": "7e9c95531d7d63afe029bf8118e11bf65579e769",
-  "last_decision": "edit",
+  "last_decision": "skip",
   "kinds": [],
-  "notes": "fixed globaly→globally (x2), enviroment→environment, instaled→installed",
+  "notes": "prose correctly spelled; only typo is Jinja var `package_naem`, out of domain",
   "in_progress": null
 }
