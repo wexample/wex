@@ -1,0 +1,7 @@
+formatter: app-doc
+sources: []
+agents:
+  maintainer:
+    instructions: "This page covers the `uninstall` command exclusively: how to invoke it (`sudo bash bin/uninstall`), the two operating modes (plain and `purge`), and the exact set of files each mode removes. It does not cover the install process, the inner workings of `_init.sh` / `_init_sudo.sh`, or dpkg packaging details (the `purge` argument is an implementation coincidence the page need not mention).\n\nBoth removal lists — \"What the uninstaller removes\" and \"Additional removals on purge\" — must stay exactly in sync with what `bin/uninstall` actually `rm`s; any file added to or dropped from the script must be reflected here on the same change.\n\nEvery repo-relative path referenced in prose (`.venv/`, `.wex/.env`, `tmp/registry.yml`, and any future additions) must use `{{ path(\"…\") }}` so a renamed file becomes a build error rather than silent rot. Absolute system paths (`/usr/local/bin/wex`, `/etc/bash_completion.d/wex`, etc.) and paths inside fenced bash blocks (the shell invocations the user types) are exempt."
+    sources:
+      - file: bin/uninstall

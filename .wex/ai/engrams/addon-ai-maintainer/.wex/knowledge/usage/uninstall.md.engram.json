@@ -1,0 +1,14 @@
+{
+  "engram_version": 1,
+  "source_key": ".wex/knowledge/usage/uninstall.md",
+  "cache_nonce": "default",
+  "last_visited_at": "2026-08-20T19:37:22+00:00",
+  "last_rev": "cfd9c29ffc2bdbc873e832f737354e2705772883",
+  "source_revs": {
+    "file:bin/uninstall": "7e63d781e63e3bf122252a2a6df7a6c515a57c14"
+  },
+  "last_decision": "edit",
+  "kinds": [],
+  "notes": "removed false claim that bin/uninstall removes /etc/wex.conf (no such rm in the script)",
+  "in_progress": null
+}
