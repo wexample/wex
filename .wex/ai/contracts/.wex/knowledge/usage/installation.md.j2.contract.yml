@@ -1,19 +1,18 @@
-contract_version: 1
-target: .wex/knowledge/usage/installation.md.j2
+agents:
+  maintainer:
+    instructions: |
+      How a user installs, uninstalls and smoke-tests wex, in the exact commands they type.
 
-instructions: |
-  How a user installs, uninstalls and smoke-tests wex, in the exact commands they type.
+      Covers only what the four scripts below do at the surface: what each one requires,
+      what it changes on the machine, and how to check it worked. Their internals are not
+      documented here — a refactor that keeps the same entry point and the same effect
+      changes nothing on this page.
 
-  Covers only what the four scripts below do at the surface: what each one requires,
-  what it changes on the machine, and how to check it worked. Their internals are not
-  documented here — a refactor that keeps the same entry point and the same effect
-  changes nothing on this page.
+      Out of scope: configuration, usage of the `wex` command beyond `wex hi`, and any
+      install path these four scripts do not implement.
 
-  Out of scope: configuration, usage of the `wex` command beyond `wex hi`, and any
-  install path these four scripts do not implement.
-
-sources:
-  - file: bin/install
-  - file: bin/install-dev
-  - file: bin/uninstall
-  - file: bin/wex
+    sources:
+      - file: bin/install
+      - file: bin/install-dev
+      - file: bin/uninstall
+      - file: bin/wex
