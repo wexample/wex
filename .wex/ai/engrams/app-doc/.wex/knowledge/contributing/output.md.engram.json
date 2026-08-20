@@ -1,0 +1,11 @@
+{
+  "engram_version": 1,
+  "source_key": ".wex/knowledge/contributing/output.md",
+  "cache_nonce": "default",
+  "last_visited_at": "2026-08-20T08:41:59+00:00",
+  "last_rev": "ff919d627804468e754ea49feab96f1975bf4e93",
+  "last_decision": "skip",
+  "kinds": [],
+  "notes": "French prose checked end-to-end, no misspelled words; only code/identifiers remain",
+  "in_progress": null
+}
