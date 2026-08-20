@@ -1,0 +1,15 @@
+{
+  "engram_version": 1,
+  "source_key": ".wex/knowledge/usage/installation.md.j2",
+  "cache_nonce": "default",
+  "last_visited_at": "2026-08-20T15:13:41+00:00",
+  "last_rev": "34772672b4761b15de57a93574b108f9f38fe109",
+  "source_revs": {
+    "file:bin/install": "f00640ae6552a64016ef35bff2ee01e1151cd5c3",
+    "file:bin/uninstall": "7e63d781e63e3bf122252a2a6df7a6c515a57c14"
+  },
+  "last_decision": "skip",
+  "kinds": [],
+  "notes": "Section already exists, correctly placed, and all four bullets match bin/install exactly.",
+  "in_progress": null
+}

@@ -1,4 +1,20 @@
 agents:
+  author:
+    instructions: |
+      The page must carry a `## What the installer changes on your machine` section,
+      placed right after the install commands and before `## Check Installation`.
+
+      It lists every effect `bin/install` has outside the project directory, so a reader
+      can tell what to expect and what `bin/uninstall` is supposed to undo. One bullet per
+      effect, naming the exact path the script writes to.
+
+      Nothing else on this page is yours: the install/uninstall commands and the check
+      section already exist and are out of your scope.
+
+    sources:
+      - file: bin/install
+      - file: bin/uninstall
+
   maintainer:
     instructions: |
       How a user installs, uninstalls and smoke-tests wex, in the exact commands they type.
