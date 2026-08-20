@@ -1,14 +1,13 @@
-Dans `.wex/knowledge/usage/installation.md.j2`, ligne 3 :
+In `.wex/knowledge/usage/installation.md.j2`, line 3:
 
     Install {{ package_naem }} globally.
 
-La variable est `package_naem`, alors que le reste du fichier (ligne 10) utilise
-`package_name`. C'est très probablement une coquille dans le nom de la variable,
-mais c'est du code Jinja, pas de la prose : le renommer sort du périmètre d'une
-passe orthographique et pourrait casser le rendu si `package_naem` est réellement
-défini quelque part.
+The variable is `package_naem`, whereas the rest of the file (line 10) uses
+`package_name`. This is very probably a typo in the variable name, but it is Jinja
+code, not prose: renaming it falls outside the scope of a spelling pass and could
+break the rendering if `package_naem` really is defined somewhere.
 
-À faire : vérifier quelles variables sont passées au rendu de ce template. Si
-`package_naem` n'existe pas, corriger en `package_name` (selon la config Jinja, un
-nom inconnu rend une chaîne vide au lieu de lever une erreur — d'où le fait que la
-coquille passe inaperçue).
+To do: check which variables are passed to this template's rendering. If
+`package_naem` does not exist, fix it to `package_name` (depending on the Jinja
+config, an unknown name renders an empty string instead of raising an error — hence
+the typo going unnoticed).

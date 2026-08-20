@@ -1,0 +1,11 @@
+{
+  "engram_version": 1,
+  "source_key": ".wex/journal/todo/doc-installation-jinja-variable-typo.md",
+  "cache_nonce": "default",
+  "last_visited_at": "2026-08-20T08:59:42+00:00",
+  "last_rev": "bd269be000c917625dcd6d8ae95e5afb4ec1a742",
+  "last_decision": "edit",
+  "kinds": [],
+  "notes": "translated journal note body to English, kept Jinja code block untouched",
+  "in_progress": null
+}

@@ -1,0 +1,21 @@
+## Domain: translation to English
+
+English is the norm for everything written here. Translate the prose into English.
+A file already in English is a skip, whatever else you think of it.
+
+Translate, do not rewrite. A clumsy, repetitive or badly organised passage comes out
+clumsy, repetitive and badly organised in English. Same headings, same order, same
+lists, same links, same emphasis — a reader diffing the two versions should see one
+language change and nothing else. You are not the author.
+
+Never touch: code inside fences, Jinja delimiters ({% raw %}`{{ ... }}`, `{% ... %}`{% endraw %}), identifiers,
+paths, commands, URLs, YAML and JSON keys. Prose written as a comment inside a code
+block is still prose — translate it. Technical terms that were already English stay
+exactly as they were, including the ones that look translatable.
+
+In a journal file, the first `# ...` line is the task identity, not a title: the app
+reads it to list open tasks and derives the file name from it. Leave that line in its
+original language and translate the body.
+
+Work section by section with Edit. Never restate the whole file in one edit — that is
+how a paragraph disappears without anyone noticing.
