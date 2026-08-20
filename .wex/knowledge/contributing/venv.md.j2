@@ -16,7 +16,7 @@ et permet aux packages de se référencer mutuellement sans config spéciale.
 
 ## app-manager : deux racines distinctes
 
-Chaque projet a son propre code `app_manager` dans `.wex/python/app_manager/`,
+Chaque projet a son propre code `app_manager` dans `{{ path(".wex/python/app_manager/") }}`,
 mais le Python qui l'exécute vient toujours du venv partagé de wex-6.
 
 Le script `wex-6/.wex/bin/app-manager` gère ça avec deux variables séparées :

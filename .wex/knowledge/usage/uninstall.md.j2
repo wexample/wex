@@ -3,13 +3,13 @@
 Remove the `wex` command and all files the installer placed on your machine:
 
 ```bash
-sudo bash bin/uninstall
+sudo bash {{ path("bin/uninstall") }}
 ```
 
 To also delete the virtual environment and generated files, pass `purge`:
 
 ```bash
-sudo bash bin/uninstall purge
+sudo bash {{ path("bin/uninstall") }} purge
 ```
 
 ## What the uninstaller removes
@@ -17,7 +17,7 @@ sudo bash bin/uninstall purge
 - `/usr/local/bin/wex` — the global symlink
 - `/etc/bash_completion.d/wex` — the tab-completion handler
 - `/etc/profile.d/wex.sh` — the shell prompt handler
-- `/root/.bashrc` and `/home/<user>/.bashrc` — the lines that sourced `/etc/profile.d/wex.sh` or `bin/terminal-handler` directly (dev install)
+- `/root/.bashrc` and `/home/<user>/.bashrc` — the lines that sourced `/etc/profile.d/wex.sh` or `{{ path("bin/terminal-handler") }}` directly (dev install)
 
 ## Additional removals on purge
 
