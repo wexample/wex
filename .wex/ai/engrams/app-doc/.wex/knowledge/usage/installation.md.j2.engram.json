@@ -1,0 +1,11 @@
+{
+  "engram_version": 1,
+  "source_key": ".wex/knowledge/usage/installation.md.j2",
+  "cache_nonce": "default",
+  "last_visited_at": "2026-08-20T07:53:41+00:00",
+  "last_rev": "7e9c95531d7d63afe029bf8118e11bf65579e769",
+  "last_decision": "edit",
+  "kinds": [],
+  "notes": "fixed globaly→globally (x2), enviroment→environment, instaled→installed",
+  "in_progress": null
+}
