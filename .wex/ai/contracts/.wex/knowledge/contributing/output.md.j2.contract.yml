@@ -1,0 +1,24 @@
+formatter: app-doc
+sources: []
+agents:
+  maintainer:
+    instructions: |
+      The rule a contributor applies when deciding where a line of output goes: a prompt
+      for the human at the terminal, a log for the system, a response for whoever consumes
+      the data. Three mechanisms, three audiences, three silencing behaviours.
+
+      The decision rule and the container case are the point of the page. The code
+      examples exist to show the wrong call as much as the right one — keep both.
+
+      The verbosity table maps flags to levels and must name flags that exist. It
+      currently lists `--v`, `--vv`, `--vvv`; the kernel exposes `-vv` and `-vvv`, and a
+      level reachable by no flag should say so rather than invent one.
+
+      No source below can be watched: prompts come from `wexample-prompt`, responses and
+      the verbosity flags from `wexample-app`, none of which live in this repository.
+      Check the claims by running a command, not by reading a diff.
+
+      Out of scope: how to format a specific prompt type, and the option list itself,
+      which belongs to `usage/commands`.
+
+    sources: []

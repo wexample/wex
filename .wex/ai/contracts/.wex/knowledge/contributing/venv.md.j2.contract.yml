@@ -1,0 +1,29 @@
+formatter: app-doc
+sources: []
+agents:
+  maintainer:
+    instructions: |
+      Why there is one shared virtual environment rather than one per project, and how
+      `app-manager` reaches it from a project that only holds a symlink to it.
+
+      The two root variables are the substance of the page: `WEX_ROOT` resolves the
+      symlink and always lands on the wex repository, `APP_ROOT` does not and lands on the
+      caller. Any shell excerpt quoted here must be the current text of
+      `.wex/bin/app-manager`, copied, not paraphrased.
+
+      Directory names must be the ones on disk. The page still says `wex-6/`, which is a
+      name the repository no longer carries, and describes a
+      `.wex/python/app_manager/` holding `__main__.py` and `pyproject.toml` that is not
+      what the directory contains. Both are to be corrected against reality, not
+      preserved.
+
+      The dev-versus-deployment section describes a state of the world, so it expires:
+      references to a legacy wex-5 install or to `/etc/wex.conf` only stay if they are
+      still true.
+
+      Every repo-relative path in prose uses `{{ path("…") }}`.
+
+    sources:
+      - file: .wex/bin/app-manager
+      - file: bin/install
+      - file: bin/install-dev

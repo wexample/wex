@@ -1,3 +1,5 @@
+formatter: app-doc
+sources: []
 agents:
   author:
     instructions: |

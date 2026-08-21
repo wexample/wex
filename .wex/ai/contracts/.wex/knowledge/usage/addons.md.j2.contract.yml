@@ -1,0 +1,22 @@
+formatter: app-doc
+sources: []
+agents:
+  maintainer:
+    instructions: |
+      The orientation page: wex implements no command itself, every feature comes from an
+      addon, here is the list.
+
+      The table is not written by hand. `{{ addons() }}` renders it from the
+      `wexample-wex-addon-*` dependencies declared in `pyproject.toml`, reading each
+      description from the installed distribution's metadata. Never replace that call with
+      a literal table, and never add an addon to this page — add the dependency.
+
+      A description that reads wrong belongs to the addon's own `pyproject.toml`, not
+      here. Report it rather than working around it.
+
+      Only the prose framing the table is yours: what an addon is, that installing wex
+      installs all of them, and that each addon documents its own commands while this
+      repository documents the kernel.
+
+    sources:
+      - file: pyproject.toml

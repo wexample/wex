@@ -1,0 +1,28 @@
+formatter: app-doc
+sources: []
+agents:
+  maintainer:
+    instructions: |
+      How wex is built: what this repository actually contains, the boot sequence, how a
+      command string becomes a Python function, and where the line between `wexample-app`
+      and `wexample-wex-core` falls.
+
+      Written for someone about to modify the kernel, not for someone using it — daily
+      usage belongs in `usage/commands`.
+
+      Two claims must stay literally true against the sources below. The list of Python
+      files this repository contains, and the ordered list of kernel initialisation steps,
+      which is `Kernel.setup()`'s own order: the page states that the order matters, so a
+      reordering there is a change here.
+
+      The addon list is not enumerated on this page. `usage/addons` renders it from the
+      dependencies, and a second hand-written copy could only drift.
+
+      Every repo-relative path in prose uses `{{ path("…") }}`, so a file that moves
+      becomes a rectify error instead of silent rot.
+
+    sources:
+      - file: __main__.py
+      - file: src/common/wex.py
+      - file: src/workdir/wex_workdir.py
+      - file: pyproject.toml

@@ -1,0 +1,18 @@
+formatter: app-doc
+sources: []
+agents:
+  maintainer:
+    instructions: |
+      How to run the test suite, both ways: through the wex command and through pytest
+      directly, plus what the `tests/` tree holds.
+
+      The directory listing must match the directories that exist. It is a map, not a
+      proposal — never list a directory or a file that is not there, and drop one that
+      disappears. Same for the pytest settings quoted in prose: `testpaths` and
+      `pythonpath` are read from `pyproject.toml`.
+
+      Out of scope: how to write a test, the fixtures available, and the CI pipeline.
+
+    sources:
+      - file: pyproject.toml
+      - file: bin/wex

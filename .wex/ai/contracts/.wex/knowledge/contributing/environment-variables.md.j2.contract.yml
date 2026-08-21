@@ -1,0 +1,28 @@
+formatter: app-doc
+sources: []
+agents:
+  maintainer:
+    instructions: |
+      The full map of the environment-variable mechanisms: which layer owns what, which
+      file is the source of truth at each scope, and the five complementary ways a
+      required variable gets declared.
+
+      Several systems coexist without overlapping, and the page's job is to keep them
+      apart — the opening distinction between what is wex and what is merely `os.environ`
+      is load-bearing, not preamble.
+
+      Never cite a line number. The page carries several ("ligne 506", "ligne 205")
+      pointing into `wexample-wex-core`, a package that is not even in this repository;
+      they were wrong the next commit. Name the method and the class, which survive a
+      refactor, and remove the numbers as you pass over them.
+
+      The closing survey of what works and what smells is not knowledge — it dates, it
+      names a moment. It belongs to the journal, and this page is better without it.
+
+      This is contributor material, not usage: it describes internals a user never
+      touches. Its place under `usage/` is a leftover.
+
+      No source below can be watched — every mechanism lives in `wexample-wex-core` or
+      `wexample-wex-addon-app`. Verify against those packages directly.
+
+    sources: []

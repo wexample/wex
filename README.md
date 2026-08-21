@@ -204,7 +204,7 @@ Execute all tests including core and every addon tests suite.
 
 ```bash
 # Run all tests with integrated logging
-bash bin/wex test::run/all
+bash bin/wex app::test/run
 ```
 
 ### Using Pytest Directly
@@ -221,10 +221,12 @@ python -m pytest
 
 ### Test Structure
 
+`testpaths` is `tests`, and `pythonpath` is `src` — a test imports the kernel as an
+installed package would.
+
 ```
 tests/
 ├── unit/           # Unit tests (test individual components)
-│   └── test_example.py
-├── integration/    # Integration tests (test component interactions)
-└── conftest.py     # Shared fixtures (create as needed)
+├── resources/      # Files a test reads from
+└── samples/        # Fixture projects a test operates on
 ```
