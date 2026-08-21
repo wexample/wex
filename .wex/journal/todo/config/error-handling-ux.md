@@ -1,6 +1,6 @@
 # Erreurs subprocess — chaîne A → B → C
 
-## Contexte
+## Context
 
 ```
 A (wex package::suite/publish)
@@ -8,28 +8,28 @@ A (wex package::suite/publish)
       → shell_run(git push -u origin ...)                           # C — root cause
 ```
 
-Résultat actuel : B a déjà affiché son erreur. A re-affiche un `ShellCommandFailedException`
-sur le subprocess B, ce qui duplique le message ou le noie.
+Current result: B has already displayed its error. A re-displays a `ShellCommandFailedException`
+on subprocess B, which either duplicates the message or buries it.
 
-## Ce qui est fait
+## What is done
 
-- `ShellCommandFailedException` propagé depuis C jusqu'à A ✅
-- `exec_argv()` affiche message propre + "To retry manually" ✅
+- `ShellCommandFailedException` propagated from C up to A ✅
+- `exec_argv()` displays a clean message + "To retry manually" ✅
 
-## Ce qui reste
+## What remains
 
-### Détecter qu'un subprocess est un wex
+### Detect that a subprocess is a wex
 
-- [ ] Créer `shell_is_wex_subprocess(cmd) -> bool` dans `helpers/shell.py`
-  — vérifie si `.wex/bin/app-manager` ou `bin/wex` est dans les args
+- [ ] Create `shell_is_wex_subprocess(cmd) -> bool` in `helpers/shell.py`
+  — checks whether `.wex/bin/app-manager` or `bin/wex` is in the args
 
-### Silencer la re-affichage côté A
+### Silence the re-display on A's side
 
-- [ ] Quand A reçoit une `ShellCommandFailedException` pour un subprocess wex détecté,
-  afficher uniquement : `[SUB_PROCESS_FAILED] <commande> — see above.` sans répéter le détail
-- [ ] Si le subprocess n'est pas wex (ex: git direct) → comportement actuel inchangé
+- [ ] When A receives a `ShellCommandFailedException` for a detected wex subprocess,
+  display only: `[SUB_PROCESS_FAILED] <commande> — see above.` without repeating the detail
+- [ ] If the subprocess is not wex (e.g. direct git) → current behaviour unchanged
 
-## Sortie cible (A→B→C)
+## Target output (A→B→C)
 
 ```
 [SHELL_COMMAND_FAILED] Command exited with code 128
@@ -40,4 +40,4 @@ To retry manually:
   git push -u origin version-0.3.11
 ```
 
-C'est l'erreur de C qui s'affiche. Les couches B et A ne répètent pas.
+C's error is what gets displayed. Layers B and A do not repeat it.
