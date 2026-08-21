@@ -1,84 +1,84 @@
 # Roadmap : `wex app/publish` — commande générique de publication d'app
 
-## Contexte
+## Context
 
-`bin/publish` est un script bash spécifique à wex qui :
-1. Publie optionnellement une lib source (`PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH`)
-2. Lit la version depuis `version.txt`
-3. Incrémente la version via `wex core::version/increment`
-4. Compilait `requirements.in → requirements.txt` via `uv pip compile` ← **supprimé**
-5. Commit "Release {version}" + `git push`
+`bin/publish` is a bash script specific to wex that:
+1. Optionally publishes a source lib (`PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH`)
+2. Reads the version from `version.txt`
+3. Increments the version via `wex core::version/increment`
+4. Used to compile `requirements.in → requirements.txt` via `uv pip compile` ← **removed**
+5. Commits "Release {version}" + `git push`
 
-Le système générique dispose de `commands/app/publish.py` dans `wex-addon-app` qui couvre :
-bump (branche `version-x.y.z`) → rectify → commit + push → tag annoté `{name}/v{version}`
+The generic system provides `commands/app/publish.py` in `wex-addon-app`, covering:
+bump (branch `version-x.y.z`) → rectify → commit + push → annotated tag `{name}/v{version}`
 
-L'objectif est que `wex app/publish` soit valable pour n'importe quelle app, wex inclus.
-
----
-
-## ✅ P1 — App manager PythonWorkdir + migration pyproject.toml (FAIT)
-
-**Créé :** `.wex/python/app_manager/app_workdir.py`
-- Étend `PythonWorkdir` (pas Package — wex est une app, pas une lib)
-- Override `prepare_value()` : retire l'enforcement de `src/{vendor}_{name}/` qui ne correspond pas à la structure de wex
-- Override `get_package_import_name()` / `get_package_name()` → `"wex"` (pas `"wexample_wex"`)
-
-**Migré :** `requirements.in` → `[project] dependencies` dans `pyproject.toml`, supprimé.
-
-**Note :** `requirements.txt` reste pour `bin/install` (installation système). Sa migration
-est hors scope — `bin/install` est traité séparément.
+The goal is for `wex app/publish` to work for any app, wex included.
 
 ---
 
-## ✅ P2 — version.txt synchronisé par filestate (déjà en place)
+## ✅ P1 — App manager PythonWorkdir + pyproject.toml migration (DONE)
 
-`ManagedWorkdir` hérite de `WithAppVersionWorkdirMixin` qui overrides `_get_version_default_content()`
-avec `VersionContentConfigValue`. `version.txt` est donc maintenu par rectify depuis `global.version`
-dans `config.yml` pour tous les workdirs, y compris wex. Rien à faire.
+**Created:** `.wex/python/app_manager/app_workdir.py`
+- Extends `PythonWorkdir` (not Package — wex is an app, not a lib)
+- Overrides `prepare_value()`: removes the enforcement of `src/{vendor}_{name}/` which does not match wex's structure
+- Overrides `get_package_import_name()` / `get_package_name()` → `"wex"` (not `"wexample_wex"`)
+
+**Migrated:** `requirements.in` → `[project] dependencies` in `pyproject.toml`, removed.
+
+**Note:** `requirements.txt` is kept for `bin/install` (system installation). Its migration
+is out of scope — `bin/install` is handled separately.
 
 ---
 
-## P3 — Hook de pré-publication déclaratif (à faire)
+## ✅ P2 — version.txt synchronised by filestate (already in place)
 
-**Où :** `wex-addon-app/commands/app/publish.py` + config `config.yml`
+`ManagedWorkdir` inherits from `WithAppVersionWorkdirMixin` which overrides `_get_version_default_content()`
+with `VersionContentConfigValue`. `version.txt` is therefore maintained by rectify from `global.version`
+in `config.yml` for all workdirs, wex included. Nothing to do.
 
-**Problème :** `bin/publish` supporte `PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH` — il publie
-la suite de packages source avant de publier wex. Ce comportement doit être déclaratif et générique.
+---
 
-**Design retenu :**
+## P3 — Declarative pre-publication hook (to do)
 
-Dans `.wex/config.yml` de l'app :
+**Where:** `wex-addon-app/commands/app/publish.py` + config `config.yml`
+
+**Problem:** `bin/publish` supports `PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH` — it publishes
+the source package suite before publishing wex. This behaviour must be declarative and generic.
+
+**Chosen design:**
+
+In the app's `.wex/config.yml`:
 ```yaml
 publish:
   pre_publish_suite: ${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}
 ```
 
-- Si la variable d'env est définie : publie la suite au chemin indiqué avant le bump
-- Si elle n'est pas définie (ou vide) : step silencieusement skippé
-- Flag `--skip-pre-publish` pour bypasser explicitement (équivalent de `--no-lib` actuel)
+- If the env variable is set: publishes the suite at the given path before the bump
+- If it is not set (or empty): step is silently skipped
+- Flag `--skip-pre-publish` to bypass explicitly (equivalent of the current `--no-lib`)
 
-**Implémentation dans `app/publish.py` :**
+**Implementation in `app/publish.py`:**
 
-Ajouter une étape `_pre_publish` en tête de `steps[]` :
+Add a `_pre_publish` step at the head of `steps[]`:
 ```python
 def _pre_publish(previous_value=None) -> None:
     suite_path = app_workdir.get_config().search(
         "publish.pre_publish_suite", default=None
     ).get_str_or_none()
     if suite_path:
-        # resolve workdir suite et appeler suite/publish
+        # resolve workdir suite and call suite/publish
         ...
 ```
 
 ---
 
-## Migration de bin/publish (après P3)
+## Migration of bin/publish (after P3)
 
-Une fois P3 en place, `bin/publish` devient :
+Once P3 is in place, `bin/publish` becomes:
 ```bash
 cd "${WEX_DIR_ROOT}"
 wex app/publish --yes
 ```
 
-Le `--no-lib` historique est remplacé par `--skip-pre-publish`.
-La compilation `uv pip compile` disparaît (plus de `requirements.in`).
+The historical `--no-lib` is replaced by `--skip-pre-publish`.
+The `uv pip compile` compilation disappears (no more `requirements.in`).
