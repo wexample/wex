@@ -1,7 +1,7 @@
 # Roadmap : Réorganisation de la documentation
 
 Opened: 2026-08-19
-Updated: 2026-08-19
+Updated: 2026-08-21
 
 **Single place for this work.** Everything related to the documentation system is
 managed here. Consolidates `.wex/knowledge/state-of-the-art.md` and
@@ -42,8 +42,9 @@ At suite level, `package-readme/` is added (fragments inherited by child package
 A compromise name, to be renamed eventually.
 
 State reached in `wex` — compliant:
-`contributing/{architecture,output,venv}.md`, `readme/introduction.md`,
-`specifications/vision.md`, `usage/{introduction,testing,webhooks,environment-variables}.md`.
+`contributing/{architecture,environment-variables,output,venv}.md.j2`,
+`readme/_content.md.j2`, `specifications/vision.md.j2`,
+`usage/{overview,addons,commands,installation,testing,uninstall,webhooks}.md.j2`.
 
 ---
 
@@ -77,10 +78,10 @@ drives phases 5 and 6.
 
 **A. Generated `README.md` — the only aggregator in working order.**
 `AppReadmeConfigValue`, triggered at `state/rectify`. 4-level lookup, Jinja2 rendering
-(details above). **Underfed**: only reads `readme/`, never `usage/`, `contributing/`
-or `specifications/`; no produced data (commands, services, child packages) enters it;
-`wex` has only one fragment left.
-→ First case to address.
+(details above). Was **underfed**: only read `readme/`, never `usage/`,
+`contributing/` or `specifications/`; no produced data entered it.
+→ Addressed in phase 5: the `_content.md.j2` composer imports any knowledge page by
+name, and `addons()` is the first produced data injected.
 
 **B. `AGENTS.md` / `CLAUDE.md` — the agent that does not know wex.**
 Hardcoded Python string (`with_ai_workdir_mixin.py:15`), written into each workdir,
@@ -130,7 +131,7 @@ gap (D) in between. Properly addressing A forces defining the reusable building 
       replaced by "browse `.wex/knowledge/`"
 - [ ] Rename `package-readme/` ?
 
-## Phase 2 — Cleanup
+## Phase 2 — Cleanup ✅
 
 Done in `wex` and the `PACKAGES/PYTHON` suite:
 
@@ -153,16 +154,15 @@ Done in `wex` and the `PACKAGES/PYTHON` suite:
       `project-info/{typed-config-files,app-manager-folder,pip-packages-structure}.md`
       → `contributing/` (suite)
 
-Remaining:
+- [x] Migrations `6.0.130-1` (deletion of `documents/`) and `6.0.130-2` (deletion of
+      `__entrypoint.md`) propagated
+- [x] `PACKAGES/PYTHON/.wex/knowledge/todo/` → `.wex/journal/todo/` (7 tickets), and
+      the empty `project-info/` left behind by phase 1 removed
 
-- [ ] Migration: `PACKAGES/PYTHON/.wex/knowledge/todo/` → `.wex/journal/todo/` (7 tickets)
-- [ ] Propagate migrations `6.0.130-1` (deletion of `documents/`) and `6.0.130-2`
-      (deletion of `__entrypoint.md`): ~84 workdirs, all empty. Decide on the vector —
-      suite-wide command or incrementally via `rectify`
-- [ ] Polluted knowledge in other packages: case by case, outside this work.
-      Heaviest case identified: `packages/filestate/.wex/doc/` (v5 remnant) holds
-      498 lines of orphaned README fragments, while its `README.md` (477 lines) is
-      frozen and cannot be regenerated
+Out of scope, deliberately: polluted knowledge in the other packages, handled case by
+case as each is taken on. Heaviest case identified — `packages/filestate/.wex/doc/`
+(v5 remnant) holds 498 lines of orphaned README fragments, while its `README.md`
+(477 lines) is frozen and cannot be regenerated.
 
 ## Phase 3 — Move code rules into the language package
 
@@ -179,28 +179,55 @@ Pydantic while the code has moved to attrs / `base_class` / `public_field`.
 
 ## Phase 4 — Define how each file is written
 
-- [ ] For each file type: audience, expected length, tone, what belongs / what does
-      not, when it is updated
-- [ ] Make it a single, authoritative reference — the document that writing agents
-      will read
-- [ ] Rewrite `contributing/architecture.md` (30 lines that still describe wex as an
-      "Installation Manager", with no mention of the kernel, addons, or command
-      resolution)
+Answered by the contracts system rather than by a single reference document: the
+rules live next to the file they govern, and an agent receives only those that apply.
+
+- [x] Per-file-type rules: `AbstractFormatter.get_writing_rules()`, keyed by
+      `formatter:` in the contract. `AppDocFormatter` holds the knowledge-page rules
+      (Jinja, `path()`, `##` headings, no own title)
+- [x] Per-file rules: `.wex/ai/contracts/<mirrored path>.contract.yml`, with an
+      `instructions` block per agent (`author`, `maintainer`) and `sources:` acting as
+      change triggers. 13 contracts cover `wex`'s knowledge
+- [x] Anti-rot: the `path()` Jinja global echoes a repository path and raises when it
+      is gone, so a moved file becomes a build error instead of silent drift.
+      `AppDocFormatter.extract_sources()` reads those calls back to propose contract
+      sources
+- [x] `contributing/architecture.md.j2` rewritten (kernel, addons, command resolution)
+- [ ] Improve the `path()` failure message: currently surfaces as a generic
+      `UNEXPECTED_ERROR`, the missing path only appears in the crash report
 
 ## Phase 5 — README + templating multi-app
 
 First reading case addressed (case A), and the pretext for extracting the common
 building block.
 
-- [ ] Restore `wex`'s README: currently a single fragment
-- [ ] Decide what feeds the README beyond `readme/` — sections drawn from `usage/` /
-      `specifications/`? references only?
-- [ ] Inject produced data: commands, services, child packages
+- [x] Restore `wex`'s README, and decide what feeds it beyond `readme/`: a
+      `_content.md.j2` composer, which when present *is* the README (discovery is
+      bypassed). It imports pages with `{{ knowledge('usage/commands') }}` — so
+      `usage/` and `specifications/` feed the README by explicit import, not by rule
+- [x] Composer inherited rather than duplicated: `{% extends "_layout.md.j2" %}` and
+      `{% include %}` resolve across the whole 4-level cascade, so a single
+      `_content.md.j2` in the suite's `package-readme/` governs all 89 packages with
+      no file in any repository. Incidentally fixed a bug where every package README
+      rendered its entire body twice (duplicate entry in `readme.sections`)
+- [x] Two-pass table of contents: `toc()` emits a marker, `_build_toc()` then parses
+      the level-2 headings of the *rendered* output, so anchors cannot lie
+- [x] Inject produced data — first case: `addons()`, the addon table read from the
+      installed distributions' metadata
+- [x] Mandatory knowledge pages declared by the workdir hierarchy:
+      `get_required_knowledge_pages()` on `ManagedWorkdir` (`usage/overview`,
+      `contributing/architecture`), extended by `PythonPackageWorkdir`
+      (`usage/quickstart`). A required set, not an allowlist — a floor, not a ceiling.
+      Seeded through `default_content`, so a written page is never overwritten, and
+      the stub is a Jinja comment so an unwritten page renders to nothing rather than
+      leaking a `TODO` into a README published to PyPI
 - [ ] Generalise multi-level aggregation to any target, not just README
 - [ ] Have `AGENTS.md` / `CLAUDE.md` produced by this system (case B)
 - [ ] Open a reading path on the app's `.wex/knowledge/` (case D)
 - [ ] Switch remaining `.md` fragments to `.j2` — weigh against case C
 - [ ] Decide whether exported `.md` files are versioned generated artefacts or not
+- [ ] `readme.sections` in `PACKAGES/.wex/config.yml` is now dead for composer-based
+      packages: remove it, or keep it for the legacy discovery path?
 
 ## Phase 6 — Agent prompts with dynamic context
 
@@ -212,7 +239,14 @@ building block.
 
 ## Phase 7 — Enrich the documentation
 
-- [ ] `wex` first, then module by module, package by package
+- [x] `wex`: `usage/{overview,addons,commands}` written, `usage/testing` corrected
+      (documented a `test::run/all` that does not exist, and a fictional test tree),
+      `usage/environment-variables` moved to `contributing/`, heading levels demoted
+      in 5 files so they reach the composer's table of contents
+- [ ] Rectify the remaining ~88 packages: creates their stubs and rebuilds their README
+- [ ] Fill the stubs, package by package — the `author` agent's job, contract in hand.
+      Wiring it to filestate, so a declared file has its content written by an agent,
+      is tracked outside this roadmap
 
 ---
 
@@ -233,9 +267,18 @@ building block.
 
 ## Status
 
-Phase 1 complete, phase 2 complete for `wex` and the Python suite. `wex`'s
-`knowledge/` conforms to the target structure (13 files, 4 folders).
-Reading paths are inventoried and verified in the code.
+Phases 1, 2 and 4 complete, phase 5 case A complete.
+`wex`'s documentation is written, contracted and rendered; the composer, the
+mandatory pages and the anti-rot mechanism are generic and apply to all 89 packages.
+Verified end to end on `packages/helpers` and `wex/wex-addon-app` only.
 Nothing is committed.
-Next step: phase 5, case A (the `wex` README), which serves as the test bench for
-the reusable aggregation building block.
+
+Next step: rectify the ~88 remaining packages, which is the first moment the whole
+chain runs at scale. Then case B (`AGENTS.md`) and case D (agents reading the app's
+own knowledge), which share the aggregation building block that case A just proved.
+
+Still open, unrelated to the phases:
+- `dev-css` ships an empty `description`; `dev-javascript` and `dev-php` both claim
+  "Python dev addon for wex"
+- `_get_project_license()` reads `license` at the top level of `pyproject.toml`,
+  where the field is `project.license`
