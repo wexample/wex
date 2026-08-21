@@ -1,0 +1,10 @@
+## Addons
+
+{{ package_name }} implements no command itself. Every feature comes from an addon, and
+the list below is the one declared in {{ path("pyproject.toml") }} — installing
+{{ package_name }} installs all of them.
+
+{{ addons() }}
+
+Each addon documents its own commands. This repository documents the kernel: how it
+boots, how a command string is resolved, and what an addon may contribute.
