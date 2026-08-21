@@ -1,12 +1,12 @@
-# Variables d'environnement — wex
+## Variables d'environnement — wex
 
 Topo complet de tous les mécanismes liés aux « env » dans le code. Plusieurs systèmes coexistent, chacun avec un rôle propre — ils ne se recouvrent pas.
 
 ---
 
-## Avant tout — distinguer ce qui est wex de ce qui ne l'est pas
+### Avant tout — distinguer ce qui est wex de ce qui ne l'est pas
 
-### Hors périmètre wex
+#### Hors périmètre wex
 
 1. **`os.environ`** — espace POSIX du process, hérité du shell parent. Géré par l'OS. Ce n'est **pas un système de stockage wex** : sa seule utilité côté wex est de servir de **pont vers les sous-process** (docker compose, shell scripts) lancés depuis une commande wex. La source de vérité reste `.wex/local/env.yml`. On lit `os.environ.get()` directement uniquement pour les vars qu'on sait être OS-level (`SSH_AUTH_SOCK`, `SUDO_UID`, `PATH`, etc.).
 
@@ -14,7 +14,7 @@ Topo complet de tous les mécanismes liés aux « env » dans le code. Plusieurs
 
 2. **Scope applicatif — `<projet_user>/.env`** à la racine du projet. Équivalent du `.env` Symfony : consommé directement par l'application elle-même (PHP, Python, Docker compose, runtime…). **Wex ne le lit jamais.** Le projet le gère lui-même, et peut d'ailleurs utiliser n'importe quel nom de fichier (`.env`, `.env.local`, `.trilili-vars`, etc.) — c'est l'app qui décide.
 
-### Périmètre wex (2 scopes, YAML partout)
+#### Périmètre wex (2 scopes, YAML partout)
 
 3. **Scope install wex — `<install_wex>/.env.yml`.** Config **globale du runtime wex**, à la racine de l'installation (`local/wex/`). Chargée au boot par `AbstractKernel._init_env_file_yaml`. Wex étant lui-même un projet python, son `APP_ENV` vit ici, ainsi que toute config globale du runtime (chemins, structures complexes…).
 
@@ -26,7 +26,7 @@ Le nom `WithSetupEnvParameterMixin` reflète la convention interne : « setup »
 
 ---
 
-## TL;DR — les deux fichiers du périmètre wex
+### TL;DR — les deux fichiers du périmètre wex
 
 | Fichier | Scope | Format | Géré par |
 |---|---|---|---|
@@ -41,11 +41,11 @@ Pour les apps Docker, un **troisième fichier dérivé** est produit à la deman
 
 ---
 
-## 1. Couche Python — la famille `HasEnvKeys`
+### 1. Couche Python — la famille `HasEnvKeys`
 
 Mixins génériques, vivent dans `wexample_helpers` / `wexample_helpers_yaml`. Ils stockent les vars en mémoire dans un dict `env_config` porté par l'instance.
 
-### `HasEnvKeys` (base)
+#### `HasEnvKeys` (base)
 
 `packages/helpers/src/wexample_helpers/classes/mixin/has_env_keys.py`
 
@@ -63,7 +63,7 @@ Mixins génériques, vivent dans `wexample_helpers` / `wexample_helpers_yaml`. I
 - `get_env_parameter()` (sur le mixin de base) ne renvoie que ce qu'il y a dans `env_config`. Il ne lit pas `os.environ` — c'est volontaire, les deux univers sont séparés. Les sous-classes (`WithSetupEnvParameterMixin`, etc.) peuvent étendre la lecture vers d'autres sources.
 - **`get_expected_env_keys()` est le mécanisme officiel de centralisation** des vars requises pensé pour irriguer toute l'app. À override sur chaque classe qui dépend d'une var d'env. Aujourd'hui sous-utilisé (seul `AbstractKernel` déclare `["APP_ENV"]`), mais l'intention de design est de l'employer partout — pas de le contourner avec des `os.environ.get()` ad hoc. Validation au boot via `_validate_env_keys()`, et liste exposée par la commande `core::health/check`.
 
-### `HasEnvKeysFile`
+#### `HasEnvKeysFile`
 
 `packages/helpers/src/wexample_helpers/classes/mixin/has_env_keys_file.py`
 
@@ -74,17 +74,17 @@ Ajoute `_init_env_file(file_path)` :
 
 Format dotenv classique.
 
-### `HasYamlEnvKeysFile`
+#### `HasYamlEnvKeysFile`
 
 `packages/helpers-yaml/src/wexample_helpers_yaml/classes/mixin/has_yaml_env_keys_file.py`
 
 Variante YAML : charge un YAML, met les clés dans `env_config` ET propage dans `os.environ`.
 
-### À retenir sur ces deux mixins
+#### À retenir sur ces deux mixins
 
 **Un seul consommateur** : `AbstractKernel`. Aucun workdir, aucun addon n'utilise `_init_env_file_yaml` ailleurs. Les workdirs lisent leur `.wex/local/env.yml` via un mécanisme parallèle (`WithSetupEnvParameterMixin`, ci-dessous), pas via cette chaîne.
 
-### `WithSetupEnvParameterMixin` — accès workdir vers `.wex/local/env.yml`
+#### `WithSetupEnvParameterMixin` — accès workdir vers `.wex/local/env.yml`
 
 `packages/app/src/wexample_app/workdir/mixin/with_setup_env_parameter_mixin.py`
 
@@ -96,7 +96,7 @@ Fournit aussi `set_env_parameters(dict)` qui **écrit dans `.wex/local/env.yml`*
 
 **Naming trompeur** : le nom suggère un mixin générique d'env, mais le chemin construit est `path / ".wex" / "local" / "env.yml"`. C'est en fait le mixin du **scope projet wex** (machine-local), pas du scope applicatif. À renommer (`WithSetupEnvParameterMixin`, cf. roadmap).
 
-### Extension : `get_env_parameter_or_suite_fallback`
+#### Extension : `get_env_parameter_or_suite_fallback`
 
 `wex/wex-addon-app/src/wexample_wex_addon_app/workdir/mixin/with_suite_tree_workdir_mixin.py:106`
 
@@ -104,13 +104,13 @@ Lookup avec fallback sur la suite parente : si la var n'est pas trouvée dans le
 
 ---
 
-## 2. Couche kernel — initialisation au démarrage
+### 2. Couche kernel — initialisation au démarrage
 
 `packages/app/src/wexample_app/common/abstract_kernel.py` + `wex/wex-core/src/wexample_wex_core/common/kernel.py`
 
 Le kernel orchestre, au démarrage (`setup()`), **trois** opérations sur les env :
 
-### `AbstractKernel.setup()` — `.env.yml` de l'install
+#### `AbstractKernel.setup()` — `.env.yml` de l'install
 
 `abstract_kernel.py` :
 ```python
@@ -125,7 +125,7 @@ Wex(entrypoint_path=__file__).exec()
 
 Donc `entrypoint_path.parent` = **racine de l'installation wex** (ex. `local/wex/`). C'est là que vit le `.env.yml` (config globale du runtime). Avant la migration 6.0.26, un `.env` (dotenv) était aussi chargé à ce niveau ; il a été retiré au profit du YAML uniquement.
 
-### `Kernel._init_local_env()` — ligne 506
+#### `Kernel._init_local_env()` — ligne 506
 
 Lit `.wex/local/env.yml` du workdir courant via `get_local_data("env")` :
 - Tout son contenu est **copié dans `kernel.env_config`**
@@ -133,7 +133,7 @@ Lit `.wex/local/env.yml` du workdir courant via `get_local_data("env")` :
 
 C'est le chemin par lequel un secret stocké en local devient disponible globalement dans le process.
 
-### `Kernel._auto_detect_env()` — ligne 205
+#### `Kernel._auto_detect_env()` — ligne 205
 
 Pour chaque addon, regarde `addon.get_local_configurable_keys()` (liste de dicts `{key, description, detect, on_apply, default_candidates}`). Pour chaque entrée :
 
@@ -156,7 +156,7 @@ def get_local_configurable_keys(self) -> list[dict]:
 
 ---
 
-## 3. Couche commande — `core::env/configure`
+### 3. Couche commande — `core::env/configure`
 
 `wex/wex-core/src/wexample_wex_core/addons/core/commands/env/configure.py`
 
@@ -170,20 +170,20 @@ Commande **interactive** qui parcourt les `get_local_configurable_keys()` de tou
 
 ---
 
-## 4. Couche app — `.wex/local/env.yml` (per-projet, `APP_ENV` et compagnie)
+### 4. Couche app — `.wex/local/env.yml` (per-projet, `APP_ENV` et compagnie)
 
 Fichier YAML, gitignored. Héberge `APP_ENV` (`local`, `dev`, `prod`…) et toute var spécifique au projet (tokens API, chemins locaux, etc.).
 
 > **Legacy** : le fichier dotenv `.wex/.env` existait avant la migration 6.0.26. Il n'est plus lu — ses contenus sont copiés vers `.wex/local/env.yml` par la migration. Le `.env` reste sur disque tant qu'une migration de cleanup ne l'a pas supprimé (~1 an).
 
-### Chargement
+#### Chargement
 
 - Chemin : `<projet>/.wex/local/env.yml`
 - Lu directement par `WithSetupEnvParameterMixin` (qui hérite de `HasEnvKeys`)
 - Aussi propagé dans `os.environ` au boot par `kernel._init_local_env()` (via `WithLocalDataMixin`)
 - Référence : `core_yaml_command_runner._build_variables` utilise ce fichier comme **base de variables** pour la substitution dans les scripts YAML, surchargée par `os.environ`, surchargée par les options de commande.
 
-### Commandes dédiées (`wex-addon-app`)
+#### Commandes dédiées (`wex-addon-app`)
 
 | Commande | Action |
 |---|---|
@@ -193,7 +193,7 @@ Fichier YAML, gitignored. Héberge `APP_ENV` (`local`, `dev`, `prod`…) et tout
 | `app::env/var_get` | Get une var depuis `.wex/local/env.yml` |
 | `app::env/var_list` | Liste toutes les vars de `.wex/local/env.yml` |
 
-### Accès par code
+#### Accès par code
 
 `managed_workdir.py` :
 ```python
@@ -204,7 +204,7 @@ def get_app_env(self) -> str | None:
 
 ---
 
-## 5. Couche `local/` — `WithLocalDataMixin` (généralisation)
+### 5. Couche `local/` — `WithLocalDataMixin` (généralisation)
 
 `packages/app/src/wexample_app/workdir/mixin/with_local_data_mixin.py`
 
@@ -223,7 +223,7 @@ API : `get_local_data(ns)`, `set_local_data(ns, data)`, `get_local_data_value(ns
 
 ---
 
-## 6. Cas particulier — `@require_app_config` (pour `config.yml`, pas pour les env)
+### 6. Cas particulier — `@require_app_config` (pour `config.yml`, pas pour les env)
 
 `wex/wex-addon-app/src/wexample_wex_addon_app/decorator/require_app_config.py`
 
@@ -250,7 +250,7 @@ Le check tourne **avant** l'exécution de la commande, donc plus de surprise au 
 
 ---
 
-## 7. Substitution dans les scripts YAML
+### 7. Substitution dans les scripts YAML
 
 `wex/wex-core/src/wexample_wex_core/runner/core_yaml_command_runner.py:_build_variables`
 
@@ -265,11 +265,11 @@ Donc dans un YAML, `${VAR}` résout dans cet ordre.
 
 ---
 
-## 8. `docker.env` (Docker apps) — flatten du `config.yml` vers les vars Docker
+### 8. `docker.env` (Docker apps) — flatten du `config.yml` vers les vars Docker
 
 Pour les apps qui démarrent un compose Docker (cas le plus fréquent), `app::config/build` produit `<projet>/.wex/tmp/docker.env`. C'est le fichier passé à `docker compose --env-file` au démarrage des containers. Son contenu est le **flatten** du `config.yml` du projet (déjà interpolé `${VAR}`) sur lequel on superpose le `.wex/local/env.yml` du projet.
 
-### Convention de namespaces
+#### Convention de namespaces
 
 Chaque **clé top-level** de `config.yml` devient un préfixe d'env var. Le flatten est récursif (`a.b.c` → `A_B_C`).
 
@@ -285,7 +285,7 @@ Le namespace `app.*` n'est **plus** une copie du `config.yml` : il sert uniqueme
 
 > **Avant migration 6.0.28** : `app.*` recopiait tout le `config.yml`, produisant des doublons `APP_GLOBAL_*`, `APP_SERVICE_*`, `APP_DOCKER_*`, `APP_WEX_*` à côté des `GLOBAL_*`, `SERVICE_*`, etc. La migration `wex_6_0_28` réécrit ces références dans les compose users (`${APP_DOCKER_X}` → `${DOCKER_X}`, etc.) en préservant les vraies vars runtime (`APP_ENV`, `APP_PATH`, …).
 
-### Comment une valeur arrive dans `docker.env`
+#### Comment une valeur arrive dans `docker.env`
 
 Trois sources, par priorité **croissante** (la dernière gagne) :
 
@@ -297,11 +297,11 @@ L'interpolation `${VAR}` dans `config.yml` (notamment dans `install_config:`) es
 
 ---
 
-## 9. Déclarer les vars requises — les cinq niveaux complémentaires
+### 9. Déclarer les vars requises — les cinq niveaux complémentaires
 
 Une var d'env peut être déclarée comme requise à **cinq niveaux distincts**, selon où vit le besoin. Ce ne sont pas des alternatives concurrentes : chacune couvre un cas d'usage que les autres ne traitent pas.
 
-### Tableau récapitulatif
+#### Tableau récapitulatif
 
 | Niveau | Mécanisme | Format | Déclenchement | Cas d'usage |
 |---|---|---|---|---|
@@ -312,7 +312,7 @@ Une var d'env peut être déclarée comme requise à **cinq niveaux distincts**,
 | **App** | `config.yml → vars:` *(à venir)* | YAML déclaratif | À `app::start` ou commandes qui en dépendent | Var spécifique à l'app, hors service |
 
 
-### Niveau classe — `get_expected_env_keys()`
+#### Niveau classe — `get_expected_env_keys()`
 
 Une classe (workdir, gateway, connecteur…) déclare les vars qu'elle a structurellement besoin pour fonctionner. Validation au boot via `_validate_env_keys()`.
 
@@ -326,7 +326,7 @@ def get_expected_env_keys(self) -> list[str]:
 
 **Quand l'utiliser** : la classe ne peut pas fonctionner du tout sans cette var, dans aucun workflow. Cas rare en pratique — la plupart des besoins sont conditionnels (cf. niveau commande).
 
-### Niveau addon — `get_local_configurable_keys()`
+#### Niveau addon — `get_local_configurable_keys()`
 
 Un addon déclare les vars **système** qu'il sait auto-détecter et persister dans `.wex/local/env.yml`. Triggered au boot par `kernel._auto_detect_env()` et manuellement par `core::env/configure`.
 
@@ -347,7 +347,7 @@ return [{
 
 **Quand l'utiliser** : var système typique de la machine, détectable par heuristique, qu'on veut configurer une fois pour toutes (idéalement sans demander à l'utilisateur).
 
-### Niveau commande — `@require_local_env`
+#### Niveau commande — `@require_local_env`
 
 Une commande déclare les vars qu'elle a besoin pour s'exécuter. Check effectué **avant** l'exécution ; prompt à l'utilisateur si manquante ; valeur persistée dans `.wex/local/env.yml` ; commande continue avec la nouvelle valeur disponible.
 
@@ -416,7 +416,7 @@ check_env_requirements(
 
 → Couvre le cas où `get_expected_env_keys()` serait trop strict (forcerait la var au boot même si on n'utilise jamais la commande) et où `get_local_configurable_keys()` ne s'applique pas (pas d'heuristique de détection).
 
-### Niveau service — `service.yml → vars:` + `install_config:`
+#### Niveau service — `service.yml → vars:` + `install_config:`
 
 Un service déclare les vars qu'il a besoin pour fonctionner directement dans son manifest YAML. La logique de prompt/default/generated est dans `helpers/vars_declaration.py`, déclenchée par `app::service/install` (`commands/service/install.py`).
 
@@ -455,7 +455,7 @@ Ordre de résolution à `service/install` : **(1)** `generated:` produit la vale
 
 **Quand l'utiliser** : configuration nécessaire à un service tiers installé. Le manifest YAML reste lisible et déclaratif, l'utilisateur du service n'a rien à coder.
 
-### Niveau app — `config.yml → vars:`
+#### Niveau app — `config.yml → vars:`
 
 L'app déclare **explicitement** les vars qu'elle consomme (dans son `docker-compose.yml`, dans `libraries:`, ou ailleurs) et qui ne viennent ni d'un service installé ni d'une commande spécifique. Format symétrique au niveau service.
 
@@ -490,7 +490,7 @@ libraries:
 
 ---
 
-## 10. Tableau de décision — où ranger quoi
+### 10. Tableau de décision — où ranger quoi
 
 Post-migration `wex 6.0.26` — **YAML partout** côté wex.
 
@@ -507,16 +507,16 @@ Post-migration `wex 6.0.26` — **YAML partout** côté wex.
 
 ---
 
-## 11. État des lieux — ce qui marche, ce qui pue
+### 11. État des lieux — ce qui marche, ce qui pue
 
-### Justifié et propre
+#### Justifié et propre
 
 - Pile `HasEnvKeys` / `HasEnvKeysFile` / `HasYamlEnvKeysFile` : utilitaires génériques, pas de redondance entre eux.
 - Trio `_init_local_env` / `_auto_detect_env` / `core::env/configure` : cohérent, mêmes clés (`get_local_configurable_keys`), trois moments d'usage (auto au démarrage, auto-détection passive, interactif).
 - `@require_app_config` : périmètre clair (`config.yml` uniquement), pré-check propre.
 - `WithLocalDataMixin` : abstraction propre pour tout `.wex/local/*.yml`.
 
-### Sources de confusion résiduelles
+#### Sources de confusion résiduelles
 
 - **Deux mécanismes parallèles** pour charger un fichier de config wex :
   - Côté kernel : `HasYamlEnvKeysFile._init_env_file_yaml()` → `<install_wex>/.env.yml`
@@ -536,7 +536,7 @@ Post-migration `wex 6.0.26` — **YAML partout** côté wex.
 
 - **`docker.env` post-6.0.28** : `app.*` n'est plus un miroir du `config.yml`. Les vars sont produites uniquement à partir des namespaces top-level (`global.*`, `service.*`, `docker.*`, `wex.*`) et `APP_*` est réservé au runtime. La migration 6.0.28 réécrit les compose users (`${APP_DOCKER_X}` → `${DOCKER_X}`, etc.) ; les valeurs runtime réelles (`APP_ENV`, `APP_DOMAIN`, `APP_PATH`, …) sont préservées.
 
-### Anti-pattern à éviter
+#### Anti-pattern à éviter
 
 - Confondre la **config du gestionnaire wex** (`.wex/.env`, `.wex/local/env.yml`) avec `os.environ` (espace POSIX). **Deux univers distincts.**
 - Confondre la **config du gestionnaire wex** (`.wex/.env`) avec le **`.env` applicatif** à la racine du projet. **Deux univers distincts.** Wex ne lit jamais le `.env` racine.

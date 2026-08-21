@@ -1,4 +1,4 @@
-# Système Webhook
+## Système Webhook
 
 Expose des commandes wex via HTTP pour les déclencher depuis un CI/CD, un serveur distant,
 ou tout outil capable de faire une requête GET.
@@ -7,9 +7,9 @@ ou tout outil capable de faire une requête GET.
 
 ---
 
-## Prise en main rapide
+### Prise en main rapide
 
-### 1. Démarrer le daemon
+#### 1. Démarrer le daemon
 
 ```bash
 # En arrière-plan
@@ -25,7 +25,7 @@ wex core::webhook/listen --async --force
 wex core::webhook/listen --worker-timeout 600
 ```
 
-### 2. Vérifier que le daemon tourne
+#### 2. Vérifier que le daemon tourne
 
 ```bash
 wex core::webhook/status
@@ -35,7 +35,7 @@ curl http://localhost:6543/health
 # → {"status": "ok", "uptime_seconds": 42}
 ```
 
-### 3. Arrêter le daemon
+#### 3. Arrêter le daemon
 
 ```bash
 wex core::webhook/stop
@@ -43,7 +43,7 @@ wex core::webhook/stop
 
 ---
 
-## Types d'URL supportés
+### Types d'URL supportés
 
 | Type | URL | Commande exécutée |
 |------|-----|-------------------|
@@ -53,9 +53,9 @@ wex core::webhook/stop
 
 ---
 
-## Type `app` — commandes dans une application
+### Type `app` — commandes dans une application
 
-### Marquer une commande comme accessible
+#### Marquer une commande comme accessible
 
 YAML :
 ```yaml
@@ -76,7 +76,7 @@ def my__group__command(context: ExecutionContext) -> None:
     ...
 ```
 
-### Gérer les tokens (depuis le workdir de l'app)
+#### Gérer les tokens (depuis le workdir de l'app)
 
 ```bash
 # Générer un token pour une commande
@@ -103,7 +103,7 @@ wex app::webhook/token-revoke --all
 
 Les tokens sont stockés dans `{app_path}/.wex/local/webhook_tokens.yml`.
 
-### Statut webhooks de l'app
+#### Statut webhooks de l'app
 
 ```bash
 wex app::webhook/status
@@ -112,7 +112,7 @@ wex app::webhook/status
 Affiche : état du daemon, nombre de commandes `@webhook`, nombre de tokens présents.
 Ce résumé apparaît également dans `wex app::info/show`.
 
-### Appeler le webhook
+#### Appeler le webhook
 
 ```bash
 # Token en query param
@@ -131,9 +131,9 @@ curl "http://...?_token=<token>&_async=0"
 
 ---
 
-## Type `addon` — commandes addon globales
+### Type `addon` — commandes addon globales
 
-### Gérer les tokens
+#### Gérer les tokens
 
 ```bash
 # Générer un token pour une commande addon
@@ -151,7 +151,7 @@ wex core::webhook/token-revoke --type addon --all
 
 Les tokens sont stockés dans `{wex_workdir}/.wex/local/webhook_tokens_addon.yml`.
 
-### Appeler le webhook
+#### Appeler le webhook
 
 ```bash
 curl "http://localhost:6543/webhook/addon/app/info/show?_token=<token>"
@@ -159,7 +159,7 @@ curl "http://localhost:6543/webhook/addon/app/info/show?_token=<token>"
 
 ---
 
-## Type `service` — commandes service
+### Type `service` — commandes service
 
 Identique au type `addon`, remplacer `--type addon` par `--type service`.
 
@@ -171,9 +171,9 @@ curl "http://localhost:6543/webhook/service/nginx/status?_token=<token>"
 
 ---
 
-## Observabilité
+### Observabilité
 
-### Logs
+#### Logs
 
 ```bash
 # Dernières requêtes (20 par défaut)
@@ -186,7 +186,7 @@ tail -f {wex_workdir}/logs/webhook.log
 Champs : `ts`, `ip`, `path`, `command_type`, `command_path`, `status`, `duration_ms`, `pid`.
 Rotation : 5 fichiers × 1 Mo max.
 
-### Métriques Prometheus
+#### Métriques Prometheus
 
 ```bash
 curl http://localhost:6543/metrics
@@ -199,7 +199,7 @@ Expose (sans authentification) :
 
 ---
 
-## Sécurité
+### Sécurité
 
 - Token transmis via `Authorization: Bearer <token>` ou `?_token=<token>`
 - Comparaison en temps constant (`hmac.compare_digest`)
@@ -208,16 +208,16 @@ Expose (sans authentification) :
 
 ---
 
-## Architecture
+### Architecture
 
-### Séparation des responsabilités
+#### Séparation des responsabilités
 
 ```
 wex-core       →  daemon HTTP, routing générique, validation HMAC, résolveurs addon/service
 wex-addon-app  →  AppWebhookTypeResolver, commandes app::webhook/*
 ```
 
-### Résolveurs de type (`WebhookTypeResolver` Protocol)
+#### Résolveurs de type (`WebhookTypeResolver` Protocol)
 
 Chaque type d'URL délègue à un résolveur qui implémente :
 
@@ -235,7 +235,7 @@ Résolveurs enregistrés au démarrage du daemon dans `listen.py` :
 | `addon` | `AddonWebhookTypeResolver` (wex-core) | `{wex_workdir}/.wex/local/webhook_tokens_addon.yml` |
 | `service` | `ServiceWebhookTypeResolver` (wex-core) | `{wex_workdir}/.wex/local/webhook_tokens_service.yml` |
 
-### Daemon
+#### Daemon
 
 | Option | Défaut | Description |
 |--------|--------|-------------|
@@ -250,7 +250,7 @@ Résolveurs enregistrés au démarrage du daemon dans `listen.py` :
 
 ---
 
-## Référence des commandes
+### Référence des commandes
 
 | Commande | Rôle |
 |----------|------|
