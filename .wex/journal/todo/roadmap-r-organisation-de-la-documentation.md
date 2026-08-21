@@ -111,7 +111,7 @@ entrypoints/summaries, and it knows nothing of the actual folder contents.
 **C. The human who opens the file.** Works, nothing to do.
 Constraint to keep in mind: **a fragment converted to `.j2` is no longer readable in
 place**. That is the price of templating; to be decided folder by folder, not
-globally. Status quo decided for now.
+globally. Status quo for now, and case F removes the constraint outright.
 
 **D. wex agents — the gap.** Two surfaces:
 `_knowledge_index()` (`abstract_agent.py:677`) lists `<service>:<section>` identifiers
@@ -197,10 +197,29 @@ Done in `wex` and the `PACKAGES/PYTHON` suite:
 - [x] `PACKAGES/PYTHON/.wex/knowledge/todo/` → `.wex/journal/todo/` (7 tickets), and
       the empty `project-info/` left behind by phase 1 removed
 
-Out of scope, deliberately: polluted knowledge in the other packages, handled case by
-case as each is taken on. Heaviest case identified — `packages/filestate/.wex/doc/`
-(v5 remnant) holds 498 lines of orphaned README fragments, while its `README.md`
-(477 lines) is frozen and cannot be regenerated.
+Then swept across the Python packages — 21 out-of-convention files audited, 13 of which
+already conformed. The inventory is now **empty**:
+
+- [x] **Deleted**: `filestate/.wex/doc/{_entrypoint,_summary}.md` and
+      `doc/project-info/_summary.md` (navigation files, phase 1 convention);
+      `event/knowledge/dev/roadmap.md` (checked against the code — `Event`,
+      `dispatcher`, `listener`, `priority`, `dispatch_event_async`, `EventPriority` all
+      shipped); `prompt/knowledge/{changelog,migration}/0.0.22.md` (package is at
+      14.1.0); `filestate/doc/project-info/project-conventions.md` (superseded by
+      `option.md`)
+- [x] **Moved to `journal/todo/`**: `api/knowledge/dev/rework.md` →
+      `abstract-gateway-rework.md`, plus `helpers`' and `wex-addon-ai`'s stray
+      `knowledge/todo/` tickets
+- [x] **Moved into the convention**: `wex-core/knowledge/features/app-level-command.md`
+      → `usage/`; filestate's 6 `.wex/doc/readme/` fragments →
+      `usage/{concepts,configuration,features,options}.md` +
+      `contributing/{operations,option-testing}.md`, which retires `.wex/doc/`
+      entirely; `prompt/knowledge/package.md` split along the usage / contributing
+      seam it straddled
+
+Out of scope, deliberately: the README fragments orphaned by the composer (discovery is
+bypassed when `_content.md.j2` exists), ~370 lines across `wex-addon-app`,
+`packages/{app,event,orm,prompt}` and the suite. Resolved elsewhere.
 
 ## Phase 3 — Move code rules into the language package
 
@@ -267,13 +286,38 @@ building block.
 - [ ] `readme.sections` in `PACKAGES/.wex/config.yml` is now dead for composer-based
       packages: remove it, or keep it for the legacy discovery path?
 
-## Phase 6 — Agent prompts with dynamic context
+## Phase 6 — Consultation and search commands
+
+Two new command families, which are the concrete form of "how the documentation is
+searched". Written once, they serve the human at the terminal and the agent through
+MCP — the surface distinction of case E applies, not a second implementation.
+
+**Consultation (case F)**
+
+- [ ] `wex` reads a document by identifier and serves the **built** version: the
+      cascade resolved, the Jinja rendered, the produced data injected. Never the raw
+      source, which is what makes the `.j2` question of case C moot
+- [ ] Rendering is a transformation stage, not just variable substitution: translating
+      into the reader's language is the first case to plan for, the knowledge being
+      written in English while the author works in French
+- [ ] Decide where a built version is cached, and what invalidates it
+
+**Search (case G)**
+
+- [ ] Find a feature across a suite of 89 packages — "which package handles X" — which
+      no current surface answers
+- [ ] Decide the mechanism: index built at rectify, full-text over the built versions,
+      or an agent reading the index. Weigh against the fact that the corpus is
+      generated, so the index can be a build product rather than a service
+- [ ] Expose both families as agent tools, which closes gap D: an agent stops guessing
+      a path and asks a question
+
+**Prompts**
 
 - [ ] Define the composition of an agent prompt: fragments + context compiled on the
       fly (project structure, dependencies, available commands…)
 - [ ] Reuse the same aggregation building block as the documentation
 - [ ] Pick up the tag taxonomy (`suite@99e98dd`) for MCP filtering
-- [ ] Define how agents search the documentation, for themselves or for the USER
 
 ## Phase 7 — Enrich the documentation
 
@@ -311,9 +355,16 @@ mandatory pages and the anti-rot mechanism are generic and apply to all 89 packa
 Verified end to end on `packages/helpers` and `wex/wex-addon-app` only.
 Nothing is committed.
 
+Read against the three axes: **writing it** is the advanced one, the mechanism being
+generic and proven. **Fixing it** has been done on `wex` and, for the structure only,
+across the Python packages — their content remains to be written. **Reading it** has
+one working surface out of the five mapped.
+
 Next step: rectify the ~88 remaining packages, which is the first moment the whole
-chain runs at scale. Then case B (`AGENTS.md`) and case D (agents reading the app's
-own knowledge), which share the aggregation building block that case A just proved.
+chain runs at scale. Then phase 6, whose two command families (consultation and
+search, cases F and G) are the ones that make a corpus of 89 repositories usable at
+all; they share the aggregation building block that case A just proved, as do case B
+(`AGENTS.md`) and case D (agents reading the app's own knowledge).
 
 Still open, unrelated to the phases:
 - `dev-css` ships an empty `description`; `dev-javascript` and `dev-php` both claim
