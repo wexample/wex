@@ -1,29 +1,29 @@
 # Roadmap master post-migration wex 6
 
-## Contexte
+## Context
 
-Wexample / Syrtis / TPA sont passés en wex 6 (mai 2026). Première passe terminée — toutes les apps tournent. Reste à consolider l'outillage master + remettre le CI/CD TPA debout + faire le ménage côté services self-hosted.
+Wexample / Syrtis / TPA have moved to wex 6 (May 2026). First pass done — all apps are running. What remains: consolidate master tooling + bring TPA CI/CD back up + clean up self-hosted services.
 
-## Chantiers
+## Work streams
 
-### 1. Intégrer les remotes manquantes au master
+### 1. Add missing remotes to the master
 
-- **TPA dev** ✅ fait (`wex master::info/show --remotes dev` montre tpa)
-- **Runner wex** ⏳ pas fait — runner CI/CD à exposer comme remote master pour le piloter/observer depuis le dashboard. Rsync local à `/home/weeger/Desktop/WIP/WEB/TPA/local/runner/` pour inspection.
+- **TPA dev** ✅ done (`wex master::info/show --remotes dev` shows tpa)
+- **wex runner** ⏳ not done — CI/CD runner to expose as master remote to pilot/observe from the dashboard. Local rsync to `/home/weeger/Desktop/WIP/WEB/TPA/local/runner/` for inspection.
 
-Spec : que `wex master::info/show --remotes <name>` montre Local Version / Wex / Git pour chaque app sur la remote.
+Spec: `wex master::info/show --remotes <name>` must show Local Version / Wex / Git for each app on the remote.
 
-### 2. Remettre le CI/CD TPA en état (version moderne)
+### 2. Restore TPA CI/CD (modern version)
 
-Les builds sont historiquement très lents. Objectifs :
+Builds have historically been very slow. Goals:
 
-- Faire passer les pipelines TPA sur la nouvelle stack wex 6 (push direct fonctionne déjà depuis la migration manuelle, mais les jobs gitlab-ci doivent suivre)
-- Chercher des optims sur les temps de build (cache layers Docker, multi-stage, BuildKit, registry mirror, base images pré-cuites…)
-- Critère : un commit sur `master` doit déployer en dev en < X min (à fixer après baseline)
+- Get TPA pipelines onto the new wex 6 stack (direct push already works since the manual migration, but gitlab-ci jobs must follow)
+- Look for build time optimisations (Docker layer cache, multi-stage, BuildKit, registry mirror, pre-baked base images…)
+- Criterion: a commit on `master` must deploy to dev in < X min (to be defined after baseline)
 
-### 3. Mise à jour de toutes les apps self-hosted
+### 3. Update all self-hosted apps
 
-Passer chaque service à sa dernière stable :
+Move each service to its latest stable:
 
 - gitlab-ce (actuellement pin `17.6.1-ce.0`)
 - listmonk
@@ -33,63 +33,63 @@ Passer chaque service à sa dernière stable :
 - postgres / mysql (par service)
 - nginx-proxy / acme-companion
 
-Pour chaque app : check changelog → bump image → tester en local/dev → push prod.
+For each app: check changelog → bump image → test locally/in dev → push to prod.
 
-### 4. Améliorer `wex master::info/*`
+### 4. Improve `wex master::info/*`
 
-Commande dashboard à enrichir :
+Dashboard command to enrich:
 
-- Versions **services** (image docker + tag) par app, pas seulement version de l'app
-- Vue **multi-env** : prod + dev + local côte à côte
-- Diff explicite quand un env est en retard sur un autre
-- Indicateur "update disponible" (compare avec dockerhub)
+- **Service** versions (docker image + tag) per app, not just the app version
+- **Multi-env** view: prod + dev + local side by side
+- Explicit diff when one env lags behind another
+- "Update available" indicator (compare with dockerhub)
 
-### 5. Workflow "update service"
+### 5. "Update service" workflow
 
-Une commande type `wex app::service/update <service>` qui :
+A command like `wex app::service/update <service>` that:
 
-1. Backup spécifique au service (gitlab-backup, n8n export, mysqldump, pg_dump… chacun son protocole)
-2. Fetch dernière version sur dockerhub (ou tag spécifié)
+1. Service-specific backup (gitlab-backup, n8n export, mysqldump, pg_dump… each with its own protocol)
+2. Fetch latest version from dockerhub (or specified tag)
 3. Apply (rebuild + restart)
-4. Commit + push la bump de version
-5. Pull + apply sur tous les autres envs (dev → prod)
+4. Commit + push the version bump
+5. Pull + apply on all other envs (dev → prod)
 
-Cible : zéro étape manuelle, zéro oubli de backup.
+Goal: zero manual steps, zero forgotten backup.
 
-### 6. Workflow "tout à jour en N commandes"
+### 6. "Everything up-to-date in N commands" workflow
 
-Vision : depuis le master, en quelques commandes :
+Vision: from the master, in a few commands:
 
-- Toutes les apps wex à jour (wex CLI)
-- Tous les envs à jour
-- Tous les services self-hosted à leur dernière stable
+- All wex apps up to date (wex CLI)
+- All envs up to date
+- All self-hosted services on their latest stable
 
-Ça vient naturellement une fois (1), (4), (5) en place.
+This comes naturally once (1), (4), (5) are in place.
 
-### 6.5. `wex upgrade` partout
+### 6.5. `wex upgrade` everywhere
 
-Aujourd'hui faisable manuellement : `for srv in ...; do ssh weeger@$srv "wex upgrade"; done`. Fait pour 4 serveurs en 6.0.104 le 2026-05-28.
+Currently doable manually: `for srv in ...; do ssh weeger@$srv "wex upgrade"; done`. Done for 4 servers in 6.0.104 on 2026-05-28.
 
-À industrialiser : `wex master::servers/upgrade` qui ssh sur chaque remote (déclaré dans les remotes des apps connues), exécute `apt update && apt install -y wex`, rapporte version avant/après par host. Bonus : check de compatibilité (si le CLI passe à 6.X.Y, les apps stampées à 6.X-1.Z doivent rester compatibles ou être migrées en même temps).
+To industrialise: `wex master::servers/upgrade` which ssh into each remote (declared in the remotes of known apps), runs `apt update && apt install -y wex`, reports before/after version per host. Bonus: compatibility check (if the CLI moves to 6.X.Y, apps stamped at 6.X-1.Z must remain compatible or be migrated at the same time).
 
-Pré-requis : avoir un registre des hosts au niveau master (cf. friction #8 ci-dessous).
+Prerequisite: have a host registry at master level (see friction #8 below).
 
-### 7. Commandes de maintenance des apps
+### 7. App maintenance commands
 
-Set d'opérations cross-env qu'on fait à la main aujourd'hui et qu'on devrait pouvoir scripter :
+Set of cross-env operations done manually today that should be scriptable:
 
-- **Sync data prod → dev** : dump BDD prod, restore en dev (cas typique : tester une migration sur des données réelles, refresh un staging stale)
-- **Sync data dev → prod** : plus rare mais utile pour seed initial
-- **Backup ponctuel** : déclencher un backup nommé (avant migration risquée), pas le cron auto
-- **Restore depuis backup** : sélectionner un backup, restore-le dans un env donné
+- **Sync data prod → dev**: dump prod DB, restore in dev (typical use case: test a migration on real data, refresh a stale staging)
+- **Sync data dev → prod**: rarer but useful for initial seed
+- **Punctual backup**: trigger a named backup (before a risky migration), not the auto cron
+- **Restore from backup**: select a backup, restore it in a given env
 
-Pré-requis : chaque app/service doit savoir décrire ses "ressources persistantes" (BDD, volumes, secrets) et exposer ses primitives dump/restore. Cf. chantier (5) — déjà touché pour les updates de service.
+Prerequisite: each app/service must know how to describe its "persistent resources" (DB, volumes, secrets) and expose its dump/restore primitives. See task (5) — already touched for service updates.
 
-Spec ergonomique cible : `wex app::data/sync --from prod --to dev` (ou similaire).
+Target ergonomic spec: `wex app::data/sync --from prod --to dev` (or similar).
 
-### 8. Master "host registry" + provisioning éphémère
+### 8. Master "host registry" + ephemeral provisioning
 
-Aujourd'hui les `host:` (IPs) sont déclarés **par app, par env, dans `.wex/env/<env>/config.yml`**. Pas de registre central. Pour ajouter un env ou changer une IP, il faut éditer N fichiers d'apps. Friction relevée plusieurs fois pendant la session du 2026-05-28 (intégration dev TPA, déploiement plausible).
+Today the `host:` (IPs) are declared **per app, per env, in `.wex/env/<env>/config.yml`**. No central registry. To add an env or change an IP, N app files must be edited. Friction noted several times during the 2026-05-28 session (TPA dev integration, plausible deployment).
 
 À ajouter dans `master.local.yml` :
 ```yaml
@@ -99,85 +99,85 @@ hosts:
   wexample_prod: 151.80.23.108
   syrtis_prod: 79.137.89.25
 ```
-Et permettre aux apps de référencer : `remotes[].host: ${HOST_TPA_PROD}`.
+And allow apps to reference: `remotes[].host: ${HOST_TPA_PROD}`.
 
-**Pré-requis du chantier `wex upgrade partout` (#6.5) ET du provisioning éphémère (#9).**
+**Prerequisite for the `wex upgrade everywhere` task (#6.5) AND for ephemeral provisioning (#9).**
 
 ### 9. Master orchestration & auto-provisioning
 
-Discussion 2026-05-28. La promesse de fond : depuis le master, **provisionner / déployer / détruire** des environnements complets en une commande, sur des hosts éphémères payés à l'usage. Triple use case.
+Discussion 2026-05-28. The underlying promise: from the master, **provision / deploy / destroy** complete environments in a single command, on ephemeral hosts paid by the hour. Three use cases.
 
-#### Use case A — Démos client / staging temporaire
+#### Use case A — Client demos / temporary staging
 
-User planifie ses démos. À T-10 min, lance `wex master::stack/deploy --stack tpa --remote demo-laurius`. Le master :
-1. Provisionne un host via API cloud
-2. Cloud-init/ansible minimal le rend prêt (wex CLI, Docker daemon, network)
-3. DNS éphémère `demo-laurius.thephotoacademy.com` via Cloudflare API (provider qu'on vient d'implémenter)
-4. Pull la stack TPA depuis git, `wex app::app/start --remote` chaque app
-5. Snapshot DB seedée (cf. chantier #7)
-6. Renvoie l'URL démo
+The user schedules their demos. At T-10 min, runs `wex master::stack/deploy --stack tpa --remote demo-laurius`. The master:
+1. Provisions a host via cloud API
+2. Cloud-init/ansible minimal makes it ready (wex CLI, Docker daemon, network)
+3. Ephemeral DNS `demo-laurius.thephotoacademy.com` via Cloudflare API (provider we just implemented)
+4. Pulls the TPA stack from git, `wex app::app/start --remote` each app
+5. Seeded DB snapshot (see task #7)
+6. Returns the demo URL
 
-Après démo, `wex master::stack/destroy --remote demo-laurius` → DNS supprimé + host détruit. Coût total : ~0,05€ par démo de 2h sur Hetzner.
+After the demo, `wex master::stack/destroy --remote demo-laurius` → DNS removed + host destroyed. Total cost: ~€0.05 per 2h demo on Hetzner.
 
-#### Use case B — Runner CI/CD éphémère
+#### Use case B — Ephemeral CI/CD runner
 
-Le runner à 80€/mois dort 23h/jour. Alternative : un manager runner permanent minuscule (~3€/mois) qui, à chaque pipeline lourd, demande un host ad-hoc, run le job, détruit. Mécanique standard côté GitLab = fleeting plugin (`fleeting-plugin-aws`, `fleeting-plugin-hetzner`) — pas besoin de réinventer, juste de l'intégrer au master pour piloter les credentials et le scaling depuis un endroit unique.
+The €80/month runner sits idle 23 hours a day. Alternative: a tiny permanent manager runner (~€3/month) that, on each heavy pipeline, requests an ad-hoc host, runs the job, then destroys it. Standard mechanics on the GitLab side = fleeting plugin (`fleeting-plugin-aws`, `fleeting-plugin-hetzner`) — no need to reinvent, just integrate into the master to manage credentials and scaling from a single place.
 
-Trade-off de latence : cold-start ~30s (Hetzner) à 1-2 min (OVH). Optim possible via **template/snapshot pré-cuit** (Docker + outils déjà installés) → cold-start réduit à ~30s. Packer + Hetzner snapshots, ou OVH Public Cloud images custom.
+Latency trade-off: cold-start ~30s (Hetzner) to 1-2 min (OVH). Possible optimisation via **pre-baked template/snapshot** (Docker + tools already installed) → cold-start reduced to ~30s. Packer + Hetzner snapshots, or OVH Public Cloud custom images.
 
-#### Use case C — Déploiement Syrtis (stack multi-services interdépendants)
+#### Use case C — Syrtis deployment (multi-service interdependent stack)
 
-Le stretch initial. Maintenant éclairé par les deux précédents : si on sait spawn un host + déployer N apps qui s'attendent (postgres avant api avant manager…), on sait déployer Syrtis. La primitive "stack" doit gérer **les dépendances inter-apps** (cf. `stacks:` dans `project.yml` qui existe déjà mais sert juste à grouper, pas à orchestrer).
+The original stretch goal. Now clearer thanks to the two previous use cases: if we can spawn a host + deploy N apps that depend on each other (postgres before api before manager…), we can deploy Syrtis. The "stack" primitive must handle **inter-app dependencies** (see `stacks:` in `project.yml`, which already exists but only groups, not orchestrates).
 
-#### Briques techniques (à étudier)
+#### Technical building blocks (to investigate)
 
-| Brique | Choix par défaut | Alternative |
+| Building block | Default choice | Alternative |
 |---|---|---|
-| Cloud provider | Hetzner Cloud (best price/perf EU, ~5€/mois équivalent OVH 80€) | OVH Public Cloud (rester en France), Scaleway, AWS EC2 Spot (worldwide top) |
-| Provisioning infra | Terraform (déclare ce qui existe) | OpenTofu, Pulumi, ou direct API client Python |
-| Provisioning host | Cloud-init via user-data | Ansible (plus puissant mais plus lourd) |
-| Template host | Packer pour pré-cuire snapshot (Docker + wex CLI déjà installés) | Cloud-init from-scratch à chaque fois (1-2 min cold-start) |
-| DNS éphémère | Cloudflare API (provider déjà implémenté) | Manuel via UI (pas scalable) |
-| Pipeline CI runner | GitLab Runner Autoscaler + fleeting-plugin-hetzner | BuildJet/Buildkite (SaaS, mais oblige à quitter GitLab CI) |
+| Cloud provider | Hetzner Cloud (best price/perf EU, ~€5/month vs OVH €80/month) | OVH Public Cloud (stay in France), Scaleway, AWS EC2 Spot (worldwide top) |
+| Infrastructure provisioning | Terraform (declares what exists) | OpenTofu, Pulumi, or direct Python API client |
+| Host provisioning | Cloud-init via user-data | Ansible (more powerful but heavier) |
+| Host template | Packer to pre-bake snapshot (Docker + wex CLI already installed) | Cloud-init from scratch each time (1-2 min cold-start) |
+| Ephemeral DNS | Cloudflare API (provider already implemented) | Manual via UI (not scalable) |
+| CI runner pipeline | GitLab Runner Autoscaler + fleeting-plugin-hetzner | BuildJet/Buildkite (SaaS, but requires leaving GitLab CI) |
 
-#### Découpage en sous-chantiers
+#### Breakdown into sub-tasks
 
-1. **Host registry au master** — pré-requis (chantier #8 ci-dessus) : déclarer les hosts au niveau master, les apps les référencent par nom
-2. **Provider abstrait `HostProvider`** dans wex-addon-master, comme on a fait pour DNS — implem Hetzner d'abord
+1. **Host registry at master level** — prerequisite (task #8 above): declare hosts at master level, apps reference them by name
+2. **Abstract `HostProvider`** in wex-addon-master, as done for DNS — Hetzner implementation first
 3. **`wex master::host/spawn --provider hetzner --type cpx21`** → returns IP, ssh OK
-4. **`wex master::host/destroy <name>`** → symétrique
-5. **`wex master::stack/deploy --stack <name> --remote <host>`** → boucle sur apps de la stack en respectant l'ordre de dépendance
-6. **DNS éphémère** → wrapper Cloudflare provider pour create A record + cleanup
-7. **Use case B (CI runner)** — intégration fleeting-plugin-hetzner via le manager runner
-8. **Templating / Packer image** — accélère cold-start
-9. **Use case A (démo)** — combine spawn + DNS + deploy en une commande
-10. **Use case C (Syrtis)** — applique le pattern à la stack Syrtis
+4. **`wex master::host/destroy <name>`** → symmetric
+5. **`wex master::stack/deploy --stack <name> --remote <host>`** → loops over stack apps respecting dependency order
+6. **Ephemeral DNS** → Cloudflare provider wrapper for create A record + cleanup
+7. **Use case B (CI runner)** — fleeting-plugin-hetzner integration via the manager runner
+8. **Templating / Packer image** — accelerates cold-start
+9. **Use case A (demo)** — combines spawn + DNS + deploy into a single command
+10. **Use case C (Syrtis)** — applies the pattern to the Syrtis stack
 
-Ce sera probablement un chantier de plusieurs semaines. Approche incrémentale : commencer par 1+2+3 (provisionner un host vide depuis le master), puis ajouter les couches.
+This will probably be a multi-week task. Incremental approach: start with 1+2+3 (provision an empty host from the master), then add layers.
 
-### 9.5. Webhook listener : persistence au boot
+### 9.5. Webhook listener: boot persistence
 
-Le daemon `wex core::webhook/listen --port 7654` (déclencheur des deploys CI → `app::release/deploy`) est lancé **à la main** sur TPA prod (51.210.104.199) et Syrtis prod (79.137.89.25, ajouté 2026-06-12 pour bdo-letters). Aucune unit systemd, aucun cron `@reboot`, rien dans wex-core ni dans le packaging debian → **un reboot serveur casse silencieusement tous les déploiements automatiques**.
+The `wex core::webhook/listen --port 7654` daemon (CI → `app::release/deploy` deploy trigger) is started **manually** on TPA prod (51.210.104.199) and Syrtis prod (79.137.89.25, added 2026-06-12 for bdo-letters). No systemd unit, no `@reboot` cron, nothing in wex-core nor in the debian package → **a server reboot silently breaks all automatic deployments**.
 
-Sujet déjà traité plusieurs fois par le passé sans jamais aboutir (à creuser pourquoi avant de re-implémenter). Fix cible : le package debian wex installe une unit `wex-webhook.service` (enabled par défaut ou via une commande type `core::webhook/install`).
+Already addressed several times in the past without reaching a conclusion (worth investigating why before reimplementing). Target fix: the wex debian package installs a `wex-webhook.service` unit (enabled by default or via a command like `core::webhook/install`).
 
-### 10. Nouveaux services à installer
+### 10. New services to install
 
-- ✅ **Plausible TPA** (`plausible.thephotoacademy.com`) — déployé sur prod 2026-05-28
-- ⏳ **Plausible Wex** — analytics web pour le pôle Wexample
-- ⏳ **PostHog** sur Syrtis (analytics produit)
-- ⏳ **OpenClaw #2** sur Syrtis pour Gabriel
-- ⏳ **OpenClaw #3** sur Syrtis pour Simon
+- ✅ **Plausible TPA** (`plausible.thephotoacademy.com`) — deployed to prod 2026-05-28
+- ⏳ **Plausible Wex** — web analytics for the Wexample unit
+- ⏳ **PostHog** on Syrtis (product analytics)
+- ⏳ **OpenClaw #2** on Syrtis for Gabriel
+- ⏳ **OpenClaw #3** on Syrtis for Simon
 
-Chaque install = nouvelle app wex 6, à monter selon le template standard.
+Each install = new wex 6 app, to be set up following the standard template.
 
-## Refonte architecturale en cours d'élaboration
+## Architectural overhaul in progress
 
-Un chantier transverse de **refonte du master** est en cours de design — il englobe plusieurs frictions structurelles (host registry #8 inclus, mais aussi : apps autodescriptives par nom et tags, stacks par nom ou tag plutôt que par path, registre d'apps, auto-enrollment, etc.). Document dédié : [master-architecture-refactor.md](master-architecture-refactor.md).
+A cross-cutting **master overhaul** task is being designed — it covers several structural frictions (host registry #8 included, but also: apps self-described by name and tags, stacks by name or tag rather than by path, app registry, auto-enrollment, etc.). Dedicated document: [master-architecture-refactor.md](master-architecture-refactor.md).
 
-À traiter avant ou en parallèle de (4), (5), (6), (6.5), (8), (9) — ce sont tous des chantiers qui bénéficient ou dépendent de la refonte.
+To be addressed before or in parallel with (4), (5), (6), (6.5), (8), (9) — all tasks that benefit from or depend on the overhaul.
 
 ## Notes
 
-- Liste non-exhaustive — à étoffer au fil de l'eau
-- Priorité par défaut : (2) CI/CD TPA d'abord (bloquant pour la prod TPA au quotidien, agent dédié déjà briefé via [ci-cd-agent-brief.md](/home/weeger/Desktop/WIP/WEB/TPA/local/tpa/.wex/knowledge/ci-cd-agent-brief.md)), puis la refonte master ([master-architecture-refactor.md](master-architecture-refactor.md)) qui débloque le reste, puis (1) runner remote, puis (4)/(5)/(7) outillage, puis (3) updates et (10) nouveaux services en parallèle.
+- Non-exhaustive list — to be fleshed out as things progress
+- Default priority: (2) TPA CI/CD first (blocking for daily TPA prod, dedicated agent already briefed via [ci-cd-agent-brief.md](/home/weeger/Desktop/WIP/WEB/TPA/local/tpa/.wex/knowledge/ci-cd-agent-brief.md)), then master overhaul ([master-architecture-refactor.md](master-architecture-refactor.md)) which unblocks the rest, then (1) runner remote, then (4)/(5)/(7) tooling, then (3) updates and (10) new services in parallel.

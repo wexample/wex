@@ -1,0 +1,12 @@
+{
+  "engram_version": 1,
+  "source_key": ".wex/journal/todo/master.md",
+  "cache_nonce": "default",
+  "last_visited_at": "2026-08-21T05:15:45+00:00",
+  "last_rev": "4cb014dd962abaf5ea8b1a73d580213e32b3cd1b",
+  "source_revs": {},
+  "last_decision": "edit",
+  "kinds": [],
+  "notes": "translated all French prose to English in master.md todo journal (headings, body, table, notes)",
+  "in_progress": null
+}
