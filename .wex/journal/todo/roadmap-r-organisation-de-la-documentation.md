@@ -325,10 +325,12 @@ MCP — the surface distinction of case E applies, not a second implementation.
       (documented a `test::run/all` that does not exist, and a fictional test tree),
       `usage/environment-variables` moved to `contributing/`, heading levels demoted
       in 5 files so they reach the composer's table of contents
-- [ ] Rectify the remaining ~88 packages: creates their stubs and rebuilds their README
-- [ ] Fill the stubs, package by package — the `author` agent's job, contract in hand.
-      Wiring it to filestate, so a declared file has its content written by an agent,
-      is tracked outside this roadmap
+- [x] The 37 Python packages rectified: README rebuilt and the three mandatory pages
+      present everywhere, none left as a stub. The remaining repositories are the
+      non-Python ones, whose language addons ship no `install` template yet
+- [x] Stubs filled by the `author` agent, contract in hand. Wiring it to filestate, so
+      a declared file has its content written by an agent, is tracked outside this
+      roadmap
 
 ---
 
@@ -349,22 +351,21 @@ MCP — the surface distinction of case E applies, not a second implementation.
 
 ## Status
 
-Phases 1, 2 and 4 complete, phase 5 case A complete.
-`wex`'s documentation is written, contracted and rendered; the composer, the
-mandatory pages and the anti-rot mechanism are generic and apply to all 89 packages.
-Verified end to end on `packages/helpers` and `wex/wex-addon-app` only.
-Nothing is committed.
+Phases 1, 2 and 4 complete, phase 5 case A complete, phase 7 complete for Python.
+The whole chain has now run at scale: the 37 Python packages each have a rebuilt
+README and the three mandatory pages written — not one left as a stub. Which is the
+proof the mechanism was built for, the composer having to hold across 37 repositories
+without a file in any of them.
 
-Read against the three axes: **writing it** is the advanced one, the mechanism being
-generic and proven. **Fixing it** has been done on `wex` and, for the structure only,
-across the Python packages — their content remains to be written. **Reading it** has
-one working surface out of the five mapped.
+Read against the three axes: **writing it** and **fixing it** are both done for the
+Python suite. **Reading it** has one working surface out of the five mapped, and is
+now the bottleneck.
 
-Next step: rectify the ~88 remaining packages, which is the first moment the whole
-chain runs at scale. Then phase 6, whose two command families (consultation and
-search, cases F and G) are the ones that make a corpus of 89 repositories usable at
-all; they share the aggregation building block that case A just proved, as do case B
-(`AGENTS.md`) and case D (agents reading the app's own knowledge).
+Next step: phase 6, whose two command families (consultation and search, cases F and
+G) are what make a corpus of this size usable at all. They share the aggregation
+building block that case A just proved, as do case B (`AGENTS.md`) and case D (agents
+reading the app's own knowledge). The non-Python repositories follow, once their
+language addons ship the templates the Python one has.
 
 Still open, unrelated to the phases:
 - `dev-css` ships an empty `description`; `dev-javascript` and `dev-php` both claim
