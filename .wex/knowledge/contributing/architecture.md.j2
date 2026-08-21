@@ -1,30 +1,124 @@
-# Project Architecture
+## Architecture
 
-You are reading this file because you need to understand the overall architecture and responsibility distribution in the Wex project.
+{{ package_name }} is a command-line kernel. It owns almost no features itself: it boots,
+loads a list of addons, resolves a command string to a Python function, and runs it.
+Everything a user actually invokes lives in an addon.
 
-## Dependency Management
+### What this repository contains
 
-- The core package (`wexample-wex-core`) contains essential functionalities
-- Additional features are modularized into separate addons
-- The current project manages optional requirements that complement the core functionality
-- System compatibility and requirements are handled at the project level, keeping the core focused on business logic
+Very little. Three Python files:
 
-## Core Concept
+- `{{ path("__main__.py") }}` — instantiates the kernel and calls `exec()`
+- `{{ path("src/common/wex.py") }}` — the `Wex` class, which extends the kernel and
+  declares the addon list
+- `{{ path("src/workdir/wex_workdir.py") }}` — the workdir class for this repository itself
 
-The project follows a modular architecture with three main components:
+The rest is shell entry points in `{{ path("bin") }}`, configuration in `{{ path(".wex") }}`,
+and the declaration of every addon as a dependency in `{{ path("pyproject.toml") }}`.
+No command is implemented here.
 
-- **Installation Manager** (Current Project)
-  - Manages Wex installation and system compatibility
-  - Handles system-level dependencies
-  - Provides the base environment setup
+### Boot sequence
 
-- **Core Logic** (`wexample-wex-core`)
-  - Contains the main business logic
-  - Implements fundamental features
-  - Manages the addon system
+`{{ path("bin/wex") }}` is a shell wrapper that runs `__main__.py`, which does one thing:
 
-- **Addons**
-  - Provide additional functionalities
-  - Two types of addons:
-    - Required: Installed automatically by the core when needed
-     - Optional: Defined in the current project for specific use cases
+```python
+Wex(entrypoint_path=__file__).exec()
+```
+
+`Wex.exec()` imports every addon manager and hands the list to `Kernel.setup()`, which
+runs its initialisation steps in a fixed order:
+
+```
+_init_local_env             load .wex/local/env.yml into the environment
+_init_command_line_kernel
+_init_logging
+_init_addons                instantiate the addon managers
+_auto_detect_env            detect and persist the env vars addons declare
+_init_resolvers             collect the command resolvers addons contribute
+_init_runners               Python and YAML command runners
+_init_middlewares
+_init_registry              build or load the command registry
+_init_script_runner_registry
+_init_step_guard_registry
+```
+
+The order matters: addons are instantiated before resolvers, middlewares and the
+registry, because each of those is assembled from what the addons declare.
+
+`exec_argv()` then turns the command-line arguments into `CommandRequest` objects and
+executes them.
+
+### Addons
+
+There is no automatic discovery. The addon list is hard-coded in `Wex.exec()`, so the
+set of available features is fixed at build time and readable in one place.
+
+An addon manager extends `AbstractAddonManager` and contributes some of:
+
+| Method | Contributes |
+| --- | --- |
+| `get_package_module()` | its Python package root — the only abstract method |
+| `get_command_resolver_classes()` | additional command resolvers |
+| `get_middlewares_classes()` | request-processing middlewares |
+| `get_local_configurable_keys()` | environment variables to detect and persist |
+| `get_workdir_types()` | workdir classes, keyed by type name |
+| `get_step_guard_classes()` | guards for YAML workflow steps |
+| `get_webhook_resolvers()` | webhook entry points |
+
+Commands themselves are never declared: an addon holds a `commands/` directory, and the
+resolver scans it.
+
+### Command resolution
+
+A command string is matched against four patterns, each handled by its own resolver:
+
+| Form | Example | Resolved from |
+| --- | --- | --- |
+| `addon::group/command` | `app::state/rectify` | the addon's `commands/` directory |
+| `.group/command` | `.deploy/staging` | `.wex/commands/` of the current project |
+| `~group/command` | `~notes/open` | `~/.wex/commands/` |
+| `@service::group/command` | `@mysql::db/dump` | the service addon |
+
+The addon prefix is optional in the first form: `state/rectify` works when the group and
+command name are unambiguous.
+
+`CommandAddress` is the pivot between representations. Its three components map directly
+onto a Python function name, joined by double underscores, and onto a file path:
+
+```
+app::state/rectify   →   app__state__rectify   →   commands/state/rectify.py
+```
+
+That convention is what lets a resolver find a function by scanning a directory, with no
+registration step anywhere.
+
+Resolvers are either static or live. Addon commands are static — scanned once, then
+cached in `.wex/tmp/registry.json`. Project and user commands are live: re-scanned at
+every boot, so a file you just created is immediately callable.
+
+### The kernel and its collaborators
+
+| Subsystem | Role |
+| --- | --- |
+| `io` | all terminal output, indentation, width — an `IoManager` from `wexample-prompt` |
+| `workdir` | the filesystem structure as a declarative tree, from `wexample-filestate` |
+| `registry` | flattened command metadata: address, aliases, tags, sudo requirement |
+| `resolvers` | command string to Python function |
+| `runners` | execution of the resolved function, Python or YAML workflow |
+| `middlewares` | layers wrapping request processing, contributed by addons |
+
+### Where the boundary is
+
+Two packages sit under the kernel, and the split is deliberate.
+
+`wexample-app` is generic: `AbstractKernel`, `CommandRequest`, `CommandRunner`,
+`AbstractCommandResolver`, option parsing, output handlers. Nothing in it knows what wex
+is; it would serve any Python CLI application.
+
+`wexample-wex-core` adds what makes wex wex: the addon manager framework, the
+`addon::group/name` convention and its resolvers, command attachments
+(before / after / always_after), sudo enforcement, YAML workflows and step guards.
+
+Below both sit the shared libraries — `wexample-helpers`, `wexample-config`,
+`wexample-filestate`, `wexample-cli`, `wexample-prompt` — which know nothing of wex at
+all.
