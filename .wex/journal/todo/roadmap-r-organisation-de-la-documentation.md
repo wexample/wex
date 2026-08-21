@@ -28,6 +28,26 @@ as automatically as possible from the code.
 
 ---
 
+## The three axes
+
+The work runs on three fronts at once, and none of them is out of scope — only the
+order varies:
+
+1. **Reading it** — every way the documentation is consulted: the generated README,
+   `AGENTS.md`, agent tools, and the two surfaces still to build (CLI consultation and
+   search, cases F and G below).
+2. **Writing it** — every way it is produced: the template cascade, the composer,
+   mandatory pages, contracts, and filestate delegating a file's content to an agent.
+3. **Fixing it, one document at a time** — the individual passes over each project's
+   knowledge, which is the only thing that turns a working mechanism into a
+   documentation that is actually true.
+
+Progress on one axis exposes the others: the composer (2) made the orphaned README
+fragments visible (3), and rendering `wex`'s README (1) is what forced the mandatory
+pages (2).
+
+---
+
 ## Target structure of `.wex/knowledge/`
 
 ```
@@ -112,9 +132,27 @@ stack. `analysis/report` is the `AGENT_SAFE` counterpart, writing to `journal/an
 **There are therefore two distinct exposure surfaces** — MCP commands filtered by
 tags, and dedicated agent tools — not to be confused in phase 6.
 
+**F. CLI consultation — to be built.** Reading a document from the terminal without
+opening the file: `wex` serves the *built* version, not the source. Which settles the
+constraint recorded in case C, since a `.j2` fragment unreadable in place becomes
+readable through the command. And since the page passes through a render, that render
+can do more than substitute variables — translating into the reader's language is the
+first case to plan for, given that the knowledge is written in English while the author
+works in French.
+
+**G. Search — to be built.** Finding a feature across a suite of 89 packages, which no
+current surface allows: `_knowledge_index()` lists identifiers, `knowledge/read`
+resolves an exact path, and neither answers "which package handles X". This is where
+the documentation stops being a set of files and becomes queryable.
+
+The same commands serve both audiences: exposed as MCP tools, they close gap D — an
+agent stops guessing a path and asks a question. Which makes F and G the natural
+sequel to B rather than a side project.
+
 **What the map shows**: one aggregator (A) and one complete agent circuit (E), with a
-gap (D) in between. Properly addressing A forces defining the reusable building block
-— multi-level resolution + j2 rendering + produced data injection — that B and D need.
+gap (D) in between, and two surfaces still missing (F, G). Properly addressing A forces
+defining the reusable building block — multi-level resolution + j2 rendering + produced
+data injection — that B, D, F and G all need.
 
 ---
 
