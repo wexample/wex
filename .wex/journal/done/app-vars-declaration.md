@@ -1,74 +1,74 @@
 # Roadmap : déclaration des vars d'app via `config.yml → vars:`
 
-## Statut : terminée 2026-05-15
+## Status: completed 2026-05-15
 
-Doc de référence : `.wex/knowledge/usage/environment-variables.md`, section 8.
+Reference doc: `.wex/knowledge/usage/environment-variables.md`, section 8.
 
-## Objectif initial
+## Initial objective
 
-Couvrir la **catégorie C** identifiée à l'inspection (vars spécifiques app,
-non couvertes par un service ni par une commande) avec un format YAML
-déclaratif dans `config.yml`, symétrique au `service.yml → vars:` existant.
+Cover **category C** identified at inspection (app-specific vars,
+not covered by a service or a command) with a declarative YAML format
+in `config.yml`, symmetrical to the existing `service.yml → vars:`.
 
-## Réalisations
+## Deliverables
 
-### Phase 1 — Factorisation + helper de check (✅)
+### Phase 1 — Refactoring + check helper (✅)
 
 - [helpers/vars_declaration.py](PACKAGES/PYTHON/wex/wex-addon-app/src/wexample_wex_addon_app/helpers/vars_declaration.py)
-  — fonction `process_vars_declarations(vars_decl, app_workdir, io)` qui
-  applique une déclaration `vars:` (defaults silencieux + prompts required +
-  persist YAML). Support `use_suite_fallback`.
+  — function `process_vars_declarations(vars_decl, app_workdir, io)` that
+  applies a `vars:` declaration (silent defaults + required prompts +
+  YAML persist). Supports `use_suite_fallback`.
 - [helpers/app_vars.py](PACKAGES/PYTHON/wex/wex-addon-app/src/wexample_wex_addon_app/helpers/app_vars.py)
-  — `check_app_vars_requirements(app_workdir, io)` qui lit `config.yml → vars:`
-  + auto-déclare les `${VAR}` vues dans `libraries:`, et appelle le helper.
+  — `check_app_vars_requirements(app_workdir, io)` reads `config.yml → vars:`
+  + auto-declares `${VAR}` tokens seen in `libraries:`, then calls the helper.
 - [service/install.py](PACKAGES/PYTHON/wex/wex-addon-app/src/wexample_wex_addon_app/commands/service/install.py)
-  — refactor pour utiliser `process_vars_declarations` (duplication supprimée).
+  — refactored to use `process_vars_declarations` (duplication removed).
 
-### Phase 2 — Hook sur `app::start` (✅)
+### Phase 2 — Hook on `app::start` (✅)
 
 [commands/app/start.py](PACKAGES/PYTHON/wex/wex-addon-app/src/wexample_wex_addon_app/commands/app/start.py)
-appelle `check_app_vars_requirements()` juste après le check `APP_ENV`, avant
-tout subprocess docker. La boucle services existante a aussi été migrée sur
-`process_vars_declarations` pour cohérence.
+calls `check_app_vars_requirements()` right after the `APP_ENV` check, before
+any docker subprocess. The existing service loop was also migrated to
+`process_vars_declarations` for consistency.
 
-### Phase 3 — Intégration `libraries:` (✅ — décision : pas d'auto-déclaration)
+### Phase 3 — `libraries:` integration (✅ — decision: no auto-declaration)
 
-Étudié puis **retiré**. Auto-déclarer les `${VAR}` vues dans `libraries:`
-était conceptuellement équivalent au scan automatique du compose qu'on avait
-explicitement écarté plus tôt (« on déclare ce dont on a besoin, on ne devine pas »).
-Règle finale : toute var référencée dans `libraries:` doit être **explicitement**
-déclarée dans `vars:`. Une seule règle uniforme, pas de magie.
+Studied then **removed**. Auto-declaring the `${VAR}` tokens seen in `libraries:`
+was conceptually equivalent to the automatic compose scan that had been
+explicitly ruled out earlier ("we declare what we need, we don't guess").
+Final rule: any var referenced in `libraries:` must be **explicitly**
+declared in `vars:`. One uniform rule, no magic.
 
-### Phase 4 — Script d'aide à la migration (✅)
+### Phase 4 — Migration helper script (✅)
 
-[/tmp/suggest_app_vars.py](file:///tmp/suggest_app_vars.py) — scanne le
-docker-compose d'un projet, exclut built-ins et vars déjà déclarées, propose
-un snippet `vars:` à copier-coller. Affiche en commentaire la valeur
-actuellement présente dans `local/env.yml` + le default éventuel du compose.
+[/tmp/suggest_app_vars.py](file:///tmp/suggest_app_vars.py) — scans a
+project's docker-compose, excludes built-ins and already-declared vars, and
+proposes a `vars:` snippet ready to copy-paste. Displays as a comment the
+value currently present in `local/env.yml` + the optional compose default.
 
-Validé sur :
-- `bdo-letters` → 12 vars proposées (DOCUSIGN_*, VITE_DOCUSIGN_DEV, PACKAGE_PUBLICATION_NPM_TOKEN, etc.)
-- `test` → 0 var à déclarer (rien que des built-ins)
+Validated on:
+- `bdo-letters` → 12 vars proposed (DOCUSIGN_*, VITE_DOCUSIGN_DEV, PACKAGE_PUBLICATION_NPM_TOKEN, etc.)
+- `test` → 0 vars to declare (nothing but built-ins)
 
 ### Phase 5 — Doc (✅)
 
-Section 8 de `environment-variables.md` mise à jour avant l'implémentation :
-- Tableau récapitulatif passé à **5 niveaux** (au lieu de 3)
-- Sous-section « Niveau service » documentée
-- Sous-section « Niveau app » documentée avec exemple cible
-- Anti-pattern enrichi
+Section 8 of `environment-variables.md` updated before implementation:
+- Summary table extended to **5 levels** (instead of 3)
+- "Service level" sub-section documented
+- "App level" sub-section documented with target example
+- Anti-pattern enriched
 
-## À faire au fil de l'eau (hors roadmap)
+## To do on a rolling basis (outside the roadmap)
 
-- Migrer chaque app existante en lançant le script de Phase 4 et en complétant
-  la `description` de chaque var. C'est un travail par projet, pas une tâche
-  unique de cette roadmap.
+- Migrate each existing app by running the Phase 4 script and filling in
+  the `description` for each var. This is per-project work, not a single
+  task of this roadmap.
 
-## Notes pour la suite
+## Notes for follow-up
 
-- Le mécanisme **réutilise** la persistance YAML existante.
-- Le prompt arrive **au lancement de la commande** (`app::start`), pas dans
-  le subprocess docker.
-- Le format `vars:` est désormais **partagé** entre `service.yml` et `config.yml` :
-  même schéma, même helper, comportement identique. Tout enrichissement futur
-  (ex. validation, choix dans une liste…) bénéficiera aux deux d'un coup.
+- The mechanism **reuses** the existing YAML persistence.
+- The prompt fires **at command launch** (`app::start`), not inside
+  the docker subprocess.
+- The `vars:` format is now **shared** between `service.yml` and `config.yml`:
+  same schema, same helper, identical behaviour. Any future enhancement
+  (e.g. validation, choice from a list…) will benefit both at once.
