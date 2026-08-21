@@ -1,71 +1,71 @@
 # Roadmap : nettoyage du système d'env
 
-## Statut : terminée 2026-05-14
+## Status: completed 2026-05-14
 
-Doc de référence : `.wex/knowledge/usage/environment-variables.md`.
+Reference doc: `.wex/knowledge/usage/environment-variables.md`.
 
-**Suite** : `.wex/knowledge/roadmap/todo/require-local-env-decorator.md`
-(implémentation du décorateur `@require_local_env`, qui s'appuie sur cette base).
+**Follow-up**: `.wex/knowledge/roadmap/todo/require-local-env-decorator.md`
+(implementation of the `@require_local_env` decorator, built on top of this foundation).
 
 ---
 
-## Objectif initial
+## Initial objective
 
-Avoir un système d'env propre et cohérent **avant** d'introduire un décorateur
-`@require_local_env` (déclaration en amont, prompt si manquant, persistance
-dans le bon fichier).
+Have a clean and consistent env system **before** introducing a
+`@require_local_env` decorator (upfront declaration, prompt if missing, persistence
+in the right file).
 
-## Réalisations
+## Achievements
 
 ### Phase 1 — Audit (✅)
 
-- Aucun `os.environ.get()` non justifié dans le code (les cas restants ont un commentaire « OS-level »)
-- 7/8 appels à `get_env_parameter` correctement alimentés ; le 8ᵉ est `kernel_registry` qui dépend du `.env` install — OK car chargé au boot par `AbstractKernel.setup()`
-- `HasEnvKeysFile` / `HasYamlEnvKeysFile` : 1 seul consommateur (`AbstractKernel`)
-- Audit terrain : 252 fichiers `.wex/.env` actifs, 1 seul `.wex/local/env.yml`, 1 seul `.env.yml` (commenté côté SYRTIS), 3 installs `wex*` dont une seule valide
+- No unjustified `os.environ.get()` in the code (remaining cases have an "OS-level" comment)
+- 7/8 calls to `get_env_parameter` correctly fed; the 8th is `kernel_registry` which depends on the install `.env` — OK since loaded at boot by `AbstractKernel.setup()`
+- `HasEnvKeysFile` / `HasYamlEnvKeysFile`: 1 single consumer (`AbstractKernel`)
+- Field audit: 252 active `.wex/.env` files, 1 single `.wex/local/env.yml`, 1 single `.env.yml` (commented out on SYRTIS side), 3 `wex*` installs of which only one is valid
 
 ### Phase 2 — Rename (✅)
 
-`WithEnvParametersMixin` → `WithSetupEnvParameterMixin` (cohérent avec `WORKDIR_SETUP_DIR`).
-4 fichiers touchés : le mixin lui-même + `with_runtime_config_mixin` + `core_yaml_command_runner` + doc.
+`WithEnvParametersMixin` → `WithSetupEnvParameterMixin` (consistent with `WORKDIR_SETUP_DIR`).
+4 files touched: the mixin itself + `with_runtime_config_mixin` + `core_yaml_command_runner` + doc.
 
-### Phase 3 — Fusion sur YAML (✅)
+### Phase 3 — YAML merge (✅)
 
-- Migration `migration_wex_6_0_26.py` : copie `.wex/.env` → `.wex/local/env.yml` (non destructive)
-- `WithSetupEnvParameterMixin` lit/écrit `.wex/local/env.yml` (plus `.wex/.env`)
-- Commandes `app::env/*` alignées sur YAML
-- Constante `APP_PATH_LOCAL_ENV` créée (1 seul `"env.yml"` littéral dans tout le code)
-- `APP_PATH_ENV` (legacy dotenv) supprimé : 5 fichiers consommateurs migrés
-- `<install_wex>/.env` → `<install_wex>/.env.yml` (kernel ne charge plus le dotenv)
-- `file_env_append_as_real_user` n'est plus appelé nulle part (peut être retiré du package helpers en cleanup)
+- Migration `migration_wex_6_0_26.py`: copies `.wex/.env` → `.wex/local/env.yml` (non-destructive)
+- `WithSetupEnvParameterMixin` reads/writes `.wex/local/env.yml` (no longer `.wex/.env`)
+- `app::env/*` commands aligned on YAML
+- `APP_PATH_LOCAL_ENV` constant created (1 single `"env.yml"` literal throughout the code)
+- `APP_PATH_ENV` (legacy dotenv) removed: 5 consumer files migrated
+- `<install_wex>/.env` → `<install_wex>/.env.yml` (kernel no longer loads the dotenv)
+- `file_env_append_as_real_user` is no longer called anywhere (can be removed from the helpers package in cleanup)
 
-### Phase 4 — Messages d'erreur (✅)
+### Phase 4 — Error messages (✅)
 
-Un seul vrai cas trouvé : `branch_merge_publication_strategy.py:166` (« or add it to .wex/.env »).
-Refactor sur `io.suggestions` : message clair + commande wex à exécuter (résolue dynamiquement via `AddonCommandResolver.build_command_from_function`).
+One real case found: `branch_merge_publication_strategy.py:166` ("or add it to .wex/.env").
+Refactored on `io.suggestions`: clear message + wex command to execute (resolved dynamically via `AddonCommandResolver.build_command_from_function`).
 
-### Phase 5 — Audit niveaux (✅)
+### Phase 5 — Level audit (✅)
 
-Conclusion : **aucune classe à enrichir massivement** avec `get_expected_env_keys()` au-delà de `AbstractKernel`. Les vrais besoins sont conditionnels, traités au niveau commande (Phase 7 / décorateur dédié).
+Conclusion: **no class to enrich massively** with `get_expected_env_keys()` beyond `AbstractKernel`. Real needs are conditional, handled at the command level (Phase 7 / dedicated decorator).
 
-### Phase 6 — Doc 3 niveaux (✅)
+### Phase 6 — 3-level doc (✅)
 
-Section 8 ajoutée à `environment-variables.md` : classe / addon / commande, avec exemples réels.
+Section 8 added to `environment-variables.md`: class / addon / command, with real examples.
 
-### Phase 7 — Préparer `@require_local_env` (✅)
+### Phase 7 — Prepare `@require_local_env` (✅)
 
-Architecture validée (réutilisation de l'infra `@require_app_config`).
-Décisions actées :
-- Lookup : `app_workdir.get_env_parameter()`
-- Persistance : `app_workdir.set_env_parameters()` → YAML + `env_config`
-- Pas de propagation `os.environ` (c'est un pont vers les sous-process, pas du stockage)
-- `key` accepte str ou Callable (pour les cas dynamiques type token selon remote détecté)
+Architecture validated (reuse of the `@require_app_config` infrastructure).
+Decisions made:
+- Lookup: `app_workdir.get_env_parameter()`
+- Persistence: `app_workdir.set_env_parameters()` → YAML + `env_config`
+- No `os.environ` propagation (it is a bridge to sub-processes, not storage)
+- `key` accepts str or Callable (for dynamic cases such as a token depending on the detected remote)
 
-Implémentation : roadmap dédiée `require-local-env-decorator.md`.
+Implementation: dedicated roadmap `require-local-env-decorator.md`.
 
 ---
 
-## Suite à prévoir
+## Follow-up items
 
-- **Migration de cleanup `.wex/.env`** dans ~1 an : supprimer les 252 fichiers dotenv legacy, une fois sûrs qu'ils ne contiennent plus rien d'unique par rapport au YAML.
-- **`file_env_append_as_real_user`** dans `wexample_helpers/helpers/file.py` : plus appelé, à retirer du package en cleanup mineur.
+- **`.wex/.env` cleanup migration** in ~1 year: remove the 252 legacy dotenv files, once certain they no longer contain anything unique compared to YAML.
+- **`file_env_append_as_real_user`** in `wexample_helpers/helpers/file.py`: no longer called, to be removed from the package in a minor cleanup.
