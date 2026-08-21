@@ -1,50 +1,50 @@
 # Nettoyage des issues GitLab — wexample/wex
 
-## Contexte
+## Context
 
-15 issues ouvertes depuis 2023 sur https://gitlab.wexample.com/wexample/wex.
-Toutes datent de l'époque v5 (wexd, bash). Objectif : zéro issue ouverte.
+15 open issues since 2023 on https://gitlab.wexample.com/wexample/wex.
+All date from the v5 era (wexd, bash). Goal: zero open issues.
 
-## Accès API
+## API Access
 
-- Token stocké dans `.wex/.env` → `GITLAB_API_TOKEN`
-- Base URL : `https://gitlab.wexample.com/api/v4`
-- Projet : `wexample%2Fwex`
+- Token stored in `.wex/.env` → `GITLAB_API_TOKEN`
+- Base URL: `https://gitlab.wexample.com/api/v4`
+- Project: `wexample%2Fwex`
 
-Lire une issue :
+Read an issue:
 ```
 curl -s --header "PRIVATE-TOKEN: $GITLAB_API_TOKEN" "$GITLAB_API_URL/projects/wexample%2Fwex/issues/<iid>"
 ```
 
-Fermer une issue :
+Close an issue:
 ```
 curl -s -X PUT --header "PRIVATE-TOKEN: $GITLAB_API_TOKEN" \
   "$GITLAB_API_URL/projects/wexample%2Fwex/issues/<iid>" \
   --data "state_event=close"
 ```
 
-## Procédure par issue
+## Procedure per issue
 
-1. Lire la description complète
-2. Challenger : toujours pertinent ? déjà fait ? obsolète ?
-3. Si pertinent → réaliser ou créer une roadmap dédiée, puis fermer
-4. Si obsolète → fermer directement
-5. Cocher ci-dessous
+1. Read the full description
+2. Challenge: still relevant? already done? obsolete?
+3. If relevant → implement or create a dedicated roadmap, then close
+4. If obsolete → close directly
+5. Check off below
 
-## Issues (ordre chronologique)
+## Issues (chronological order)
 
 - [x] #1 — Wexd (2023-05-11)
 - [x] #2 — Wexd logs (2023-05-12)
-- [x] #6 — Wexd limiter le nombre d'arguments (2023-05-27)
+- [x] #6 — Wexd limit number of arguments (2023-05-27)
 - [x] #7 — Webhook python (2023-06-05)
 - [x] #8 — wex default::context/find (2023-06-07)
-- [x] #9 — Souci avec les volumes Docker pointant sur un fichier (2023-06-11)
+- [x] #9 — Issue with Docker volumes pointing to a file (2023-06-11)
 - [x] #10 — Fix install (2023-10-24)
-- [x] #11 — Déployment prod (2023-10-24)
+- [x] #11 — Prod deployment (2023-10-24)
 - [x] #12 — Test services (2023-10-26)
-- [ ] #13 — Passe display (2023-10-26)
+- [ ] #13 — Display pass (2023-10-26)
 - [ ] #14 — my.cnf disable log bin (2023-10-30)
-- [ ] #15 — Pouvoir dump / restor un nom de base différent (2023-10-30)
-- [ ] #16 — Mise à jour WP au format yml (2023-10-30)
-- [ ] #17 — Utiliser les répertoires locaux de debian (2023-10-30)
-- [ ] #18 — Bugs MEP (2023-11-16)
+- [ ] #15 — Ability to dump / restore a different database name (2023-10-30)
+- [ ] #16 — WP update in yml format (2023-10-30)
+- [ ] #17 — Use local debian directories (2023-10-30)
+- [ ] #18 — Deployment bugs (2023-11-16)
