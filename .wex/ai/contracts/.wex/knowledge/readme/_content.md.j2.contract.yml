@@ -3,8 +3,9 @@ sources: []
 agents:
   maintainer:
     instructions: |
-      The README composer. It holds no prose of its own: it extends `_layout.md.j2` and
-      calls `knowledge()` once per section, in reading order.
+      The README composer. It holds no prose of its own: it extends `_layout.md.j2`, fills
+      the `intro` block with the opening page, and calls `knowledge()` once per section in
+      reading order.
 
       The README is an extract of the knowledge, not a rendering of all of it. A page
       belongs here only if a newcomer needs it before deciding to install — orientation,

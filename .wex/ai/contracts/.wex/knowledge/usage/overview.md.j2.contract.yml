@@ -1,0 +1,24 @@
+formatter: app-doc
+sources: []
+agents:
+  maintainer:
+    instructions: |
+      What wex is, in the first paragraph someone reads. It fills the README's `intro`
+      block, above the table of contents.
+
+      No heading. The page is the lede, not a section — a `##` here would land in the
+      table of contents as an entry pointing at the document's own opening.
+
+      Two short paragraphs at most, naming what wex does for the reader: applications and
+      their services, project state, packages, servers, databases, agents.
+
+      Present wex as a finished program, not as a kernel waiting to be filled. That it
+      owns no feature of its own is true and it is on `contributing/architecture`, but
+      nobody introduces a product by its own emptiness. The addon list belongs to
+      `usage/addons`, which renders it, and the packaging belongs nowhere near this page.
+
+      Say what is true today. This page is the one most tempted into promises, and the
+      standard wex aims for belongs to `specifications/vision`, which is explicitly
+      allowed to describe what does not exist yet.
+
+    sources: []

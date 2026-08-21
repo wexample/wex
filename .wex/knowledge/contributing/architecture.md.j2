@@ -19,7 +19,8 @@ No command is implemented here.
 
 ### Boot sequence
 
-`{{ path("bin/wex") }}` is a shell wrapper that runs `__main__.py`, which does one thing:
+`{{ path("bin/wex") }}` is a shell wrapper that runs `{{ path("__main__.py") }}`, which
+does one thing:
 
 ```python
 Wex(entrypoint_path=__file__).exec()
