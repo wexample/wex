@@ -1,41 +1,41 @@
-## Système Webhook
+## Webhook System
 
-Expose des commandes wex via HTTP pour les déclencher depuis un CI/CD, un serveur distant,
-ou tout outil capable de faire une requête GET.
+Exposes wex commands over HTTP to trigger them from a CI/CD pipeline, a remote server,
+or any tool that can issue a GET request.
 
-**URL type :** `http://host:6543/webhook/{type}/{path}?_token=<token>&arg=val`
+**URL pattern:** `http://host:6543/webhook/{type}/{path}?_token=<token>&arg=val`
 
 ---
 
-### Prise en main rapide
+### Quick start
 
-#### 1. Démarrer le daemon
+#### 1. Start the daemon
 
 ```bash
-# En arrière-plan
+# In the background
 wex core::webhook/listen --async
 
-# En avant-plan (pour débugger)
+# In the foreground (for debugging)
 wex core::webhook/listen
 
-# Forcer le redémarrage si le port est déjà occupé
+# Force restart if the port is already in use
 wex core::webhook/listen --async --force
 
-# Timeout custom (défaut 300s, 0 = pas de limite)
+# Custom timeout (default 300s, 0 = no limit)
 wex core::webhook/listen --worker-timeout 600
 ```
 
-#### 2. Vérifier que le daemon tourne
+#### 2. Check that the daemon is running
 
 ```bash
 wex core::webhook/status
 
-# Directement via HTTP — pas d'auth sur /health
+# Directly via HTTP — no auth on /health
 curl http://localhost:6543/health
 # → {"status": "ok", "uptime_seconds": 42}
 ```
 
-#### 3. Arrêter le daemon
+#### 3. Stop the daemon
 
 ```bash
 wex core::webhook/stop
@@ -43,19 +43,19 @@ wex core::webhook/stop
 
 ---
 
-### Types d'URL supportés
+### Supported URL types
 
-| Type | URL | Commande exécutée |
-|------|-----|-------------------|
-| `app` | `/webhook/app/{env}/{app}/{cmd}` | `.{cmd}` dans `/var/www/{env}/{app}` |
+| Type | URL | Command executed |
+|------|-----|------------------|
+| `app` | `/webhook/app/{env}/{app}/{cmd}` | `.{cmd}` in `/var/www/{env}/{app}` |
 | `addon` | `/webhook/addon/{addon}/{cmd}` | `{addon}::{cmd}` |
 | `service` | `/webhook/service/{service}/{cmd}` | `@{service}::{cmd}` |
 
 ---
 
-### Type `app` — commandes dans une application
+### Type `app` — commands inside an application
 
-#### Marquer une commande comme accessible
+#### Mark a command as accessible
 
 YAML :
 ```yaml
@@ -76,80 +76,80 @@ def my__group__command(context: ExecutionContext) -> None:
     ...
 ```
 
-#### Gérer les tokens (depuis le workdir de l'app)
+#### Manage tokens (from the app workdir)
 
 ```bash
-# Générer un token pour une commande
+# Generate a token for a command
 wex app::webhook/token-generate --command-name .release/deploy
 
-# Générer pour toutes les commandes @webhook de l'app d'un coup
+# Generate for all @webhook commands of the app at once
 wex app::webhook/token-generate --all
 
-# Régénérer (écraser l'existant)
+# Regenerate (overwrite the existing one)
 wex app::webhook/token-generate --command-name .release/deploy --force
 
-# Voir le token complet d'une commande
+# View the full token for a command
 wex app::webhook/token-show --command-name .release/deploy
 
-# Lister tous les tokens enregistrés (préfixe seulement)
+# List all registered tokens (prefix only)
 wex app::webhook/token-list
 
-# Révoquer un token
+# Revoke a token
 wex app::webhook/token-revoke --command-name .release/deploy
 
-# Révoquer tous les tokens de l'app
+# Revoke all tokens for the app
 wex app::webhook/token-revoke --all
 ```
 
-Les tokens sont stockés dans `{app_path}/.wex/local/webhook_tokens.yml`.
+Tokens are stored in `{app_path}/.wex/local/webhook_tokens.yml`.
 
-#### Statut webhooks de l'app
+#### App webhook status
 
 ```bash
 wex app::webhook/status
 ```
 
-Affiche : état du daemon, nombre de commandes `@webhook`, nombre de tokens présents.
-Ce résumé apparaît également dans `wex app::info/show`.
+Shows: daemon state, number of `@webhook` commands, number of tokens present.
+This summary also appears in `wex app::info/show`.
 
-#### Appeler le webhook
+#### Call the webhook
 
 ```bash
-# Token en query param
+# Token as query param
 curl "http://localhost:6543/webhook/app/prod/myapp/release/deploy?_token=<token>"
 
-# Token en header
+# Token as header
 curl -H "Authorization: Bearer <token>" \
      "http://localhost:6543/webhook/app/prod/myapp/release/deploy"
 
-# Avec des arguments passés à la commande
+# With arguments passed to the command
 curl "http://localhost:6543/webhook/app/prod/myapp/release/deploy?_token=<token>&version=1.2.3"
 
-# Forcer l'exécution synchrone (attend la fin, retourne la sortie)
+# Force synchronous execution (waits for completion, returns output)
 curl "http://...?_token=<token>&_async=0"
 ```
 
 ---
 
-### Type `addon` — commandes addon globales
+### Type `addon` — global addon commands
 
-#### Gérer les tokens
+#### Manage tokens
 
 ```bash
-# Générer un token pour une commande addon
+# Generate a token for an addon command
 wex core::webhook/token-generate --type addon --command-name app::info/show
 
-# Générer pour toutes les commandes @webhook addon
+# Generate for all @webhook addon commands
 wex core::webhook/token-generate --type addon --all
 
-# --force, --all, token-show, token-list, token-revoke : mêmes options que pour app
+# --force, --all, token-show, token-list, token-revoke: same options as for app
 wex core::webhook/token-show   --type addon --command-name app::info/show
 wex core::webhook/token-list   --type addon
 wex core::webhook/token-revoke --type addon --command-name app::info/show
 wex core::webhook/token-revoke --type addon --all
 ```
 
-Les tokens sont stockés dans `{wex_workdir}/.wex/local/webhook_tokens_addon.yml`.
+Tokens are stored in `{wex_workdir}/.wex/local/webhook_tokens_addon.yml`.
 
 #### Appeler le webhook
 
@@ -159,11 +159,11 @@ curl "http://localhost:6543/webhook/addon/app/info/show?_token=<token>"
 
 ---
 
-### Type `service` — commandes service
+### Type `service` — service commands
 
-Identique au type `addon`, remplacer `--type addon` par `--type service`.
+Identical to the `addon` type, replace `--type addon` with `--type service`.
 
-Tokens stockés dans `{wex_workdir}/.wex/local/webhook_tokens_service.yml`.
+Tokens stored in `{wex_workdir}/.wex/local/webhook_tokens_service.yml`.
 
 ```bash
 curl "http://localhost:6543/webhook/service/nginx/status?_token=<token>"
@@ -171,99 +171,99 @@ curl "http://localhost:6543/webhook/service/nginx/status?_token=<token>"
 
 ---
 
-### Observabilité
+### Observability
 
 #### Logs
 
 ```bash
-# Dernières requêtes (20 par défaut)
+# Latest requests (20 by default)
 wex core::webhook/status
 
-# Log brut — JSON, une ligne par requête
+# Raw log — JSON, one line per request
 tail -f {wex_workdir}/logs/webhook.log
 ```
 
-Champs : `ts`, `ip`, `path`, `command_type`, `command_path`, `status`, `duration_ms`, `pid`.
-Rotation : 5 fichiers × 1 Mo max.
+Fields: `ts`, `ip`, `path`, `command_type`, `command_path`, `status`, `duration_ms`, `pid`.
+Rotation: 5 files × 1 MB max.
 
-#### Métriques Prometheus
+#### Prometheus metrics
 
 ```bash
 curl http://localhost:6543/metrics
 ```
 
-Expose (sans authentification) :
-- `webhook_requests_total{command_type, status}` — compteur par type et statut
-- `webhook_request_duration_seconds_sum{command_type}` — durée cumulée
-- `webhook_request_duration_seconds_count{command_type}` — nombre de requêtes mesurées
+Exposes (without authentication):
+- `webhook_requests_total{command_type, status}` — counter by type and status
+- `webhook_request_duration_seconds_sum{command_type}` — cumulative duration
+- `webhook_request_duration_seconds_count{command_type}` — number of measured requests
 
 ---
 
-### Sécurité
+### Security
 
-- Token transmis via `Authorization: Bearer <token>` ou `?_token=<token>`
-- Comparaison en temps constant (`hmac.compare_digest`)
-- Token absent ou invalide → **401**, loggué avec IP + path
-- `/health` et `/metrics` sont exempts d'authentification
+- Token transmitted via `Authorization: Bearer <token>` or `?_token=<token>`
+- Constant-time comparison (`hmac.compare_digest`)
+- Missing or invalid token → **401**, logged with IP + path
+- `/health` and `/metrics` are exempt from authentication
 
 ---
 
 ### Architecture
 
-#### Séparation des responsabilités
+#### Separation of concerns
 
 ```
-wex-core       →  daemon HTTP, routing générique, validation HMAC, résolveurs addon/service
-wex-addon-app  →  AppWebhookTypeResolver, commandes app::webhook/*
+wex-core       →  HTTP daemon, generic routing, HMAC validation, addon/service resolvers
+wex-addon-app  →  AppWebhookTypeResolver, app::webhook/* commands
 ```
 
-#### Résolveurs de type (`WebhookTypeResolver` Protocol)
+#### Type resolvers (`WebhookTypeResolver` Protocol)
 
-Chaque type d'URL délègue à un résolveur qui implémente :
+Each URL type delegates to a resolver that implements:
 
 ```python
-def build_command(command_path: str) -> str | None  # construit la commande wex
-def resolve_cwd(command_path: str) -> str | None    # répertoire de travail du subprocess
-def resolve_token(command_path: str, command_str: str) -> str | None  # lit le token attendu
+def build_command(command_path: str) -> str | None  # builds the wex command
+def resolve_cwd(command_path: str) -> str | None    # working directory of the subprocess
+def resolve_token(command_path: str, command_str: str) -> str | None  # reads the expected token
 ```
 
-Résolveurs enregistrés au démarrage du daemon dans `listen.py` :
+Resolvers registered at daemon startup in `listen.py`:
 
-| Type | Classe | Token |
-|------|--------|-------|
+| Type | Class | Token |
+|------|-------|-------|
 | `app` | `AppWebhookTypeResolver` (wex-addon-app) | `{app}/.wex/local/webhook_tokens.yml` |
 | `addon` | `AddonWebhookTypeResolver` (wex-core) | `{wex_workdir}/.wex/local/webhook_tokens_addon.yml` |
 | `service` | `ServiceWebhookTypeResolver` (wex-core) | `{wex_workdir}/.wex/local/webhook_tokens_service.yml` |
 
 #### Daemon
 
-| Option | Défaut | Description |
-|--------|--------|-------------|
-| `--port` | `6543` | Port d'écoute |
-| `--async` | `false` | Lance en subprocess background |
-| `--force` | `false` | Tue le process existant sur le port |
-| `--worker-timeout` | `300` | Timeout subprocess sync en secondes (0 = infini) |
-| `--dry-run` | `false` | Bind le socket sans servir (tests) |
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--port` | `6543` | Listening port |
+| `--async` | `false` | Starts as a background subprocess |
+| `--force` | `false` | Kills the existing process on the port |
+| `--worker-timeout` | `300` | Synchronous subprocess timeout in seconds (0 = unlimited) |
+| `--dry-run` | `false` | Binds the socket without serving (tests) |
 
-- **SIGTERM** → arrêt gracieux : les workers en cours terminent avant la fermeture
-- Dépassement du timeout → HTTP **504**, process tué proprement
+- **SIGTERM** → graceful shutdown: running workers finish before the server closes
+- Timeout exceeded → HTTP **504**, process cleanly killed
 
 ---
 
-### Référence des commandes
+### Command reference
 
-| Commande | Rôle |
-|----------|------|
-| `core::webhook/listen` | Démarrer le daemon |
-| `core::webhook/stop` | Arrêter le daemon |
-| `core::webhook/status` | État + dernières lignes de log |
-| `core::webhook/exec` | Dispatcher interne (appelé par le daemon) |
-| `core::webhook/token-generate` | Générer un token addon/service |
-| `core::webhook/token-show` | Afficher un token addon/service |
-| `core::webhook/token-list` | Lister les tokens addon/service |
-| `core::webhook/token-revoke` | Révoquer un token addon/service |
-| `app::webhook/status` | Statut webhooks de l'app courante |
-| `app::webhook/token-generate` | Générer un token pour une commande app |
-| `app::webhook/token-show` | Afficher un token app |
-| `app::webhook/token-list` | Lister les tokens app |
-| `app::webhook/token-revoke` | Révoquer un token app |
+| Command | Role |
+|---------|------|
+| `core::webhook/listen` | Start the daemon |
+| `core::webhook/stop` | Stop the daemon |
+| `core::webhook/status` | State + last log lines |
+| `core::webhook/exec` | Internal dispatcher (called by the daemon) |
+| `core::webhook/token-generate` | Generate an addon/service token |
+| `core::webhook/token-show` | Show an addon/service token |
+| `core::webhook/token-list` | List addon/service tokens |
+| `core::webhook/token-revoke` | Revoke an addon/service token |
+| `app::webhook/status` | Webhook status of the current app |
+| `app::webhook/token-generate` | Generate a token for an app command |
+| `app::webhook/token-show` | Show an app token |
+| `app::webhook/token-list` | List app tokens |
+| `app::webhook/token-revoke` | Revoke an app token |
