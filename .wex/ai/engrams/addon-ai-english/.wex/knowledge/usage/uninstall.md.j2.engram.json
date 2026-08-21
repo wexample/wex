@@ -1,0 +1,12 @@
+{
+  "engram_version": 1,
+  "source_key": ".wex/knowledge/usage/uninstall.md.j2",
+  "cache_nonce": "default",
+  "last_visited_at": "2026-08-21T05:30:33+00:00",
+  "last_rev": "41a0313fa9a689b7dd665ed71b145786ea32f33b",
+  "source_revs": {},
+  "last_decision": "skip",
+  "kinds": [],
+  "notes": "file is already written in English — nothing to translate",
+  "in_progress": null
+}
