@@ -1,79 +1,79 @@
 # Checklist post-migration TPA prod + dev
 
-## Contexte
+## Context
 
-Migration TPA terminée en wex 6 (prod fin mai, dev 2026-05-28). Cette todo recense les pendings techniques qu'on a contournés ou pas finalisés pendant le rush, à reprendre proprement.
+TPA migration completed in wex 6 (prod end of May, dev 2026-05-28). This todo lists the technical pending items that were worked around or left unfinished during the rush, to be revisited properly.
 
-## Bugs / fixes ✅ publiés dans wex 6.0.104
+## Bugs / fixes ✅ published in wex 6.0.104
 
 ### 1. Hot-patch `app_readme_config_value.py` ✅
-Le try/except TypeError sur `_append_template_path_from_module` est dans 6.0.104.
+The try/except TypeError on `_append_template_path_from_module` is in 6.0.104.
 
 ### 2. Migrations 6.0.103 + 6.0.104 ✅
-Publiées dans le package. À déclencher sur les apps prod TPA pour dedup les `server.ip` orphelins (cf. plus bas).
+Published in the package. To be triggered on the TPA prod apps to dedup the orphan `server.ip` entries (see below).
 
-### 3. `python3.11-venv` en dépendance ⏳
-Toujours pas déclaré explicitement comme dépendance stricte de `debian/control`. Découvert pendant l'install dev TPA. À fixer.
+### 3. `python3.11-venv` as dependency ⏳
+Still not explicitly declared as a strict dependency in `debian/control`. Discovered during the TPA dev install. To be fixed.
 
 ### 4. nginx-proxy:1.3 → 1.11 ✅
-Le sample compose du service proxy est passé à `:1.11` dans 6.0.104. Évite le bug de bootstrap des certs sur les nouveaux vhosts (well-known intercept conditionnel sur cert_ok dans 1.3).
+The proxy service sample compose was updated to `:1.11` in 6.0.104. Avoids the cert bootstrap bug on new vhosts (well-known intercept conditional on cert_ok in 1.3).
 
-## Certs dev TPA — provisioning incomplet
+## Certs dev TPA — incomplete provisioning
 
-Sur dev (152.228.175.159), 5 des 7 dev domains ont leur cert valide (dev.en, dev.de, dev.fr, dev.it, dev.nl via SAN cert restoré). Restent :
+On dev (152.228.175.159), 5 of the 7 dev domains have a valid cert (dev.en, dev.de, dev.fr, dev.it, dev.nl via restored SAN cert). Remaining:
 
-- **dev.es** : 500 (symlink supprimé pendant le cleanup, acme-companion retry en cours)
-- **dev.pma** : SSL non-provisionné, Let's Encrypt fail avec 404 sur `/.well-known/acme-challenge/`
+- **dev.es** : 500 (symlink removed during cleanup, acme-companion retry in progress)
+- **dev.pma** : SSL not provisioned, Let's Encrypt failing with 404 on `/.well-known/acme-challenge/`
 
-Cause probable du 404 : la location `/.well-known/acme-challenge/` dans nginx route vers `/usr/share/nginx/html` mais le fichier n'y arrive pas. Soit acme-companion ne le pose pas au bon endroit, soit nginx-proxy a une mauvaise variable de root, soit l'upstream apache attrape la requête avant nginx.
+Probable cause of the 404: the `/.well-known/acme-challenge/` location in nginx routes to `/usr/share/nginx/html` but the file doesn't land there. Either acme-companion doesn't place it in the right spot, nginx-proxy has a wrong root variable, or the upstream apache catches the request before nginx.
 
-**Action** : à diagnostiquer si dev.es ou dev.pma sont vraiment nécessaires. Sinon laisser couler — le SAN cert dev.de couvre les langues principales.
+**Action**: to be diagnosed if dev.es or dev.pma are actually needed. Otherwise leave it — the dev.de SAN cert covers the main languages.
 
-## TPA prod — propagations encore à faire
+## TPA prod — propagations still pending
 
-### Migrations wex sur prod ⏳
+### wex migrations on prod ⏳
 
-- wex CLI sur les 4 serveurs est à **6.0.104** ✅
-- Mais les **apps** prod TPA (6 sur 51.210.104.199) sont stampées à `6.0.101` (pré-migrations 103/104).
-- Action : `wex app::migration/run` sur chaque app prod pour appliquer les migrations 6.0.103 + 6.0.104 (dedup `server:` + drop skeletons orphelins).
-- Côté serveur : `ssh weeger@51.210.104.199` + boucle sur `/var/www/prod/{listmonk,baserow,matomo,gitlab,n8n,tpa}` (oscar a été viré).
-- Idem sur Wexample (151.80.23.108) et Syrtis (79.137.89.25) qui ont aussi des apps à 6.0.101.
+- wex CLI on the 4 servers is at **6.0.104** ✅
+- But the TPA prod **apps** (6 on 51.210.104.199) are stamped at `6.0.101` (pre-migrations 103/104).
+- Action: `wex app::migration/run` on each prod app to apply migrations 6.0.103 + 6.0.104 (dedup `server:` + drop orphan skeletons).
+- Server-side: `ssh weeger@51.210.104.199` + loop over `/var/www/prod/{listmonk,baserow,matomo,gitlab,n8n,tpa}` (oscar was removed).
+- Same on Wexample (151.80.23.108) and Syrtis (79.137.89.25), which also have apps at 6.0.101.
 
-### Symlinks acme manquants — pattern à surveiller ⚠️
+### Missing acme symlinks — pattern to watch ⚠️
 
-Manager.thephotoacademy.com servait le SAN cert de `de.thephotoacademy.com` au lieu de son propre cert pour une seule raison : **les symlinks top-level (`<domain>.{crt,key,chain.pem,dhparam.pem}`) n'avaient jamais été créés** alors que l'acme dir avec les certs existait. Recréés à la main 2026-05-28. Cause originelle inconnue (héritage migration wex 6 ?).
+Manager.thephotoacademy.com was serving the `de.thephotoacademy.com` SAN cert instead of its own cert for one reason: **the top-level symlinks (`<domain>.{crt,key,chain.pem,dhparam.pem}`) had never been created** even though the acme dir with the certs existed. Recreated by hand 2026-05-28. Original cause unknown (wex 6 migration inheritance?).
 
-À auditer : les autres apps prod TPA (listmonk, matomo, n8n, gitlab) ont-elles toutes leurs symlinks ? Si non, elles servent silencieusement le default cert. Test rapide : `ssh weeger@<serveur> "sudo ls /var/www/prod/wex-proxy/proxy/certs/*.crt"`. Si une app a sa dir acme mais pas son symlink top-level, c'est le même cas.
+To audit: do the other TPA prod apps (listmonk, matomo, n8n, gitlab) all have their symlinks? If not, they are silently serving the default cert. Quick test: `ssh weeger@<serveur> "sudo ls /var/www/prod/wex-proxy/proxy/certs/*.crt"`. If an app has its acme dir but no top-level symlink, it's the same case.
 
-Aussi : Baserow était `exited+unhealthy` sur prod sans avoir alerté qui que ce soit. Crash silencieux. Si ça récidive, investiguer mémoire / DB / etc.
+Also: Baserow was `exited+unhealthy` on prod without alerting anyone. Silent crash. If it happens again, investigate memory / DB / etc.
 
-### Backups prod nettoyés ✅ 2026-05-28
+### Prod backups cleaned ✅ 2026-05-28
 
-`/var/www/prod/_tpa_migration_backup_2026_05_27/`, `wex-proxy-legacy-2026-05-27/`, `wex-proxy-bkp-2026-05-27/` supprimés.
+`/var/www/prod/_tpa_migration_backup_2026_05_27/`, `wex-proxy-legacy-2026-05-27/`, `wex-proxy-bkp-2026-05-27/` removed.
 
 ### Disk space prod
 
-Le disque prod a tapé 100% pendant la session du 2026-05-28 (gitlab logs explose à 28G + journalctl 4.1G + 4 backups gitlab). On a libéré 38G en truncate logs + vacuum journal + rm vieux backups. Maintenant à **88% (273G/310G)**.
+The prod disk hit 100% during the 2026-05-28 session (gitlab logs ballooning to 28G + journalctl 4.1G + 4 gitlab backups). 38G was freed by truncating logs + vacuuming the journal + removing old backups. Now at **88% (273G/310G)**.
 
-**Action** : poser une rotation propre :
-- `logrotate` pour `/var/www/prod/gitlab/gitlab/logs/*.log` (max-size + 7 days)
-- `journalctl` vacuum auto via systemd `SystemMaxUse=2G` dans `/etc/systemd/journald.conf`
-- Politique de rétention gitlab backups : keep 7 derniers
+**Action**: set up a proper rotation:
+- `logrotate` for `/var/www/prod/gitlab/gitlab/logs/*.log` (max-size + 7 days)
+- `journalctl` vacuum auto via systemd `SystemMaxUse=2G` in `/etc/systemd/journald.conf`
+- Gitlab backup retention policy: keep the last 7
 
-C'est un chantier mini qui mériterait son propre todo si on veut le faire bien.
+This is a minor task that would deserve its own todo if done properly.
 
-## Branche develop = master (cas particulier)
+## develop branch = master (special case)
 
-Sur le repo tpa/tpa.git, on a ff-mergé `develop` à `master` (pour propager les 3 commits wex 6). Du coup `develop == master` tip pour l'instant. Pas un bug, mais inhabituel — au prochain feature branch, develop redivergera normalement.
+On the tpa/tpa.git repo, `develop` was ff-merged into `master` (to propagate the 3 wex 6 commits). So `develop == master` tip for now. Not a bug, but unusual — at the next feature branch, develop will diverge again normally.
 
-## Runner GitLab dev — à transformer en service wex
+## GitLab dev runner — to be turned into a wex service
 
-`/var/www/dev/runner/` est un GitLab runner CI/CD très customisé (token TPA, mount `/var/www:/var/www`, mount docker.sock). Pas migré en wex 6.
+`/var/www/dev/runner/` is a heavily customised GitLab CI/CD runner (TPA token, mount `/var/www:/var/www`, mount docker.sock). Not migrated to wex 6.
 
-- Tree rsync vers `/home/weeger/Desktop/WIP/WEB/TPA/local/runner/` pour inspection
-- À transformer en wex 6 service (chantier #2 de [master.md](master.md) — "Runner wex en remote master")
-- Critique pour le chantier suivant : la pipeline CI/CD TPA passe par ce runner
+- Tree rsync to `/home/weeger/Desktop/WIP/WEB/TPA/local/runner/` for inspection
+- To be turned into a wex 6 service (task #2 in [master.md](master.md) — "Runner wex en remote master")
+- Critical for the next task: the TPA CI/CD pipeline goes through this runner
 
-## wex-proxy-legacy sur dev
+## wex-proxy-legacy on dev
 
-`/var/www/dev/wex-proxy-legacy-2026-05-28/` a été supprimé après validation que le nouveau wex-proxy fonctionne. ✅
+`/var/www/dev/wex-proxy-legacy-2026-05-28/` was removed after validating that the new wex-proxy works. ✅
