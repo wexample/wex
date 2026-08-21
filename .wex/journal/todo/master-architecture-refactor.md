@@ -1,78 +1,78 @@
 # Refonte de l'architecture master
 
-## Contexte
+## Context
 
-Le master actuel (mai 2026) est fonctionnel mais a plusieurs frictions structurelles qui se sont accumulées au fil des sessions :
+The current master (May 2026) is functional but has several structural frictions that have accumulated over the sessions:
 
-- `project.yml > stacks > apps` liste des **paths d'apps** (`${LOCAL}/tpa`, `${LOCAL}/oscar`…). Si une app est renommée, déplacée ou supprimée, le fichier YAML pète. Vu cette session : oscar viré, mais la stack tpa référençait encore `${LOCAL}/oscar` jusqu'à correction manuelle.
-- `master.local.yml > MASTER_APP_PATHS` mélange la *définition des dossiers à scanner* et la *liste explicite des apps*. Comportement implicite.
-- Pas de registre des hosts : les IPs sont éclatées dans N fichiers `.wex/env/<env>/config.yml` d'apps. Friction relevée chantier #8 de `master.md`.
-- Pas de registre des apps non plus : chaque appel `master::info/show` re-scanne le disque, refait la découverte. Pas de mémoire entre runs.
-- Apparition / disparition d'une app traitée silencieusement par le scan — pas d'alerte si une app disparaît du disque.
+- `project.yml > stacks > apps` lists **app paths** (`${LOCAL}/tpa`, `${LOCAL}/oscar`…). If an app is renamed, moved or deleted, the YAML file breaks. Seen this session: oscar removed, but the tpa stack still referenced `${LOCAL}/oscar` until a manual fix.
+- `master.local.yml > MASTER_APP_PATHS` mixes the *definition of folders to scan* and the *explicit list of apps*. Implicit behaviour.
+- No host registry: IPs are scattered across N `.wex/env/<env>/config.yml` files in apps. Friction noted in workstream #8 of `master.md`.
+- No app registry either: every `master::info/show` call re-scans the disk, redoes discovery. No memory between runs.
+- Appearance/disappearance of an app handled silently by the scan — no alert if an app disappears from disk.
 
-L'idée est de refondre le master sur des principes plus solides, en gardant la rétro-compat le temps de la transition.
+The idea is to rebuild the master on more solid principles, while keeping backward compatibility during the transition.
 
-## Principes cibles
+## Target principles
 
-### 1. Apps autodescriptives
+### 1. Self-describing apps
 
-Une app = un dossier qui contient un `.wex/config.yml` avec :
+An app = a folder containing a `.wex/config.yml` with:
 ```yaml
 global:
-  name: tpa           # identité de l'app, indépendante du dossier
+  name: tpa           # app identity, independent of the folder
   version: 3.5.82
   ...
 ```
 
-Le **nom** dans la config est l'identifiant canonique. Le **dossier** est un détail d'organisation (peut bouger sans casser les références).
+The **name** in the config is the canonical identifier. The **folder** is an organisational detail (can move without breaking references).
 
-### 2. Stacks par nom ou tag, pas par path
+### 2. Stacks by name or tag, not by path
 
-Aujourd'hui :
+Today:
 ```yaml
 stacks:
   tpa:
     apps:
       - ${LOCAL}/tpa
-      - ${LOCAL}/oscar       # ← path en dur, fragile
+      - ${LOCAL}/oscar       # ← hard-coded path, fragile
 ```
 
-Cible :
+Target:
 ```yaml
 stacks:
   tpa:
-    apps: [tpa, oscar]       # ← noms canoniques
-    # OU
-    tags: [tpa-core]         # ← des apps déclarent `tags: [tpa-core]` dans leur config
+    apps: [tpa, oscar]       # ← canonical names
+    # OR
+    tags: [tpa-core]         # ← apps declare `tags: [tpa-core]` in their config
 ```
 
-Une app peut porter plusieurs tags (`tags: [tpa-core, web, php]`). Une stack peut combiner liste explicite + filtres par tag.
+An app can carry multiple tags (`tags: [tpa-core, web, php]`). A stack can combine an explicit list and tag-based filters.
 
-### 3. Découverte centralisée
+### 3. Centralised discovery
 
-Aujourd'hui `apps:` au top de `project.yml` mélange discovery et déclaration. À séparer :
+Today `apps:` at the top of `project.yml` mixes discovery and declaration. To separate:
 
-- **`master.local.yml`** définit où chercher les apps (varie par machine — local vs serveur, etc.) :
+- **`master.local.yml`** defines where to look for apps (varies by machine — local vs server, etc.):
   ```yaml
   app_discovery_paths:
     - ${LOCAL}/*
     - ${PACKAGES}/*
     - ${PROJECT}/*/*
   ```
-- **`project.yml`** ne déclare plus la liste — il décrit la structure logique (stacks, DNS, etc.) — c'est versionné et identique entre machines.
+- **`project.yml`** no longer declares the list — it describes the logical structure (stacks, DNS, etc.) — this is versioned and identical between machines.
 
-### 4. Auto-enrollement & registres
+### 4. Auto-enrolment & registries
 
-Master maintient deux registres :
+Master maintains two registries:
 
-#### Registre des apps (`apps.yml`, versionné)
+#### App registry (`apps.yml`, versioned)
 
-Mis à jour à chaque scan. Format type :
+Updated on every scan. Sample format:
 ```yaml
 apps:
   tpa:
     name: tpa
-    path_hint: local/tpa             # indicatif, pour rappel
+    path_hint: local/tpa             # informational, for reference
     version: 3.5.82
     tags: [tpa-core, web]
     enrolled_at: 2026-05-28
@@ -84,7 +84,7 @@ apps:
     enrolled_at: 2026-05-28
 ```
 
-#### Registre des hosts/remotes (`hosts.yml`, versionné en partie, secrets en local)
+#### Host/remote registry (`hosts.yml`, partially versioned, secrets kept local)
 
 ```yaml
 hosts:
@@ -101,56 +101,56 @@ hosts:
     ip: 79.137.89.25
 ```
 
-À noter : les `remotes[].host` dans les configs d'apps sont des **sources de vérité primaires**. Le registre maître ne fait que les agréger.
+Note: the `remotes[].host` values in app configs are the **primary sources of truth**. The master registry only aggregates them.
 
-#### Comportement d'enrollment
+#### Enrolment behaviour
 
-- `wex master::scan` (ou `master::enroll`) parcourt les discovery paths
-- Lit chaque `.wex/config.yml` trouvé
-- Pour chaque nouvelle app : ajoute au `apps.yml` versionné + ajoute le path éventuellement à un cache local non-versionné (`apps.cache.yml`)
-- Pour chaque nouvelle remote vue dans les `.wex/env/*/config.yml` : ajoute à `hosts.yml`
-- **Disparition** : si une app/host disparaît du disque, **ne pas supprimer du registre automatiquement** — émettre un warning (`WARNING: app 'oscar' was enrolled but no longer found in discovery paths; run 'master::registry/clear oscar' to remove`)
+- `wex master::scan` (or `master::enroll`) walks the discovery paths
+- Reads each `.wex/config.yml` found
+- For each new app: adds it to the versioned `apps.yml` + optionally adds the path to a non-versioned local cache (`apps.cache.yml`)
+- For each new remote seen in `.wex/env/*/config.yml`: adds it to `hosts.yml`
+- **Disappearance**: if an app/host disappears from disk, **do not remove it from the registry automatically** — emit a warning (`WARNING: app 'oscar' was enrolled but no longer found in discovery paths; run 'master::registry/clear oscar' to remove`)
 
-Le registre est résistant aux glitches — un dossier rmd par erreur ne supprime pas la mémoire.
+The registry is resilient to glitches — a folder accidentally removed does not erase the memory.
 
-### 5. Référencement croisé
+### 5. Cross-referencing
 
-Avec les registres en place :
+With registries in place:
 
-- Une app peut référencer un host par nom : `remotes[].host: ${HOST_TPA_PROD}` (debloque #6.5 et #9 de [master.md](master.md))
-- Une stack peut composer des apps par tag ou nom
-- Master commands prennent des noms (`wex master::host/spawn --based-on tpa_prod`) plutôt que des paths
+- An app can reference a host by name: `remotes[].host: ${HOST_TPA_PROD}` (unblocks #6.5 and #9 from [master.md](master.md))
+- A stack can compose apps by tag or name
+- Master commands take names (`wex master::host/spawn --based-on tpa_prod`) instead of paths
 
-## Workflow d'ajout d'une nouvelle app
+## Workflow for adding a new app
 
-Aujourd'hui (mai 2026) :
-1. Créer le dossier `local/myapp/`
-2. Initialiser `.wex/config.yml`
-3. Éditer `project.yml` pour ajouter le path à `apps:` (souvent oublié — le `${MASTER_APP_PATHS}` glob s'en occupe heureusement)
-4. Si déploiement : créer `.wex/env/prod/config.yml` avec `remotes[].host: <ip>` (IP en dur)
-5. Refaire pour chaque env
+Today (May 2026):
+1. Create the folder `local/myapp/`
+2. Initialise `.wex/config.yml`
+3. Edit `project.yml` to add the path to `apps:` (often forgotten — the `${MASTER_APP_PATHS}` glob fortunately handles it)
+4. If deploying: create `.wex/env/prod/config.yml` with `remotes[].host: <ip>` (hard-coded IP)
+5. Repeat for each env
 
-Cible :
-1. Créer le dossier `local/myapp/`
-2. Initialiser `.wex/config.yml` avec `global.name + tags`
-3. `wex master::scan` (ou auto-trigger via watch ?)
-   - Détecte la nouvelle app → registre + cache
-   - Trouve un `.wex/env/prod/config.yml` → ajoute le host au registre si nouveau
-4. Pour rattacher à une stack : `wex master::stack/add tpa myapp` ou éditer `project.yml > stacks > tpa > apps: [..., myapp]`
-5. C'est tout.
+Target:
+1. Create the folder `local/myapp/`
+2. Initialise `.wex/config.yml` with `global.name + tags`
+3. `wex master::scan` (or auto-trigger via watch?)
+   - Detects the new app → registry + cache
+   - Finds a `.wex/env/prod/config.yml` → adds the host to the registry if new
+4. To attach to a stack: `wex master::stack/add tpa myapp` or edit `project.yml > stacks > tpa > apps: [..., myapp]`
+5. That's it.
 
-## Sujets ouverts (à clarifier demain)
+## Open topics (to clarify later)
 
-- **Watch vs scan manuel ?** Un watcher filesystem (inotify) qui re-enrolle à la volée serait magique, mais ajoute une couche de complexité. Probablement commencer par scan manuel + scheduled.
-- **Comment versionner le `apps.yml`** sans en faire un goulot conflictuel ? Au master = oui (c'est l'identité du projet). Au sein du master TPA, ça devrait être ok parce qu'un seul opérateur édite à la fois en pratique.
-- **Le cache local (`apps.cache.yml`)** doit-il stocker les paths complets, ou juste un mapping `name → relative_path` ?
-- **Comment gérer le `discovered_via`** quand une app a plusieurs envs sur plusieurs hosts ? Liste de provenances ?
-- **Intégration avec `master::info/show`** : la commande prend-elle ses données du registre maintenant, ou continue à scanner pour rester en sync ? Probablement registre par défaut + flag `--rescan` pour forcer.
-- **Sur quoi se base "une app a disparu"** ? Le path qui n'existe plus ? Le `global.name` plus trouvé dans les apps découvertes ? Cas tordu si on renomme un dossier sans changer le `name`.
-- **Le concept de "stack"** mérite d'être enrichi : aujourd'hui c'est juste un groupe nommé d'apps. Avec l'orchestration (#9 de master.md), il faut y mettre l'ordre de dépendance et les contraintes (cf. exemple Syrtis).
-- **Compat ascendante** : à la transition, les `apps:` paths actuels doivent continuer à marcher pendant la migration. Mécanisme de bridge.
+- **Watch vs manual scan?** A filesystem watcher (inotify) that re-enrols on the fly would be great, but adds a layer of complexity. Probably start with manual scan + scheduled.
+- **How to version `apps.yml`** without turning it into a merge conflict bottleneck? At master level = yes (it is the identity of the project). Within the TPA master it should be fine because only one operator edits at a time in practice.
+- **The local cache (`apps.cache.yml`)** — should it store full paths, or just a `name → relative_path` mapping?
+- **How to handle `discovered_via`** when an app has multiple envs on multiple hosts? List of origins?
+- **Integration with `master::info/show`**: does the command now pull data from the registry, or keep scanning to stay in sync? Probably registry by default + a `--rescan` flag to force.
+- **What determines "an app has disappeared"?** The path no longer exists? The `global.name` no longer found in the discovered apps? Edge case if a folder is renamed without changing the `name`.
+- **The "stack" concept** deserves to be enriched: today it is just a named group of apps. With orchestration (#9 of master.md), it needs a dependency order and constraints (cf. Syrtis example).
+- **Backward compatibility**: during the transition, the current `apps:` paths must continue to work during the migration. Bridge mechanism.
 
-## Liens
+## Links
 
-- [master.md](master.md) chantiers #1, #4, #6.5, #8, #9 dépendent ou bénéficient de cette refonte
-- [post-tpa-migration-checklist.md](post-tpa-migration-checklist.md) — pas directement lié, mais touche aux mêmes fichiers
+- [master.md](master.md) workstreams #1, #4, #6.5, #8, #9 depend on or benefit from this refactor
+- [post-tpa-migration-checklist.md](post-tpa-migration-checklist.md) — not directly related, but touches the same files
