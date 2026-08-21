@@ -1,102 +1,102 @@
 # Roadmap : Publication wex via CI/CD GitLab
 
-## Contexte
+## Context
 
-Aujourd'hui les autres packages (npm, PHP/Packagist) ont migré vers un modèle
-où c'est le CI/CD qui effectue la publication réelle, et non la machine locale.
-La machine locale crée simplement la merge request ; le pipeline se charge du reste.
+Today the other packages (npm, PHP/Packagist) have migrated to a model
+where CI/CD performs the actual publication, not the local machine.
+The local machine simply creates the merge request; the pipeline handles the rest.
 
-Pour `wex` (paquet Debian/apt), la publication est encore manuelle : merge request
-créée à la main sur GitLab, pipeline attendu manuellement, vérification manuelle
-sur le dépôt apt.
+For `wex` (Debian/apt package), publication is still manual: merge request
+created by hand on GitLab, pipeline waited on manually, manual verification
+on the apt repository.
 
-L'objectif est d'automatiser ce cycle complet dans `app::suite/publish` (ou une
-phase dédiée appelée depuis celui-ci).
+The goal is to automate this complete cycle in `app::suite/publish` (or a
+dedicated phase called from it).
 
 ---
 
 ## Phases
 
-### Phase 1 — Détection du mode de publication
+### Phase 1 — Publication mode detection
 
-- [ ] Définir dans la config app (`.wex/app.yml`) une clé `publication.mode`
-  avec les valeurs possibles : `local` (défaut actuel) / `ci` (pipeline GitLab/GitHub)
-- [ ] Lire cette clé dans `publish_bumped` / `publish` pour brancher sur le bon mode
-- [ ] Permettre la surcharge par package (certains packages peuvent avoir un mode différent)
+- [ ] Define a `publication.mode` key in the app config (`.wex/app.yml`)
+  with possible values: `local` (current default) / `ci` (GitLab/GitHub pipeline)
+- [ ] Read this key in `publish_bumped` / `publish` to branch on the correct mode
+- [ ] Allow per-package override (some packages may have a different mode)
 
 ---
 
-### Phase 2 — Création de la Merge Request GitLab
+### Phase 2 — GitLab Merge Request creation
 
-- [ ] Après le `commit_and_push` de la branche `version-x.y.z`, créer automatiquement
-  une MR via l'API GitLab REST (`POST /projects/:id/merge_requests`)
-- [ ] Paramètres de la MR :
-  - source branch : `version-x.y.z`
-  - target branch : `main`
-  - title : `Release x.y.z`
+- [ ] After the `commit_and_push` of the `version-x.y.z` branch, automatically create
+  an MR via the GitLab REST API (`POST /projects/:id/merge_requests`)
+- [ ] MR parameters:
+  - source branch: `version-x.y.z`
+  - target branch: `main`
+  - title: `Release x.y.z`
   - `remove_source_branch: true`
   - `squash: false`
-- [ ] Stocker l'IID de la MR pour les étapes suivantes
-- [ ] Gérer le cas où une MR existe déjà pour cette branche (idempotent)
+- [ ] Store the MR IID for the following steps
+- [ ] Handle the case where an MR already exists for this branch (idempotent)
 
 ---
 
-### Phase 3 — Attente du pipeline pre-merge
+### Phase 3 — Pre-merge pipeline wait
 
-- [ ] Après création de la MR, récupérer le pipeline associé
+- [ ] After the MR is created, retrieve the associated pipeline
   (`GET /projects/:id/merge_requests/:iid/pipelines`)
-- [ ] Polling jusqu'à status `success` ou `failed` / `canceled`
-- [ ] Afficher la progression via `io.progress` ou logs
-- [ ] Lever une exception claire si le pipeline échoue (lien vers le pipeline dans le message)
+- [ ] Poll until status `success` or `failed` / `canceled`
+- [ ] Display progress via `io.progress` or logs
+- [ ] Raise a clear exception if the pipeline fails (include a link to the pipeline in the message)
 
 ---
 
-### Phase 4 — Merge automatique
+### Phase 4 — Automatic merge
 
-- [ ] Si pipeline `success` et pas de conflits : merger via l'API
+- [ ] If pipeline `success` and no conflicts: merge via the API
   (`PUT /projects/:id/merge_requests/:iid/merge`)
-- [ ] Gérer les cas d'échec du merge (conflit, MR déjà mergée, etc.)
-- [ ] Récupérer le commit SHA du merge pour tracker le pipeline post-merge
+- [ ] Handle merge failure cases (conflict, MR already merged, etc.)
+- [ ] Retrieve the merge commit SHA to track the post-merge pipeline
 
 ---
 
-### Phase 5 — Attente du pipeline post-merge
+### Phase 5 — Post-merge pipeline wait
 
-- [ ] Après le merge, récupérer le pipeline déclenché sur `main`
+- [ ] After the merge, retrieve the pipeline triggered on `main`
   (`GET /projects/:id/pipelines?ref=main&sha=<merge_commit>`)
-- [ ] Polling jusqu'à `success` ou échec
-- [ ] Même logique de progression / erreur que phase 3
+- [ ] Poll until `success` or failure
+- [ ] Same progress / error logic as phase 3
 
 ---
 
-### Phase 6 — Vérification sur le dépôt apt
+### Phase 6 — apt repository verification
 
-- [ ] Après le pipeline post-merge, vérifier que `wex` est bien disponible
-  dans le dépôt apt à la bonne version
-- [ ] Commande : `apt-cache policy wex` ou requête HTTP sur le dépôt
-- [ ] Polling avec timeout configurable (le dépôt apt peut avoir un délai de propagation)
-- [ ] Log de succès avec la version confirmée
+- [ ] After the post-merge pipeline, verify that `wex` is available
+  in the apt repository at the correct version
+- [ ] Command: `apt-cache policy wex` or HTTP request against the repository
+- [ ] Polling with configurable timeout (the apt repository may have a propagation delay)
+- [ ] Success log with the confirmed version
 
 ---
 
-## Abstractions à créer
+## Abstractions to create
 
-- `GitlabApiClient` (ou helper) — wrapper léger autour des appels REST GitLab
-  (token depuis config ou env var `GITLAB_TOKEN`)
-- `CiPublicationWatcher` — logique de polling réutilisable (phase 3, 5, 6)
-- Config keys :
-  - `publication.mode` : `local` | `ci`
+- `GitlabApiClient` (or helper) — lightweight wrapper around GitLab REST calls
+  (token from config or env var `GITLAB_TOKEN`)
+- `CiPublicationWatcher` — reusable polling logic (phases 3, 5, 6)
+- Config keys:
+  - `publication.mode`: `local` | `ci`
   - `publication.gitlab.project_id`
-  - `publication.gitlab.token_env_var` (défaut : `GITLAB_TOKEN`)
-  - `publication.apt.package_name` (défaut : `wex`)
+  - `publication.gitlab.token_env_var` (default: `GITLAB_TOKEN`)
+  - `publication.apt.package_name` (default: `wex`)
   - `publication.apt.check_url`
 
 ---
 
 ## Notes
 
-- Les packages npm et PHP ont déjà ce pattern ; s'inspirer de leur implémentation
-  pour la cohérence (même interface de polling, mêmes codes d'erreur)
-- La phase 6 (vérif apt) est spécifique à `wex` ; les autres packages ont un
-  équivalent (`_wait_for_registry` existe déjà dans `repo_workdir.py`)
-- Le polling doit être interruptible (Ctrl+C) sans laisser le process dans un état incohérent
+- The npm and PHP packages already have this pattern; draw from their implementation
+  for consistency (same polling interface, same error codes)
+- Phase 6 (apt verification) is specific to `wex`; the other packages have an
+  equivalent (`_wait_for_registry` already exists in `repo_workdir.py`)
+- Polling must be interruptible (Ctrl+C) without leaving the process in an inconsistent state
