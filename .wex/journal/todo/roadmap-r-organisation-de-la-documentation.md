@@ -1,7 +1,7 @@
 # Roadmap : Réorganisation de la documentation
 
 Opened: 2026-08-19
-Updated: 2026-08-21
+Updated: 2026-08-22
 
 **Single place for this work.** Everything related to the documentation system is
 managed here. Consolidates `.wex/knowledge/state-of-the-art.md` and
@@ -104,9 +104,21 @@ drives phases 5 and 6.
 name, and `addons()` is the first produced data injected.
 
 **B. `AGENTS.md` / `CLAUDE.md` — the agent that does not know wex.**
-Hardcoded Python string (`with_ai_workdir_mixin.py:15`), written into each workdir,
-now saying "browse `.wex/knowledge/`". This is what replaces the deleted
-entrypoints/summaries, and it knows nothing of the actual folder contents.
+Hardcoded Python string (`with_ai_workdir_mixin.py:22`), written into each workdir.
+Being minimal and near-identical everywhere is fine and not the problem. The problem is
+that **both branches it offers lead nowhere for an agent**: `wex ai::agent/talk` is a
+human surface, not something an agent can invoke, and "browse `.wex/knowledge/`" points
+at `.md.j2` sources — templates, unreadable as they stand.
+
+Target shape, once F and G exist:
+- *With wex*: the specialised consultation commands — `app::knowledge/read|search|explore`
+  — and the source exploration ones — `app::sources/search|grep`
+- *Without wex*: a **built markdown rendering** of the knowledge, at a known path in
+  the repository
+- Either way, the repository can be explored freely
+
+Which makes B a consumer of F and G, not a parallel task: rewriting it before those
+commands exist would only swap one dead pointer for another.
 
 **C. The human who opens the file.** Works, nothing to do.
 Constraint to keep in mind: **a fragment converted to `.j2` is no longer readable in
@@ -278,10 +290,11 @@ building block.
       Seeded through `default_content`, so a written page is never overwritten, and
       the stub is a Jinja comment so an unwritten page renders to nothing rather than
       leaking a `TODO` into a README published to PyPI
-- [ ] Generalise multi-level aggregation to any target, not just README
-- [ ] Have `AGENTS.md` / `CLAUDE.md` produced by this system (case B)
-- [ ] Open a reading path on the app's `.wex/knowledge/` (case D)
-- [ ] Switch remaining `.md` fragments to `.j2` — weigh against case C
+- [ ] Generalise multi-level aggregation to any target, not just README — the
+      prerequisite for phase 6, whose commands all need to resolve and render a page
+      that is not a README
+- [ ] Switch remaining `.md` fragments to `.j2` — no longer weighed against case C,
+      which phase 6 settles
 - [ ] Decide whether exported `.md` files are versioned generated artefacts or not
 - [ ] `readme.sections` in `PACKAGES/.wex/config.yml` is now dead for composer-based
       packages: remove it, or keep it for the legacy discovery path?
@@ -292,25 +305,37 @@ Two new command families, which are the concrete form of "how the documentation 
 searched". Written once, they serve the human at the terminal and the agent through
 MCP — the surface distinction of case E applies, not a second implementation.
 
-**Consultation (case F)**
+**Consultation (case F)** — `app::knowledge/read`, and whatever `explore` turns out to
+mean once `read` exists.
 
-- [ ] `wex` reads a document by identifier and serves the **built** version: the
-      cascade resolved, the Jinja rendered, the produced data injected. Never the raw
-      source, which is what makes the `.j2` question of case C moot
+- [ ] `read` serves a document by identifier in its **built** form: the cascade
+      resolved, the Jinja rendered, the produced data injected. Never the raw source,
+      which is what makes the `.j2` question of case C moot
+- [ ] Extend it beyond the knowledge of *services*, the only thing the current
+      `app::knowledge/read` reaches — the app's own `.wex/knowledge/` has no reading
+      path at all, which is gap D
 - [ ] Rendering is a transformation stage, not just variable substitution: translating
       into the reader's language is the first case to plan for, the knowledge being
       written in English while the author works in French
-- [ ] Decide where a built version is cached, and what invalidates it
+- [ ] **Build a markdown rendering into the repository**, for the reader without wex —
+      today `.wex/knowledge/` is `.md.j2`, so that audience has nothing to open. Decide
+      the path, and whether the artefact is committed (it is the only branch of
+      `AGENTS.md` that can work offline, so probably yes)
 
-**Search (case G)**
+**Search (case G)** — `app::knowledge/search` for the documentation,
+`app::sources/search|grep` for the code.
 
-- [ ] Find a feature across a suite of 89 packages — "which package handles X" — which
-      no current surface answers
+- [ ] Answer "which package handles X" across a suite, which no current surface does
 - [ ] Decide the mechanism: index built at rectify, full-text over the built versions,
       or an agent reading the index. Weigh against the fact that the corpus is
       generated, so the index can be a build product rather than a service
+- [ ] Source exploration is the sibling family, not an afterthought: an agent that
+      cannot find the documentation falls back to the code, and should have a
+      suite-wide way to do it
 - [ ] Expose both families as agent tools, which closes gap D: an agent stops guessing
       a path and asks a question
+- [ ] Only then rewrite `AGENTS.md` (case B) around the commands, since it can finally
+      point at something that answers
 
 **Prompts**
 
@@ -361,11 +386,13 @@ Read against the three axes: **writing it** and **fixing it** are both done for 
 Python suite. **Reading it** has one working surface out of the five mapped, and is
 now the bottleneck.
 
-Next step: phase 6, whose two command families (consultation and search, cases F and
-G) are what make a corpus of this size usable at all. They share the aggregation
-building block that case A just proved, as do case B (`AGENTS.md`) and case D (agents
-reading the app's own knowledge). The non-Python repositories follow, once their
-language addons ship the templates the Python one has.
+Next step: phase 6, the consultation and search commands. **Sequencing decided** —
+they come before rewriting `AGENTS.md`, which is their first consumer: that file can
+only stop pointing at dead ends (`wex talk`, a human surface; `.wex/knowledge/`, raw
+templates) once there are commands and a built artefact to point at instead.
+
+Then the non-Python repositories, once their language addons ship the templates the
+Python one has.
 
 Still open, unrelated to the phases:
 - `dev-css` ships an empty `description`; `dev-javascript` and `dev-php` both claim
