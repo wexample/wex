@@ -1,7 +1,7 @@
 # Roadmap : Réorganisation de la documentation
 
 Opened: 2026-08-19
-Updated: 2026-08-22
+Updated: 2026-08-23
 
 **Single place for this work.** Everything related to the documentation system is
 managed here. Consolidates `.wex/knowledge/state-of-the-art.md` and
@@ -233,18 +233,49 @@ Out of scope, deliberately: the README fragments orphaned by the composer (disco
 bypassed when `_content.md.j2` exists), ~370 lines across `wex-addon-app`,
 `packages/{app,event,orm,prompt}` and the suite. Resolved elsewhere.
 
-## Phase 3 — Move code rules into the language package
+## Phase 3 — Move code rules into the language package — DONE
 
-Deleted from `wex` and the suite, **to be redone** in `wex-addon-dev-python` as
-documentation for the rectify options that already enforce them (`FormatOption`,
-`ModernizeTypingOption`, marker `# filestate: python-iterable-sort`).
-Original content recoverable from: `wex@7cffc16c4`, suite `@74beedd`.
+The eight deleted files (`wex@7cffc16c4`, suite `@74beedd`) were recovered and read rule
+by rule. They now live as formatter writing rules, delivered by a `PreToolUse` hook to
+whichever agent is about to edit a matching file — the rules follow the file, so no agent
+has to be chosen for them.
 
-- [ ] `coding/general.md`, `coding/python/{sorting,spacing,typing,syntax}.md` (wex)
-- [ ] `code-style/{general,python,maintenance-script}-code-style.md` (suite)
+- [x] `coding/general.md`, `coding/python/{sorting,spacing,typing,syntax}.md` (wex)
+- [x] `code-style/{general,python,maintenance-script}-code-style.md` (suite)
 
-To be rewritten from the code, not copied: `python-code-style.md` still mentioned
-Pydantic while the code has moved to attrs / `base_class` / `public_field`.
+Three formatters, each shipping its rules under its addon's `resources/writing_rules/`:
+
+| formatter | addon | matches |
+|---|---|---|
+| `python-code` | `wex-addon-dev-python` | `.py` under the `src/` of a `pyproject.toml` |
+| `php-code` | `wex-addon-dev-php` | `.php` under the `src/` of a `composer.json`, `vendor/` out |
+| `javascript-code` | `wex-addon-dev-javascript` | `.ts`/`.js` under the `src/` of a `package.json`, `node_modules/` out |
+
+What was dropped and why — a rule that a rectify pass already enforces costs prompt and
+teaches nothing:
+
+- `sorting.md`, `spacing.md` in full → `order_class_methods`, `order_class_attributes`,
+  `sort_imports`, `fix_blank_lines` do it on every rectify
+- from `syntax.md`: alphabetical imports, `TYPE_CHECKING` placement, imports moved into
+  function bodies → `sort_imports`, `relocate_imports`
+- from `python-code-style.md`: the whole Pydantic section, **obsolete** — the code moved
+  to attrs, exactly the drift this roadmap exists to stop; and the venv paths, which are
+  usage documentation, not a writing rule
+- from `general.md`: "separator comment between logical sections", which asks for
+  decorative comments the next rule forbids
+- `maintenance-script-code-style.md` in full: it documents `.wex/python/script`, a
+  directory that is now empty and declared nowhere, and points at
+  `tools/maintenance-script.md`, deleted in phase 2
+
+What survived is what no pass can decide: English everywhere, one class per file, kinds in
+separate directories, long text moved to `resources/`, attrs over Pydantic, `default=` for
+scalars against `factory=` for containers, `__attrs_post_init__` over `__init__`, type
+hints beyond the trivially inferable returns, the `# filestate: python-iterable-sort`
+marker, and deleting a comment that no longer matches its code rather than updating around
+it.
+
+- [ ] Rules for writing tests — the formatters are scoped to `src/` on purpose, so a test
+      file currently receives nothing
 
 ## Phase 4 — Define how each file is written
 
