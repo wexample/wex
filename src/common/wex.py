@@ -86,6 +86,6 @@ class Wex(Kernel):
             ]).exec_argv()
 
         except Exception as e:
-            from wexample_app.helpers.debug import debug_handle_app_error
+            from wexample_app.helper.debug import debug_handle_app_error
 
             debug_handle_app_error(e)
