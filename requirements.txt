@@ -191,7 +191,7 @@ pylint==4.0.8
     # via wexample-wex-addon-dev-python
 pynacl==1.6.2
     # via paramiko
-pyright==1.1.411
+pyright==1.1.412
     # via wexample-wex-addon-dev-python
 python-dotenv==1.2.3
     # via
@@ -346,7 +346,7 @@ wexample-runner==9.4.0
     # via
     #   wexample-filestate
     #   wexample-wex-addon-app
-wexample-wex-addon-ai==14.1.0
+wexample-wex-addon-ai==14.2.0
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-dev-javascript
@@ -369,17 +369,17 @@ wexample-wex-addon-app==31.0.1
     #   wexample-wex-addon-services-platform
 wexample-wex-addon-dev-css==6.0.75
     # via wex (pyproject.toml)
-wexample-wex-addon-dev-javascript==8.1.2
+wexample-wex-addon-dev-javascript==8.1.3
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-dev-php
-wexample-wex-addon-dev-php==12.0.1
+wexample-wex-addon-dev-php==12.0.2
     # via wex (pyproject.toml)
-wexample-wex-addon-dev-python==13.2.2
+wexample-wex-addon-dev-python==13.2.3
     # via wex (pyproject.toml)
 wexample-wex-addon-filestate==6.2.22
     # via wex (pyproject.toml)
-wexample-wex-addon-master==11.2.2
+wexample-wex-addon-master==11.2.3
     # via wex (pyproject.toml)
 wexample-wex-addon-package==7.6.5
     # via wex (pyproject.toml)
