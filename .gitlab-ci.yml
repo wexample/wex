@@ -1,3 +1,5 @@
+include:
+  - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.docker.yml'
 .checkup_install:
   extends:
     - .on_master
@@ -70,16 +72,22 @@ stages:
 build_docker:
   extends:
     - .on_master
+    - .docker_build_legacy_image_file
   stage: build_docker
-  image: docker:27
   needs:
     - checkup_install_debian
     - checkup_install_ubuntu
+  variables:
+    # Published to the public project so anyone can pull without credentials —
+    # the source stays private. Pushing there uses the deploy token in
+    # PUBLIC_REGISTRY_USER / PUBLIC_REGISTRY_PASSWORD.
+    IMAGE_NAMESPACE: wexample-public/docker
+    IMAGE_NAME: wex/release
+    IMAGE_DOCKERFILE: .wex/docker/images/Dockerfile.release
   script:
-    - BUILD_VERSION=$(cat version.txt)
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker build --tag $CI_REGISTRY_IMAGE:$BUILD_VERSION --tag $CI_REGISTRY_IMAGE:latest -f .wex/docker/images/Dockerfile.runtime .
-    - docker push $CI_REGISTRY_IMAGE:$BUILD_VERSION
-    - docker push $CI_REGISTRY_IMAGE:latest
+    - export IMAGE_TAG=$(cat version.txt)
+    - export IMAGE_EXTRA_TAGS=latest
+    - export BUILD_OPTIONS="--build-arg WEX_VERSION=${IMAGE_TAG}"
+    - !reference [.docker_build_legacy_image_file, script]
 variables:
   MAIN_BRANCH_NAME: main
