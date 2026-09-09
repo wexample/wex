@@ -12,24 +12,15 @@ fi
 
 . "${WEX_DIR_CLI}/_init.sh"
 
-# Function to handle cleanup on exit or interruption
-cleanup() {
-    if [ -f "${WEX_POST_EXEC}" ]; then
-        rm "${WEX_POST_EXEC}"
-    fi
-    if [ -f "${WEX_TASK_REDIRECT}" ]; then
-        rm "${WEX_TASK_REDIRECT}"
-    fi
-}
-
-# Trap to handle interruptions and cleanup
-trap cleanup EXIT INT TERM
-
 WEX_REQUEST_ID="$(date '+%Y%m%d-%H%M%S-%N')-$$"
 
 # Allow to override python executor
 WEX_INTERPRETER=${WEX_INTERPRETER:-${WEX_ROOT}.venv/bin/python}
 
-# Load main python script
-${WEX_INTERPRETER} "${WEX_ROOT}__main__.py" --force-request-id "${WEX_REQUEST_ID}" "${@}"
+# exec, not a child call: bash defers its signal handlers until the foreground
+# command returns, so a long-running command — `ai::agent/serve` as a container's
+# only process — would never see the SIGTERM of a `docker stop` and would be
+# killed after the grace period, mid-turn. Replacing the shell puts Python at
+# PID 1, where the signal reaches it.
+exec ${WEX_INTERPRETER} "${WEX_ROOT}__main__.py" --force-request-id "${WEX_REQUEST_ID}" "${@}"
 
