@@ -4,7 +4,7 @@ A command is one word made of three parts — the addon, the group and the name:
 
 ```bash
 wex core::ping/hi        # hi!
-wex core::version/get    # 6.0.130
+wex core::version/get    # 6.0.131
 ```
 
 The addon prefix is optional when the group and name are unambiguous, so `ping/hi`
