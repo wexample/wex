@@ -1,0 +1,76 @@
+## Virtual Environments
+
+### Principle: a single shared venv
+
+All projects and packages use a single venv located at:
+
+```
+wex-6/.venv/
+```
+
+All wexample packages are installed in editable mode (`-e`) in this venv.
+This avoids venv proliferation (one per project = IDE + disk nightmare),
+and lets packages reference each other without special configuration.
+
+---
+
+### app-manager: two distinct roots
+
+Each project has its own `app_manager` code in `{{ path(".wex/python/app_manager/") }}`,
+but the Python running it always comes from the wex-6 shared venv.
+
+The `wex-6/.wex/bin/app-manager` script handles this with two separate variables:
+
+```bash
+# Resolves the symlink → always returns wex-6, regardless of the calling project
+SCRIPT_REAL="$(readlink -f "${BASH_SOURCE[0]}")"
+WEX_ROOT="$(cd "$(dirname "$SCRIPT_REAL")/../.." && pwd)"
+
+# Does NOT resolve the symlink → returns the calling project (manager, api, network…)
+APP_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+AM_DIR="$APP_ROOT/.wex/python/app_manager"
+```
+
+- `WEX_ROOT` → wex-6 root → `$WEX_ROOT/.venv/bin/python` (shared venv)
+- `APP_ROOT` → calling project root → `AM_DIR` points to its `app_manager`
+
+---
+
+### Symlinks app-manager
+
+Projects do not contain the `app-manager` script; they hold a symlink to wex-6:
+
+```
+projet/.wex/bin/app-manager -> wex-6/.wex/bin/app-manager
+```
+
+This unresolved-symlink behaviour is what lets `APP_ROOT` point to the correct calling project.
+
+---
+
+### Prerequisites for a project to work
+
+Each project must have its `app_manager` directory initialised:
+
+```
+projet/.wex/python/app_manager/
+    __main__.py      ← declares the wex addons to load
+    pyproject.toml   ← project dependencies
+```
+
+This directory is created by the wex-6 init command (checkup/setup).
+Without it, app-manager crashes even when the shared venv is in place.
+
+---
+
+### Dev vs deployment contexts
+
+**Dev (local machine):**
+- wex-6 accessed via its full path or an alias, not via `which wex` (which still points to the legacy wex-5)
+- The shared venv is populated manually with `-e` packages
+- `/etc/wex.conf` may exist as a local convenience tool, but is not required by the system
+
+**Deployment (apt or other):**
+- wex-6 properly installed, `which wex` points to it
+- The venv is created by the package post-install
+- No `/etc/wex.conf`, no hardcoded paths — `readlink -f` is enough

@@ -1,0 +1,25 @@
+formatter: app-doc
+sources: []
+agents:
+  maintainer:
+    instructions: |
+      How a user runs a command: the address form, the four namespaces, options, the
+      kernel-level options every command accepts, and how to scaffold one.
+
+      Every command, every option and every transcript on this page is executable. Run it
+      before writing it, and paste what came back — the help blocks and outputs are real
+      output, not reconstructions.
+
+      This matters more here than elsewhere: what the page describes is implemented in
+      `wexample-wex-core`, outside this repository, so no source listed below will ever
+      change when the resolution rules do. Running the commands is the only check.
+
+      Scope is the user's side. Why the kernel resolves an address the way it does, and
+      what an addon may contribute, belong to `contributing/architecture`.
+
+      Do not enumerate available commands. The list changes with every addon release and
+      tab-completion already answers that question.
+
+    sources:
+      - file: bin/wex
+      - file: bin/autocomplete-handler

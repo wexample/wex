@@ -1,0 +1,6 @@
+name: main
+model: claude-opus-5
+description: Generalist agent, no specialization.
+modes:
+  - talk
+  - structured

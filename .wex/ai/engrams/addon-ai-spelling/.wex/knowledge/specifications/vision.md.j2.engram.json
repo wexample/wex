@@ -1,0 +1,11 @@
+{
+  "engram_version": 1,
+  "source_key": ".wex/knowledge/specifications/vision.md.j2",
+  "cache_nonce": "default",
+  "last_visited_at": "2026-08-20T08:42:26+00:00",
+  "last_rev": "60ab7baac7c6e05d87258e13b031028a6b5b78b5",
+  "last_decision": "skip",
+  "kinds": [],
+  "notes": "All prose spelled correctly; no Jinja identifiers involved",
+  "in_progress": null
+}

@@ -1,0 +1,12 @@
+{
+  "engram_version": 1,
+  "source_key": ".wex/knowledge/readme/_content.md.j2",
+  "cache_nonce": "default",
+  "last_visited_at": "2026-08-21T05:29:47+00:00",
+  "last_rev": "2a505995464e82f075b5fdf67ca5ce474f4f6104",
+  "source_revs": {},
+  "last_decision": "skip",
+  "kinds": [],
+  "notes": "file contains only Jinja block/extend directives and macro calls, no prose to translate",
+  "in_progress": null
+}

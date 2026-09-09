@@ -1,0 +1,12 @@
+{
+  "engram_version": 1,
+  "source_key": ".wex/knowledge/contributing/venv.md.j2",
+  "cache_nonce": "default",
+  "last_visited_at": "2026-08-21T05:29:41+00:00",
+  "last_rev": "8b17e3306f99ef58e542e5d9b491ce8eb20b7485",
+  "source_revs": {},
+  "last_decision": "edit",
+  "kinds": [],
+  "notes": "translated venv.md.j2 prose from French to English, all sections",
+  "in_progress": null
+}

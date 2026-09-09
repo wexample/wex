@@ -1,0 +1,12 @@
+{
+  "engram_version": 1,
+  "source_key": ".wex/knowledge/usage/addons.md.j2",
+  "cache_nonce": "default",
+  "last_visited_at": "2026-08-21T05:30:03+00:00",
+  "last_rev": "030c01809a402d373b3d99289705417897ba27bd",
+  "source_revs": {},
+  "last_decision": "skip",
+  "kinds": [],
+  "notes": "File is already entirely in English; no prose to translate.",
+  "in_progress": null
+}

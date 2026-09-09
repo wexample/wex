@@ -1,0 +1,16 @@
+FROM debian:bookworm
+
+ARG WEX_VERSION
+
+RUN apt-get update -qq \
+    && apt-get install -y --no-install-recommends ca-certificates gnupg2 wget \
+    && wget -O - https://apt.wexample.com/gpg | gpg --dearmor -o /etc/apt/trusted.gpg.d/wexample.gpg \
+    && echo "deb http://apt.wexample.com/ stable main" > /etc/apt/sources.list.d/wexample.list \
+    && apt-get update -qq \
+    && apt-get install -y wex \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# apt serves whatever is current, so an image tagged 6.0.129 could hold anything
+# the mirror happened to have. Fail the build rather than ship a lying tag.
+RUN test -z "${WEX_VERSION}" || test "$(wex version)" = "${WEX_VERSION}"

@@ -1,0 +1,27 @@
+formatter: app-doc
+sources: []
+agents:
+  maintainer:
+    instructions: |
+      How to expose a wex command over HTTP: starting and stopping the daemon, the three
+      URL types, marking a command as reachable, issuing and revoking tokens, and reading
+      the logs and metrics.
+
+      Every command and every URL on this page is executable. Run it and paste what came
+      back — a webhook page that lists an option the daemon no longer accepts is worse
+      than no page, because it will be trusted by a CI job.
+
+      The security section is not decoration. A page that teaches how to open a port to
+      the outside states what protects it, and any change to the token mechanism is
+      reflected there on the same pass.
+
+      The closing command reference must list the commands that exist, no more. Verify
+      each one against `--help` rather than against the previous version of this page.
+
+      The architecture section stays short: enough to know which piece resolves a URL
+      type, not a tour of the implementation.
+
+      The daemon and its resolvers live in `wexample-wex-core`, outside this repository,
+      so no source below can wake you when they change.
+
+    sources: []

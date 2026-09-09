@@ -1,0 +1,21 @@
+formatter: app-doc
+sources: []
+agents:
+  maintainer:
+    instructions: |
+      The standard wex holds itself to: what it is trying to be, and what counts as good
+      enough in error handling, robustness, user experience, lifecycle and code quality.
+
+      This page is intent, not description. It is the one file that may legitimately
+      describe a state the code has not reached — an item that is not yet true is a target,
+      not a defect to correct. Never soften a requirement to match current behaviour, and
+      never cite a file or a line number: nothing here is derived from the code, and a
+      source reference would invite exactly the alignment this page must resist.
+
+      Changes come from the operator, not from a sweep. Rewrite an item when the standard
+      itself is restated; otherwise leave it alone.
+
+      Keep it a list of requirements. Rationale, migration notes and the v5 history belong
+      to the journal.
+
+    sources: []

@@ -58,6 +58,7 @@ class AppWorkdir(PythonWorkdir):
         interactive: bool = True,
         has_changes=None,
         skip_test: bool = False,
+        skip_libraries: bool = False,
     ) -> None:
         from wexample_wex_addon_app.commands.library.sync import app__library__sync
         from wexample_wex_addon_package.commands.suite.publish import (
@@ -66,7 +67,7 @@ class AppWorkdir(PythonWorkdir):
 
         library_path = self.get_env_parameter("PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH")
 
-        if library_path:
+        if library_path and not skip_libraries:
             arguments = ["--yes"]
             if skip_test:
                 arguments.append("--skip-test")
@@ -82,4 +83,5 @@ class AppWorkdir(PythonWorkdir):
             interactive=interactive,
             has_changes=has_changes,
             skip_test=skip_test,
+            skip_libraries=skip_libraries,
         )

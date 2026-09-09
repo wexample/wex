@@ -1,0 +1,12 @@
+{
+  "engram_version": 1,
+  "source_key": ".wex/journal/todo/cleanup-issues.md",
+  "cache_nonce": "default",
+  "last_visited_at": "2026-08-21T05:07:42+00:00",
+  "last_rev": "62d095386d8152d5f0f1eeaa582554b99968828e",
+  "source_revs": {},
+  "last_decision": "edit",
+  "kinds": [],
+  "notes": "translated French prose to English (sections, bullets, issue titles); first heading left as-is per journal rules",
+  "in_progress": null
+}

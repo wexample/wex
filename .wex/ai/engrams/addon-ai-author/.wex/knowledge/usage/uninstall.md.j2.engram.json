@@ -1,0 +1,12 @@
+{
+  "engram_version": 1,
+  "source_key": ".wex/knowledge/usage/uninstall.md.j2",
+  "cache_nonce": "default",
+  "last_visited_at": "2026-08-20T15:24:21+00:00",
+  "last_rev": "cfd9c29ffc2bdbc873e832f737354e2705772883",
+  "source_revs": {},
+  "last_decision": "edit",
+  "kinds": [],
+  "notes": "created uninstall.md documenting what bin/uninstall removes, including purge-only items",
+  "in_progress": null
+}

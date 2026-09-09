@@ -1,0 +1,12 @@
+{
+  "engram_version": 1,
+  "source_key": ".wex/knowledge/specifications/vision.md.j2",
+  "cache_nonce": "default",
+  "last_visited_at": "2026-08-21T05:29:55+00:00",
+  "last_rev": "dec2c381020c9de363b500fe563056f0464174c1",
+  "source_revs": {},
+  "last_decision": "skip",
+  "kinds": [],
+  "notes": "file is already entirely in English — nothing to translate",
+  "in_progress": null
+}

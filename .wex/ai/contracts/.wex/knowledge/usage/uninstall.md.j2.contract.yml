@@ -1,0 +1,23 @@
+formatter: app-doc
+sources: []
+agents:
+  maintainer:
+    instructions: |
+      This page covers the `uninstall` command exclusively: how to invoke it
+      (`sudo bash bin/uninstall`), the two operating modes (plain and `purge`), and the
+      exact set of files each mode removes. It does not cover the install process, the
+      inner workings of `_init.sh` / `_init_sudo.sh`, or dpkg packaging details (the
+      `purge` argument is an implementation coincidence the page need not mention).
+
+      Both removal lists — "What the uninstaller removes" and "Additional removals on
+      purge" — must stay exactly in sync with what `bin/uninstall` actually `rm`s; any file
+      added to or dropped from the script must be reflected here on the same change.
+
+      Do not wrap the removal lists in `{{ path("…") }}`. Every entry there is either an
+      absolute system path or a generated artifact — `.venv/`, `.wex/.env`,
+      `tmp/registry.yml` — and the whole point of the purge list is that these may already
+      be absent. Asserting their existence would make the page fail to render on a fresh
+      clone, which is the one machine where it must still build.
+
+    sources:
+      - file: bin/uninstall

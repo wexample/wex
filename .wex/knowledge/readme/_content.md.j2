@@ -1,0 +1,14 @@
+{% extends "_layout.md.j2" %}
+
+{% block intro %}{{ knowledge('usage/overview') }}{% endblock %}
+
+{% block content %}
+{{ knowledge('usage/addons') }}
+
+{{ knowledge('usage/installation') }}
+
+{{ knowledge('usage/commands') }}
+
+{{ knowledge('usage/uninstall') }}
+{{ knowledge('usage/testing') }}
+{% endblock %}

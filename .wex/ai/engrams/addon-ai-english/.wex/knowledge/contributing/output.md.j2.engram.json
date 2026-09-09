@@ -1,0 +1,12 @@
+{
+  "engram_version": 1,
+  "source_key": ".wex/knowledge/contributing/output.md.j2",
+  "cache_nonce": "default",
+  "last_visited_at": "2026-08-21T05:28:24+00:00",
+  "last_rev": "c239482db81d46582a661b66b806667548628da7",
+  "source_revs": {},
+  "last_decision": "edit",
+  "kinds": [],
+  "notes": "translated output.md.j2 from French to English (table rows, headings, prose, code comments)",
+  "in_progress": null
+}

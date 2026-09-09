@@ -1,0 +1,24 @@
+formatter: app-doc
+sources: []
+agents:
+  maintainer:
+    instructions: |
+      The README composer. It holds no prose of its own: it extends `_layout.md.j2`, fills
+      the `intro` block with the opening page, and calls `knowledge()` once per section in
+      reading order.
+
+      The README is an extract of the knowledge, not a rendering of all of it. A page
+      belongs here only if a newcomer needs it before deciding to install — orientation,
+      installation, first commands, removal, tests. Everything under `contributing/` and
+      `specifications/` is deliberately absent.
+
+      Never inline prose into this file. If a paragraph is missing, it is missing from the
+      knowledge page, and that is where it goes.
+
+      Order is what this file decides, and it is the reading order, not alphabetical: what
+      wex is before how to install it, how to install it before how to use it.
+
+      Do not add a table of contents or a title — the layout emits both, and the contents
+      are built from the headings of the rendered output.
+
+    sources: []

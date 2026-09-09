@@ -1,0 +1,11 @@
+{
+  "engram_version": 1,
+  "source_key": ".wex/knowledge/usage/testing.md.j2",
+  "cache_nonce": "default",
+  "last_visited_at": "2026-08-20T08:47:32+00:00",
+  "last_rev": "768f0f40ae6e834f6bf59ea2b03ec186b7cccd22",
+  "last_decision": "skip",
+  "kinds": [],
+  "notes": "All prose spelled correctly; only grammar quirk \"every addon tests suite\" left alone",
+  "in_progress": null
+}

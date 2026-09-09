@@ -1,0 +1,11 @@
+{
+  "engram_version": 1,
+  "source_key": ".wex/knowledge/usage/webhooks.md.j2",
+  "cache_nonce": "default",
+  "last_visited_at": "2026-08-20T08:47:46+00:00",
+  "last_rev": "93c1bdaf9d428fcdd04a6a14835392ff49aba7dc",
+  "last_decision": "edit",
+  "kinds": [],
+  "notes": "fixed French spelling: Regénérer → Régénérer",
+  "in_progress": null
+}
