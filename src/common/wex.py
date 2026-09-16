@@ -65,13 +65,11 @@ class Wex(Kernel):
             from wexample_wex_addon_ai.ai_addon_manager import AiAddonManager
             from wexample_wex_addon_master.master_addon_manager import MasterAddonManager
             from wexample_wex_addon_package.package_addon_manager import PackageAddonManager
-            from wexample_wex_addon_process.process_addon_manager import ProcessAddonManager
 
             self.setup(addons=[
                 AiAddonManager,
                 AppAddonManager,
                 PackageAddonManager,
-                ProcessAddonManager,
                 CoreAddonManager,
                 DemoAddonManager,
                 DockerAddonManager,
