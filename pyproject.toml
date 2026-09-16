@@ -22,6 +22,7 @@ dependencies = [
     "wexample-wex-addon-filestate>=6.2.22",
     "wexample-wex-addon-master>=11.2.4",
     "wexample-wex-addon-package>=7.6.5",
+    "wexample-wex-addon-process>=1.0.0",
     "wexample-wex-addon-services-collab>=11.9.0",
     "wexample-wex-addon-services-db>=12.2.0",
     "wexample-wex-addon-services-monitoring>=7.10.0",
