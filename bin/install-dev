@@ -61,6 +61,56 @@ for pkg_dir in "${PKG_DIRS[@]}"; do
     "${VENV_PIP}" install --no-cache-dir -q -e "${pkg_dir}" --no-deps
 done
 
+# `--no-deps` above is what keeps the editable overlay from disturbing the pinned
+# third-party versions, but it also means a dependency a local package gained since
+# requirements.txt was last compiled is never installed — and requirements.txt only
+# covers wex's own dependency closure, so a suite package nobody in that chain
+# depends on (orm, queue) never contributes its requirements at all. `pip check`
+# names exactly what is missing; reinstalling the offenders *with* their deps heals
+# it, and leaves the 42 sound packages untouched.
+echo "Checking for unmet requirements..."
+CHECK_OUTPUT="$("${VENV_PIP}" check 2>&1 || true)"
+
+if [ -n "${CHECK_OUTPUT}" ] && [ "${CHECK_OUTPUT}" != "No broken requirements found." ]; then
+    echo "${CHECK_OUTPUT}"
+
+    # "wexample-orm 1.3.3 requires sqlalchemy, which is not installed." -> wexample-orm
+    mapfile -t BROKEN < <(echo "${CHECK_OUTPUT}" | awk '{print $1}' | sort -u)
+
+    BROKEN_DIRS=()
+    for dist in "${BROKEN[@]}"; do
+        # Distribution name -> source directory, by reading each package's own metadata.
+        for pkg_dir in "${PKG_DIRS[@]}"; do
+            pkg_name="$("${VENV_PYTHON}" - "${pkg_dir}" <<'EOF'
+import sys, tomllib
+from pathlib import Path
+data = tomllib.loads((Path(sys.argv[1]) / "pyproject.toml").read_text(encoding="utf-8"))
+print(data.get("project", {}).get("name", "").lower().replace("_", "-"))
+EOF
+)"
+            if [ "${pkg_name}" = "${dist,,}" ]; then
+                BROKEN_DIRS+=("${pkg_dir}")
+                break
+            fi
+        done
+    done
+
+    if [ "${#BROKEN_DIRS[@]}" -gt 0 ]; then
+        echo "Reinstalling ${#BROKEN_DIRS[@]} package(s) with their dependencies..."
+        for pkg_dir in "${BROKEN_DIRS[@]}"; do
+            echo "  -e ${pkg_dir} (with deps)"
+            "${VENV_PIP}" install --no-cache-dir -q -e "${pkg_dir}"
+        done
+    fi
+
+    # Anything still unmet is a dependency no local package can supply: say so and
+    # fail, rather than let a later command die on a ModuleNotFoundError.
+    if ! "${VENV_PIP}" check; then
+        echo "ERROR: requirements above are still unmet — install them by hand." >&2
+        exit 1
+    fi
+fi
+
 # Install shell prompt handler directly in the current user's bashrc (no sudo).
 chmod +x "${WEX_DIR_CLI}terminal-handler"
 SOURCE_LINE=". ${WEX_DIR_CLI}terminal-handler"
