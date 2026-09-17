@@ -1,6 +1,6 @@
 # wex
 
-Version: 6.0.135
+Version: 6.0.136
 
 wex runs an entire infrastructure from one command line. It manages
 applications and the Docker services behind them, keeps project directories in the shape
@@ -101,7 +101,7 @@ A command is one word made of three parts — the addon, the group and the name:
 
 ```bash
 wex core::ping/hi        # hi!
-wex core::version/get    # 6.0.135
+wex core::version/get    # 6.0.136
 ```
 
 The addon prefix is optional when the group and name are unambiguous, so `ping/hi`
