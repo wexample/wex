@@ -1,0 +1,12 @@
+{
+    "agent_id": "dc3f96d1-c4f0-5245-89bd-12a3c80fbaa7",
+    "agent_name": "addon:ai/english",
+    "key": ".wex/knowledge/contributing/architecture.md.j2",
+    "last_visited_at": "2026-08-21T05:27:33+00:00",
+    "action": "fix",
+    "cache_nonce": "default",
+    "last_rev": "16e659dc76eece8d097fcdec948e6c0493f52954",
+    "source_revs": {},
+    "findings": [],
+    "changes": []
+}

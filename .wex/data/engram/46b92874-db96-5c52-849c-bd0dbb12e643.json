@@ -1,0 +1,12 @@
+{
+    "agent_id": "b9a33585-f7ed-56bd-aff9-95fec0a33166",
+    "agent_name": "addon:ai/spelling",
+    "key": ".wex/knowledge/contributing/architecture.md.j2",
+    "last_visited_at": "2026-08-20T08:41:47+00:00",
+    "action": "fix",
+    "cache_nonce": "default",
+    "last_rev": "bfebb2f2a5aab7b4c4b0a9097ece41e33289a931",
+    "source_revs": {},
+    "findings": [],
+    "changes": []
+}

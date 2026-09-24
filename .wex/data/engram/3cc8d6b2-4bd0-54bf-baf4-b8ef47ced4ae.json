@@ -1,0 +1,14 @@
+{
+    "agent_id": "dc3f96d1-c4f0-5245-89bd-12a3c80fbaa7",
+    "agent_name": "addon:ai/english",
+    "key": ".wex/knowledge/contributing/venv.md.j2",
+    "last_visited_at": "2026-08-21T05:29:41+00:00",
+    "action": "fix",
+    "cache_nonce": "default",
+    "last_rev": "8b17e3306f99ef58e542e5d9b491ce8eb20b7485",
+    "source_revs": {},
+    "findings": [],
+    "changes": [
+        "translated venv.md.j2 prose from French to English, all sections"
+    ]
+}

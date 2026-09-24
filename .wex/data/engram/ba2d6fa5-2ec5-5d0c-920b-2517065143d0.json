@@ -1,0 +1,14 @@
+{
+    "agent_id": "f7005bbb-c05e-5ab1-9c8b-42488a07ab20",
+    "agent_name": "addon:ai/author",
+    "key": ".wex/knowledge/usage/uninstall.md.j2",
+    "last_visited_at": "2026-08-20T15:24:21+00:00",
+    "action": "fix",
+    "cache_nonce": "default",
+    "last_rev": "cfd9c29ffc2bdbc873e832f737354e2705772883",
+    "source_revs": {},
+    "findings": [],
+    "changes": [
+        "created uninstall.md documenting what bin/uninstall removes, including purge-only items"
+    ]
+}
