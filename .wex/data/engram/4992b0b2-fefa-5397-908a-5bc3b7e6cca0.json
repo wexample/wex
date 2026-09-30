@@ -1,0 +1,12 @@
+{
+    "agent_id": "dc3f96d1-c4f0-5245-89bd-12a3c80fbaa7",
+    "agent_name": "addon:ai/english",
+    "key": ".wex/knowledge/readme/_content.md.j2",
+    "last_visited_at": "2026-08-21T05:29:47+00:00",
+    "action": "fix",
+    "cache_nonce": "default",
+    "last_rev": "2a505995464e82f075b5fdf67ca5ce474f4f6104",
+    "source_revs": {},
+    "findings": [],
+    "changes": []
+}

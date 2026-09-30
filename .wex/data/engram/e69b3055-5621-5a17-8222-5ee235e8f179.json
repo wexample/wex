@@ -1,0 +1,17 @@
+{
+    "agent_id": "bc65ff1a-2868-5c6b-82a4-f589e295f541",
+    "agent_name": "addon:ai/maintainer",
+    "key": ".wex/knowledge/usage/installation.md.j2",
+    "last_visited_at": "2026-08-20T15:57:30+00:00",
+    "action": "fix",
+    "cache_nonce": "default",
+    "last_rev": "34772672b4761b15de57a93574b108f9f38fe109",
+    "source_revs": {
+        "file:bin/install": "f00640ae6552a64016ef35bff2ee01e1151cd5c3",
+        "file:bin/install-dev": "9bd6305333b4d94bbcb9a1be707f1b48273e1562",
+        "file:bin/uninstall": "7e63d781e63e3bf122252a2a6df7a6c515a57c14",
+        "file:bin/wex": "e693084bd7028f80d744abf52ba76a44a52fa25f"
+    },
+    "findings": [],
+    "changes": []
+}

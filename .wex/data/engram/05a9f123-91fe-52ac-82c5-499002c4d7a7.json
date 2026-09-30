@@ -1,0 +1,14 @@
+{
+    "agent_id": "dc3f96d1-c4f0-5245-89bd-12a3c80fbaa7",
+    "agent_name": "addon:ai/english",
+    "key": ".wex/knowledge/usage/webhooks.md.j2",
+    "last_visited_at": "2026-08-21T05:32:55+00:00",
+    "action": "fix",
+    "cache_nonce": "default",
+    "last_rev": "8088efd1e5e7f71118c65f173f3cc0a6245687cc",
+    "source_revs": {},
+    "findings": [],
+    "changes": [
+        "translated webhooks.md.j2 from French to English, all prose and code comments"
+    ]
+}

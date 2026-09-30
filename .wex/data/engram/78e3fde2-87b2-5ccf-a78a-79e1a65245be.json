@@ -1,0 +1,12 @@
+{
+    "agent_id": "dc3f96d1-c4f0-5245-89bd-12a3c80fbaa7",
+    "agent_name": "addon:ai/english",
+    "key": ".wex/knowledge/usage/uninstall.md.j2",
+    "last_visited_at": "2026-08-21T05:30:33+00:00",
+    "action": "fix",
+    "cache_nonce": "default",
+    "last_rev": "41a0313fa9a689b7dd665ed71b145786ea32f33b",
+    "source_revs": {},
+    "findings": [],
+    "changes": []
+}

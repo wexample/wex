@@ -1,0 +1,12 @@
+{
+    "agent_id": "b9a33585-f7ed-56bd-aff9-95fec0a33166",
+    "agent_name": "addon:ai/spelling",
+    "key": ".wex/knowledge/usage/installation.md.j2",
+    "last_visited_at": "2026-08-20T09:24:30+00:00",
+    "action": "fix",
+    "cache_nonce": "default",
+    "last_rev": "72749e9acc2b55acaab57811f9b398ebacc44ec6",
+    "source_revs": {},
+    "findings": [],
+    "changes": []
+}

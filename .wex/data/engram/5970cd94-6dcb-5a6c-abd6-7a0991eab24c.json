@@ -1,0 +1,15 @@
+{
+    "agent_id": "f7005bbb-c05e-5ab1-9c8b-42488a07ab20",
+    "agent_name": "addon:ai/author",
+    "key": ".wex/knowledge/usage/installation.md.j2",
+    "last_visited_at": "2026-08-20T15:13:41+00:00",
+    "action": "fix",
+    "cache_nonce": "default",
+    "last_rev": "34772672b4761b15de57a93574b108f9f38fe109",
+    "source_revs": {
+        "file:bin/install": "f00640ae6552a64016ef35bff2ee01e1151cd5c3",
+        "file:bin/uninstall": "7e63d781e63e3bf122252a2a6df7a6c515a57c14"
+    },
+    "findings": [],
+    "changes": []
+}
