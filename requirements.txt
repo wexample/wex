@@ -390,14 +390,14 @@ wexample-runner==10.0.0
     # via
     #   wexample-filestate
     #   wexample-wex-addon-app
-wexample-wex-addon-ai==18.1.0
+wexample-wex-addon-ai==18.2.0
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-dev-javascript
     #   wexample-wex-addon-dev-php
     #   wexample-wex-addon-dev-python
     #   wexample-wex-addon-master
-wexample-wex-addon-app==33.0.0
+wexample-wex-addon-app==33.1.0
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-ai
@@ -412,33 +412,33 @@ wexample-wex-addon-app==33.0.0
     #   wexample-wex-addon-services-db
     #   wexample-wex-addon-services-monitoring
     #   wexample-wex-addon-services-platform
-wexample-wex-addon-dev-css==6.0.82
+wexample-wex-addon-dev-css==6.0.83
     # via wex (pyproject.toml)
-wexample-wex-addon-dev-javascript==8.3.1
+wexample-wex-addon-dev-javascript==8.3.2
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-dev-php
-wexample-wex-addon-dev-php==12.7.0
+wexample-wex-addon-dev-php==12.7.1
     # via wex (pyproject.toml)
-wexample-wex-addon-dev-python==15.1.1
+wexample-wex-addon-dev-python==15.1.2
     # via wex (pyproject.toml)
 wexample-wex-addon-filestate==6.2.26
     # via wex (pyproject.toml)
-wexample-wex-addon-master==11.3.4
+wexample-wex-addon-master==11.3.5
     # via wex (pyproject.toml)
-wexample-wex-addon-package==7.6.13
+wexample-wex-addon-package==7.6.14
     # via wex (pyproject.toml)
-wexample-wex-addon-process==4.1.1
+wexample-wex-addon-process==4.1.2
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-ai
-wexample-wex-addon-services-collab==11.9.8
+wexample-wex-addon-services-collab==11.9.9
     # via wex (pyproject.toml)
-wexample-wex-addon-services-db==12.4.3
+wexample-wex-addon-services-db==12.4.4
     # via wex (pyproject.toml)
-wexample-wex-addon-services-monitoring==7.10.8
+wexample-wex-addon-services-monitoring==7.10.9
     # via wex (pyproject.toml)
-wexample-wex-addon-services-platform==12.10.7
+wexample-wex-addon-services-platform==12.10.8
     # via wex (pyproject.toml)
 wexample-wex-core==31.2.0
     # via
