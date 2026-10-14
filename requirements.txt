@@ -424,7 +424,7 @@ wexample-wex-addon-dev-python==15.1.4
     # via wex (pyproject.toml)
 wexample-wex-addon-filestate==6.2.26
     # via wex (pyproject.toml)
-wexample-wex-addon-master==11.3.7
+wexample-wex-addon-master==11.4.0
     # via wex (pyproject.toml)
 wexample-wex-addon-package==7.6.16
     # via wex (pyproject.toml)
