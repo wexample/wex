@@ -84,6 +84,11 @@ build_docker:
     IMAGE_NAMESPACE: wexample-public/docker
     IMAGE_NAME: wex/release
     IMAGE_DOCKERFILE: .wex/docker/images/Dockerfile.release
+    # One image for both, so a Mac on Apple Silicon runs it natively: the
+    # Claude CLI the agent images carry crashes under amd64 emulation. The
+    # package is architecture-independent and the apt repository publishes it
+    # for arm64 too, from the `deploy` job of this same pipeline.
+    IMAGE_PLATFORMS: linux/amd64,linux/arm64
   script:
     - export IMAGE_TAG=$(cat version.txt)
     - export IMAGE_EXTRA_TAGS=latest
