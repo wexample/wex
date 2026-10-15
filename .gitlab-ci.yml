@@ -6,6 +6,12 @@ include:
   needs:
     - deploy
     - wait_for_pypi
+  # wait_for_pypi saw every version, but PyPI answers from several caches: the
+  # runner installing may hit one that does not serve them yet. Running the job
+  # again a little later is what a human did by hand each time.
+  retry:
+    max: 2
+    when: script_failure
   script:
     - set -e
     - apt-get update -qq
