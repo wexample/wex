@@ -79,7 +79,7 @@ cffi==2.1.1
     #   pynacl
 charset-normalizer==3.5.2
     # via requests
-claude-agent-sdk==0.2.166
+claude-agent-sdk==0.2.167
     # via wexample-wex-addon-ai
 click==8.5.0
     # via
