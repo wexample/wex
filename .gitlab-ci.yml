@@ -151,7 +151,9 @@ release:
     # The suite repository is worked on a version-* branch, never released to
     # a main of its own: the runner follows the one the developer pushes.
     SUITE_BRANCH: version-0.0.3
-    VENV_PATH: /var/www/suites/python/.wex/local/venv
+    # wex's own .venv, shared with the suite, as on a developer's machine:
+    # wex's tests look for it there.
+    VENV_PATH: /var/www/apps/wex/.venv
   script:
     - set -eu
     # A developer's umask: the job runs as root, whose 022 makes some tests
