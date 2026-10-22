@@ -148,6 +148,9 @@ release:
     WEX_REPOSITORY: ssh://git@gitlab.wexample.com:4567/wexample/wex.git
     SUITE_PATH: /var/www/suites/python
     SUITE_REPOSITORY: ssh://git@gitlab.wexample.com:4567/wexample-python/suite-manager.git
+    # The suite repository is worked on a version-* branch, never released to
+    # a main of its own: the runner follows the one the developer pushes.
+    SUITE_BRANCH: version-0.0.3
     VENV_PATH: /var/www/suites/python/.wex/local/venv
   script:
     - set -eu
@@ -159,12 +162,12 @@ release:
     - git config --global user.email "contact@wexample.com"
     - git config --global --add safe.directory '*'
     - |
-      for pair in "$WEX_PATH $WEX_REPOSITORY" "$SUITE_PATH $SUITE_REPOSITORY"; do
-        set -- $pair
-        if [ ! -d "$1/.git" ]; then git clone --branch main "$2" "$1"; fi
-        git -C "$1" checkout --quiet main
-        git -C "$1" fetch --quiet origin main
-        git -C "$1" merge --ff-only --quiet origin/main
+      for triple in "$WEX_PATH $WEX_REPOSITORY main" "$SUITE_PATH $SUITE_REPOSITORY $SUITE_BRANCH"; do
+        set -- $triple
+        if [ ! -d "$1/.git" ]; then git clone --branch "$3" "$2" "$1"; fi
+        git -C "$1" fetch --quiet origin "$3"
+        git -C "$1" checkout --quiet "$3"
+        git -C "$1" merge --ff-only --quiet "origin/$3"
       done
     # What .wex/local/env.yml holds on a developer's machine.
     - |
