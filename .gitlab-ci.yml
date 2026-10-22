@@ -226,9 +226,13 @@ release:
     # One command a line: in a `a && b` list, set -e lets a failing `a` go on.
     - cd "$SUITE_PATH"
     - wex-src package::suite/sync
+    # Every package from its checkout with its dev extra (pytest…), in one
+    # resolution: the suite's packages satisfy each other from their sources.
     - |
+      set --
       for package in "$SUITE_PATH"/packages/*/ "$SUITE_PATH"/wex/*/; do
-        pip install --quiet --no-deps -e "$package"
+        set -- "$@" -e "${package%/}[dev]"
       done
+      pip install --quiet "$@"
     - cd "$WEX_PATH"
     - wex-src app::release/publish
