@@ -161,17 +161,30 @@ release:
     - install -m 600 "$SUITE_PUBLISH_SSH_KEY" ~/.ssh/id_ed25519
     - ssh-keyscan -p 4567 gitlab.wexample.com >> ~/.ssh/known_hosts 2>/dev/null
     - ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null
+    # The publication checks an agent holds the key, as on a developer's machine.
+    - eval "$(ssh-agent -s)" > /dev/null
+    - ssh-add -q ~/.ssh/id_ed25519
     - git config --global user.name "wex"
     - git config --global user.email "contact@wexample.com"
     - git config --global --add safe.directory '*'
+    # The checkouts are nobody's working copy: each run starts from exactly
+    # what GitLab holds, whatever an interrupted run left (a version branch,
+    # an unpushed bump, a propagated constraint).
     - |
+      reset_to() {
+        git -C "$1" fetch --quiet origin "$2"
+        git -C "$1" checkout --quiet --force "$2"
+        git -C "$1" reset --quiet --hard "origin/$2"
+      }
       for triple in "$WEX_PATH $WEX_REPOSITORY main" "$SUITE_PATH $SUITE_REPOSITORY $SUITE_BRANCH"; do
         set -- $triple
         if [ ! -d "$1/.git" ]; then git clone --branch "$3" "$2" "$1"; fi
-        git -C "$1" fetch --quiet origin "$3"
-        git -C "$1" checkout --quiet "$3"
-        git -C "$1" merge --ff-only --quiet "origin/$3"
+        reset_to "$1" "$3"
       done
+      for package in "$SUITE_PATH"/packages/*/ "$SUITE_PATH"/wex/*/; do
+        [ -d "$package.git" ] && reset_to "$package" main
+      done
+      true
     # What .wex/local/env.yml holds on a developer's machine.
     - |
       for target in "$WEX_PATH" "$SUITE_PATH"; do
