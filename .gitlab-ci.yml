@@ -100,5 +100,25 @@ build_docker:
     - export IMAGE_EXTRA_TAGS=latest
     - export BUILD_OPTIONS="--build-arg WEX_VERSION=${IMAGE_TAG}"
     - !reference [.docker_build_legacy_image_file, script]
+build_docker_runner:
+  extends:
+    - .on_master
+    - .docker_build_legacy_image_file
+  stage: build_docker
+  needs:
+    - checkup_install_debian
+    - checkup_install_ubuntu
+  variables:
+    IMAGE_NAMESPACE: wexample-public/docker
+    # The GitLab runner the package suites are published from: the official
+    # runner image with this wex inside (see the Dockerfile). The runner host
+    # is amd64, and the image is only ever pulled there.
+    IMAGE_NAME: wex/runner
+    IMAGE_DOCKERFILE: .wex/docker/images/Dockerfile.runner
+  script:
+    - export IMAGE_TAG=$(cat version.txt)
+    - export IMAGE_EXTRA_TAGS=latest
+    - export BUILD_OPTIONS="--build-arg WEX_VERSION=${IMAGE_TAG}"
+    - !reference [.docker_build_legacy_image_file, script]
 variables:
   MAIN_BRANCH_NAME: main
