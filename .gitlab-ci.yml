@@ -154,6 +154,9 @@ release:
     VENV_PATH: /var/www/suites/python/.wex/local/venv
   script:
     - set -eu
+    # A developer's umask: the job runs as root, whose 022 makes some tests
+    # find their files already at the mode they then expect a change to.
+    - umask 0002
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
     - install -m 600 "$SUITE_PUBLISH_SSH_KEY" ~/.ssh/id_ed25519
     - ssh-keyscan -p 4567 gitlab.wexample.com >> ~/.ssh/known_hosts 2>/dev/null
