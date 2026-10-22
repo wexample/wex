@@ -1,8 +1,10 @@
 # The GitLab runner that publishes our package suites: the official runner
-# image, plus wex and the docker client. Jobs run in it through the shell
-# executor, so what a publication needs on the developer's machine has to be
-# here — wex to drive it, docker to run the test containers and the Roave
-# image on the host's daemon, git and ssh to push.
+# image, plus wex and what a suite publication runs. Jobs run in it through the
+# shell executor, so what a publication needs on the developer's machine has
+# to be here — wex to drive it, docker to run the test containers and the Roave
+# image on the host's daemon, git and ssh to push, python's venv and pdm for
+# the Python suite (tests in a venv, `pdm publish`), node and npm for the
+# JavaScript one (lockfile refresh, tests).
 #
 # Built by wex's own pipeline, like wex/release: it must carry the wex just
 # released, and nothing else decides its version.
@@ -23,8 +25,15 @@ RUN apt-get update -qq \
     && echo "deb http://apt.wexample.com/ stable main" > /etc/apt/sources.list.d/wexample.list \
     && apt-get update -qq \
     && apt-get install -y --no-install-recommends docker-ce-cli docker-buildx-plugin docker-compose-plugin wex \
+    # The Node the apps build their front with.
+    && curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs python3-venv pipx \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# pdm on the PATH of every job, outside any project's venv.
+ENV PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin
+RUN pipx install pdm
 
 # apt serves whatever is current: fail the build rather than tag it with a
 # version it does not hold.
