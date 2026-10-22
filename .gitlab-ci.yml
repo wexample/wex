@@ -174,7 +174,9 @@ release:
     # an unpushed bump, a propagated constraint).
     - |
       reset_to() {
-        git -C "$1" fetch --quiet origin "$2"
+        # Tags too, forced: the bump is measured from the last one, which an
+        # older clone, or a tag moved since, would get wrong.
+        git -C "$1" fetch --quiet --force --tags origin "$2"
         git -C "$1" checkout --quiet --force "$2"
         git -C "$1" reset --quiet --hard "origin/$2"
       }
