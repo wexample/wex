@@ -186,14 +186,49 @@ release:
     - |
       printf 'APP_ENV: local\nPROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH: %s\n' "$SUITE_PATH" > "$WEX_PATH/.env.yml"
     # One venv for wex and the suite, the packages installed from their
-    # checkouts (editable), as `bin/install-dev` sets a developer's up.
+    # checkouts (editable), as `bin/install-dev` sets a developer's up. Its
+    # bin first on the PATH: the publication calls uv and pdm from there.
     - if [ ! -x "$VENV_PATH/bin/python" ]; then python3 -m venv "$VENV_PATH"; fi
-    - '"$VENV_PATH/bin/pip" install --quiet --upgrade pip'
-    - '"$VENV_PATH/bin/pip" install --quiet -r "$WEX_PATH/requirements.txt"'
-    - WEX="$VENV_PATH/bin/python $WEX_PATH/__main__.py"
+    - export PATH="$VENV_PATH/bin:$PATH"
+    - pip install --quiet --upgrade pip uv
+    - pip install --quiet -r "$WEX_PATH/requirements.txt"
+    # The first run on a machine: no package checked out yet, so nothing for
+    # the sync to read the group from. Every live repository of the group is
+    # cloned once, where the suite's clone_location puts it.
+    - |
+      if [ -z "$(ls -A "$SUITE_PATH/packages" 2>/dev/null)" ]; then
+        python3 - <<'PY'
+      import fnmatch, json, os, subprocess, urllib.request
+      api = "https://gitlab.wexample.com/api/v4/groups/wexample-python/projects"
+      places = [("wex-*", "wex"), ("*", "packages")]
+      page = 1
+      while True:
+          request = urllib.request.Request(f"{api}?per_page=100&page={page}&archived=false&include_subgroups=false", headers={"PRIVATE-TOKEN": os.environ["GITLAB_API_TOKEN"]})
+          projects = json.load(urllib.request.urlopen(request))
+          for project in projects:
+              if project["path"] == "suite-manager" or project["empty_repo"]:
+                  continue
+              place = next(d for p, d in places if fnmatch.fnmatch(project["path"], p))
+              target = os.path.join(os.environ["SUITE_PATH"], place, project["path"])
+              if not os.path.isdir(target):
+                  subprocess.run(["git", "clone", "--quiet", "--branch", "main", project["ssh_url_to_repo"], target], check=True)
+          if len(projects) < 100:
+              break
+          page += 1
+      PY
+      fi
+    # wex from its sources, also for the subcommands it starts through
+    # .wex/bin/app-manager, which run CORE_BIN.
+    - |
+      printf '#!/bin/sh\nexec "%s/bin/python" "%s/__main__.py" "$@"\n' "$VENV_PATH" "$WEX_PATH" > /usr/local/bin/wex-src
+      chmod +x /usr/local/bin/wex-src
+    - export CORE_BIN=/usr/local/bin/wex-src
     # One command a line: in a `a && b` list, set -e lets a failing `a` go on.
     - cd "$SUITE_PATH"
-    - $WEX package::suite/sync
-    - $WEX app::setup/install --env local
+    - wex-src package::suite/sync
+    - |
+      for package in "$SUITE_PATH"/packages/*/ "$SUITE_PATH"/wex/*/; do
+        pip install --quiet --no-deps -e "$package"
+      done
     - cd "$WEX_PATH"
-    - $WEX app::release/publish
+    - wex-src app::release/publish
