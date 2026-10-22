@@ -9,6 +9,11 @@ libraries:
 python:
   gitlab_registry:
     url: https://gitlab.wexample.com/api/v4/groups/wexample-python/-/packages/pypi
+release:
+  # Released by the runner (job `release` of .gitlab-ci.yml): `wex app::release/publish`
+  # here starts that pipeline and follows it; --local publishes from this machine.
+  runner:
+    variable: WEX_RELEASE
 wex:
   migration: 2
   version: 6.0.150
