@@ -29,6 +29,11 @@ include:
 .on_master:
   only:
     - main
+  # A release pipeline (WEX_RELEASE) runs the release job alone: the build,
+  # deploy and install jobs belong to the pipeline its merge then creates.
+  except:
+    variables:
+      - $WEX_RELEASE == "1"
 build_apt:
   extends:
     - .on_master
@@ -70,6 +75,7 @@ wait_for_pypi:
     - python ci/wait_for_pypi_versions.py requirements.txt
   stage: wait_for_pypi
 stages:
+  - release
   - build_apt
   - deploy
   - wait_for_pypi
@@ -122,3 +128,62 @@ build_docker_runner:
     - !reference [.docker_build_legacy_image_file, script]
 variables:
   MAIN_BRANCH_NAME: main
+# Publishes wex from the runner, as `wex app::release/publish` does on a
+# developer's machine, with wex run from this checkout's sources like there:
+# the release always uses the code it releases. Started through the API with
+# WEX_RELEASE=1 (what the local command does). The checkouts live on the
+# runner host, kept between jobs: wex itself, and the Python suite it
+# publishes first. Secrets come from the project's protected CI variables.
+release:
+  stage: release
+  tags:
+    - suite-publish
+  rules:
+    - if: '$WEX_RELEASE == "1"'
+  resource_group: wex-release
+  timeout: 12h
+  variables:
+    GIT_STRATEGY: none
+    WEX_PATH: /var/www/apps/wex
+    WEX_REPOSITORY: ssh://git@gitlab.wexample.com:4567/wexample/wex.git
+    SUITE_PATH: /var/www/suites/python
+    SUITE_REPOSITORY: ssh://git@gitlab.wexample.com:4567/wexample-python/suite-manager.git
+    VENV_PATH: /var/www/suites/python/.wex/local/venv
+  script:
+    - set -eu
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    - install -m 600 "$SUITE_PUBLISH_SSH_KEY" ~/.ssh/id_ed25519
+    - ssh-keyscan -p 4567 gitlab.wexample.com >> ~/.ssh/known_hosts 2>/dev/null
+    - ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null
+    - git config --global user.name "wex"
+    - git config --global user.email "contact@wexample.com"
+    - git config --global --add safe.directory '*'
+    - |
+      for pair in "$WEX_PATH $WEX_REPOSITORY" "$SUITE_PATH $SUITE_REPOSITORY"; do
+        set -- $pair
+        if [ ! -d "$1/.git" ]; then git clone --branch main "$2" "$1"; fi
+        git -C "$1" checkout --quiet main
+        git -C "$1" fetch --quiet origin main
+        git -C "$1" merge --ff-only --quiet origin/main
+      done
+    # What .wex/local/env.yml holds on a developer's machine.
+    - |
+      for target in "$WEX_PATH" "$SUITE_PATH"; do
+        mkdir -p "$target/.wex/local"
+        {
+          echo "APP_ENV: local"
+          echo "LOCAL_VENV_PATH: $VENV_PATH"
+          echo "PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH: $SUITE_PATH"
+          echo "GITLAB_API_TOKEN: $GITLAB_API_TOKEN"
+          echo "GITHUB_API_TOKEN: $GITHUB_API_TOKEN"
+          echo "PIPY_TOKEN: $PIPY_TOKEN"
+        } > "$target/.wex/local/env.yml"
+      done
+    # One venv for wex and the suite, the packages installed from their
+    # checkouts (editable), as `bin/install-dev` sets a developer's up.
+    - if [ ! -x "$VENV_PATH/bin/python" ]; then python3 -m venv "$VENV_PATH"; fi
+    - '"$VENV_PATH/bin/pip" install --quiet --upgrade pip'
+    - '"$VENV_PATH/bin/pip" install --quiet -r "$WEX_PATH/requirements.txt"'
+    - WEX="$VENV_PATH/bin/python $WEX_PATH/__main__.py"
+    - cd "$SUITE_PATH" && $WEX package::suite/sync && $WEX app::setup/install --env local
+    - cd "$WEX_PATH" && $WEX app::release/publish
