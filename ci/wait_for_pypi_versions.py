@@ -45,11 +45,26 @@ def parse_pins(requirements_path: Path) -> list[tuple[str, str]]:
     return pins
 
 
-def pip_sees_version(package: str, version: str) -> bool:
+def parse_index_options(requirements_path: Path) -> list[str]:
+    """The index options the file declares, as `pip install -r` reads them.
+
+    The wexample packages are published to the GitLab registry first, which
+    requirements.txt names with `--extra-index-url`: looking only at PyPI would
+    wait on a version the install already finds.
+    """
+    options: list[str] = []
+    for raw_line in requirements_path.read_text().splitlines():
+        parts = raw_line.split()
+        if len(parts) == 2 and parts[0] in ("--index-url", "--extra-index-url"):
+            options += parts
+    return options
+
+
+def pip_sees_version(package: str, version: str, index_options: list[str]) -> bool:
     """Return True if `pip index versions` reports the version as available."""
     try:
         result = subprocess.run(
-            ["pip", "index", "versions", package],
+            ["pip", "index", "versions", *index_options, package],
             capture_output=True,
             text=True,
             timeout=_PIP_INDEX_TIMEOUT_SECONDS,
@@ -69,6 +84,7 @@ def main(argv: list[str]) -> int:
         return 2
 
     pins = parse_pins(requirements_path)
+    index_options = parse_index_options(requirements_path)
     if not pins:
         print(f"No {_PACKAGE_PREFIX}* pins in {requirements_path}; nothing to wait for.")
         return 0
@@ -81,7 +97,7 @@ def main(argv: list[str]) -> int:
     while pending:
         still_pending: list[tuple[str, str]] = []
         for package, version in pending:
-            if pip_sees_version(package, version):
+            if pip_sees_version(package, version, index_options):
                 print(f"  ✓ {package}=={version}")
             else:
                 still_pending.append((package, version))
