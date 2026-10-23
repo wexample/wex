@@ -3,15 +3,13 @@ git:
 global:
   description: Runs infrastructure and Docker-backed apps from a single command line, resolving addon-provided commands under one shared grammar
   name: wex
-  version: 6.0.153
+  version: 6.0.154
 libraries:
   - ${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}
 python:
   gitlab_registry:
     url: https://gitlab.wexample.com/api/v4/groups/wexample-python/-/packages/pypi
 release:
-  # Released by the runner (job `release` of .gitlab-ci.yml): `wex app::release/publish`
-  # here starts that pipeline and follows it; --local publishes from this machine.
   runner:
     variable: WEX_RELEASE
 wex:
