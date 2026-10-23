@@ -154,6 +154,10 @@ release:
     VENV_PATH: /var/www/apps/wex/.venv
   script:
     - set -eu
+    # The Python suite's checkout is used by one job at a time: its own
+    # publication job (the ci-cd suite template) takes the same lock.
+    - exec 8>"$SUITE_PATH.lock"
+    - flock 8
     # A developer's umask: the job runs as root, whose 022 makes some tests
     # find their files already at the mode they then expect a change to.
     - umask 0002
