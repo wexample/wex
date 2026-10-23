@@ -166,7 +166,10 @@ release:
     - ssh-keyscan -p 4567 gitlab.wexample.com >> ~/.ssh/known_hosts 2>/dev/null
     - ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null
     # The publication checks an agent holds the key, as on a developer's machine.
-    - eval "$(ssh-agent -s)" > /dev/null
+    # Without the lock's descriptor, which the agent would keep, and the lock
+    # with it, long after the job; stopped when the job ends.
+    - eval "$(ssh-agent -s 8>&-)" > /dev/null
+    - trap 'ssh-agent -k > /dev/null 2>&1 || true' EXIT
     - ssh-add -q ~/.ssh/id_ed25519
     - git config --global user.name "wex"
     - git config --global user.email "contact@wexample.com"
