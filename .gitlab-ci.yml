@@ -3,15 +3,10 @@ include:
 .checkup_install:
   extends:
     - .on_master
+  # Installs read the wexample packages from the GitLab registry
+  # (requirements.txt names it), which serves a version as soon as it is out.
   needs:
     - deploy
-    - wait_for_pypi
-  # wait_for_pypi saw every version, but PyPI answers from several caches: the
-  # runner installing may hit one that does not serve them yet. Running the job
-  # again a little later is what a human did by hand each time.
-  retry:
-    max: 2
-    when: script_failure
   script:
     - set -e
     - apt-get update -qq
@@ -47,10 +42,8 @@ build_apt:
     - ln -s ${CI_PROJECT_DIR} source
     - sudo python3 /var/tmp/build/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk ${WEX_BUILD_TOKEN} -v ${BUILD_VERSION}
   stage: build_apt
-checkup_install_debian:
-  extends: .checkup_install
-  image: debian:bookworm
-  stage: checkup_install
+# Ubuntu, as on the workstations. Debian is installed by the image builds
+# themselves, which start from it and check the version they get.
 checkup_install_ubuntu:
   extends: .checkup_install
   image: ubuntu:24.04
@@ -65,20 +58,10 @@ deploy:
     - BUILD_VERSION=$(cat version.txt)
     - curl --fail "http://151.80.23.108:7654/webhook/app/prod/wex-apt-repo/apt/publish?_token=${WEX_WEBHOOK_TOKEN}&project=${CI_PROJECT_ID}&version=${BUILD_VERSION}&_async=0"
   stage: deploy
-wait_for_pypi:
-  extends:
-    - .on_master
-  image: python:3.11-slim
-  needs:
-    - deploy
-  script:
-    - python ci/wait_for_pypi_versions.py requirements.txt
-  stage: wait_for_pypi
 stages:
   - release
   - build_apt
   - deploy
-  - wait_for_pypi
   - checkup_install
   - build_docker
 build_docker:
@@ -86,9 +69,10 @@ build_docker:
     - .on_master
     - .docker_build_legacy_image_file
   stage: build_docker
+  # Straight after the apt publication, beside the install check: the build
+  # installs the package itself and fails on a version it does not get.
   needs:
-    - checkup_install_debian
-    - checkup_install_ubuntu
+    - deploy
   variables:
     # Published to the public project so anyone can pull without credentials —
     # the source stays private. Pushing there uses the deploy token in
@@ -111,9 +95,10 @@ build_docker_runner:
     - .on_master
     - .docker_build_legacy_image_file
   stage: build_docker
+  # Straight after the apt publication, beside the install check: the build
+  # installs the package itself and fails on a version it does not get.
   needs:
-    - checkup_install_debian
-    - checkup_install_ubuntu
+    - deploy
   variables:
     IMAGE_NAMESPACE: wexample-public/docker
     # The GitLab runner the package suites are published from: the official
