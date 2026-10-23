@@ -154,6 +154,12 @@ release:
     # wex's own .venv, shared with the suite, as on a developer's machine:
     # wex's tests look for it there.
     VENV_PATH: /var/www/apps/wex/.venv
+    # Rectify opens the modes of a whole workdir to what containers write
+    # into: git must not take that for a change. Set through the environment,
+    # it outranks the core.fileMode each clone writes into its own config.
+    GIT_CONFIG_COUNT: "1"
+    GIT_CONFIG_KEY_0: core.fileMode
+    GIT_CONFIG_VALUE_0: "false"
   script:
     - set -eu
     # A developer's umask: the job runs as root, whose 022 makes some tests
