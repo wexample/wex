@@ -375,7 +375,7 @@ wexample-filestate-php==6.5.3
     #   wexample-wex-addon-dev-php
 wexample-filestate-python==9.2.0
     # via wexample-wex-addon-dev-python
-wexample-filestate-symfony==2.2.0
+wexample-filestate-symfony==2.3.0
     # via wexample-wex-addon-dev-php
 wexample-helpers==20.7.0
     # via
@@ -443,7 +443,7 @@ wexample-wex-addon-dev-javascript==8.13.0
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-dev-php
-wexample-wex-addon-dev-php==12.19.0
+wexample-wex-addon-dev-php==12.20.0
     # via wex (pyproject.toml)
 wexample-wex-addon-dev-python==15.6.2
     # via wex (pyproject.toml)
