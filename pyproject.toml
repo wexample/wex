@@ -4,7 +4,7 @@ build-backend = "pdm.backend"
 
 [project]
 name = "wex"
-version = "6.0.162"
+version = "6.0.163"
 description = "Runs infrastructure and Docker-backed apps from a single command line, resolving addon-provided commands under one shared grammar"
 authors = [
     { name = "weeger", email = "contact@wexample.com" },
@@ -13,20 +13,20 @@ requires-python = ">=3.10"
 classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent"]
 dependencies = [
     "tomli",
-    "wexample-wex-addon-ai>=19.1.6",
-    "wexample-wex-addon-app>=34.11.0",
-    "wexample-wex-addon-dev-css>=6.0.98",
-    "wexample-wex-addon-dev-javascript>=8.11.0",
-    "wexample-wex-addon-dev-php>=12.17.1",
-    "wexample-wex-addon-dev-python>=15.6.0",
+    "wexample-wex-addon-ai>=19.1.7",
+    "wexample-wex-addon-app>=34.12.0",
+    "wexample-wex-addon-dev-css>=6.0.99",
+    "wexample-wex-addon-dev-javascript>=8.11.1",
+    "wexample-wex-addon-dev-php>=12.17.2",
+    "wexample-wex-addon-dev-python>=15.6.1",
     "wexample-wex-addon-filestate>=6.2.30",
-    "wexample-wex-addon-master>=11.5.6",
-    "wexample-wex-addon-package>=7.11.4",
-    "wexample-wex-addon-process>=5.1.7",
-    "wexample-wex-addon-services-collab>=11.10.7",
-    "wexample-wex-addon-services-db>=12.7.7",
-    "wexample-wex-addon-services-monitoring>=7.11.7",
-    "wexample-wex-addon-services-platform>=13.5.1",
+    "wexample-wex-addon-master>=11.5.7",
+    "wexample-wex-addon-package>=7.11.5",
+    "wexample-wex-addon-process>=5.1.8",
+    "wexample-wex-addon-services-collab>=11.10.8",
+    "wexample-wex-addon-services-db>=12.7.8",
+    "wexample-wex-addon-services-monitoring>=7.11.8",
+    "wexample-wex-addon-services-platform>=13.5.2",
     "wexample-wex-core>=31.4.1",
 ]
 
