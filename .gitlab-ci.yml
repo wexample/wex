@@ -156,9 +156,11 @@ release:
     - eval "$(ssh-agent -s 8>&-)" > /dev/null
     - trap 'ssh-agent -k > /dev/null 2>&1 || true' EXIT
     - ssh-add -q ~/.ssh/id_ed25519
-    - git config --global user.name "wex"
-    - git config --global user.email "contact@wexample.com"
-    - git config --global --add safe.directory '*'
+    # Through the environment, not ~/.gitconfig: the shell runners of several
+    # GitLabs share this container, and two jobs writing that file at once
+    # fail on its lock.
+    - export GIT_AUTHOR_NAME=wex GIT_COMMITTER_NAME=wex GIT_AUTHOR_EMAIL=contact@wexample.com GIT_COMMITTER_EMAIL=contact@wexample.com
+    - export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=safe.directory GIT_CONFIG_VALUE_0='*'
     # The checkouts are nobody's working copy: each run starts from exactly
     # what GitLab holds, whatever an interrupted run left (a version branch,
     # an unpushed bump, a propagated constraint).
