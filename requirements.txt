@@ -282,7 +282,7 @@ sqlalchemy==2.1.6
     #   wexample-orm
 sse-starlette==3.5.1
     # via mcp
-starlette==1.9.0
+starlette==1.10.0
     # via
     #   mcp
     #   sse-starlette
@@ -329,7 +329,7 @@ uuid-utils==1.1.0
     # via wexample-orm
 uvicorn==0.54.0
     # via mcp
-wcwidth==0.9.3
+wcwidth==0.9.4
     # via
     #   wexample-helpers
     #   wexample-prompt
