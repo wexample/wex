@@ -1,13 +1,11 @@
 git:
-  # No pipeline runs on wex's merge requests (its CI is post-merge): none is
-  # looked for before merging.
   merge_request_pipeline: false
   publication_strategy: branch_merge
   wait_post_merge: false
 global:
   description: Runs infrastructure and Docker-backed apps from a single command line, resolving addon-provided commands under one shared grammar
   name: wex
-  version: 6.0.175
+  version: 6.0.176
 libraries:
   - ${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}
 python:
@@ -17,5 +15,5 @@ release:
   runner:
     variable: WEX_RELEASE
 wex:
-  migration: 2
+  migration: 3
   version: 6.0.150
