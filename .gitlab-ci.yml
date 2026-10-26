@@ -32,6 +32,9 @@ include:
 build_apt:
   extends:
     - .on_master
+  # Without waiting for the earlier build_docker_base stage: the base images
+  # build beside the package, not before it.
+  needs: []
   image: gitlab-docker.wexample.com/wexample/wex/wex-build:build
   script:
     - BUILD_VERSION=$(cat version.txt)
