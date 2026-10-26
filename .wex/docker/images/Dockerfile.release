@@ -1,12 +1,12 @@
-FROM debian:bookworm
+# wex/release: wex on its base image (Dockerfile.release.base), which holds
+# everything but wex. Only the wex package and its wexample packages are
+# installed here, so the arm64 half, emulated, takes minutes, not half an hour.
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 
 ARG WEX_VERSION
 
 RUN apt-get update -qq \
-    && apt-get install -y --no-install-recommends ca-certificates gnupg2 wget \
-    && wget -O - https://apt.wexample.com/gpg | gpg --dearmor -o /etc/apt/trusted.gpg.d/wexample.gpg \
-    && echo "deb http://apt.wexample.com/ stable main" > /etc/apt/sources.list.d/wexample.list \
-    && apt-get update -qq \
     && apt-get install -y wex \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -14,10 +14,3 @@ RUN apt-get update -qq \
 # apt serves whatever is current, so an image tagged 6.0.129 could hold anything
 # the mirror happened to have. Fail the build rather than ship a lying tag.
 RUN test -z "${WEX_VERSION}" || test "$(wex version)" = "${WEX_VERSION}"
-
-# An ordinary user to run as. The Claude CLI that comes with the agent SDK refuses
-# to skip permission prompts under root, and anything reading the password database
-# needs the user to really exist rather than be a bare uid. Created here because
-# adding one downstream is the same work in every image; no `USER` follows, so a
-# derived build still installs as root and each container picks who runs it.
-RUN useradd --create-home --uid 1000 --shell /bin/bash wex

@@ -60,10 +60,51 @@ deploy:
   stage: deploy
 stages:
   - release
+  - build_docker_base
   - build_apt
   - deploy
   - checkup_install
   - build_docker
+# The base images wex/release and wex/runner are built on: everything but wex,
+# tagged with the hash of their Dockerfile. A pipeline builds one only when no
+# image holds that tag yet — when its Dockerfile changed — and the image
+# builds of every release start from it.
+.docker_base_images:
+  script:
+    - export BASE_REGISTRY="$CI_REGISTRY${CI_REGISTRY_PORT:+:$CI_REGISTRY_PORT}/wexample-public/docker"
+    - export RELEASE_BASE_IMAGE="$BASE_REGISTRY/wex/release-base:$(sha256sum .wex/docker/images/Dockerfile.release.base | cut -c1-12)"
+    - export RUNNER_BASE_IMAGE="$BASE_REGISTRY/wex/runner-base:$(sha256sum .wex/docker/images/Dockerfile.runner.base | cut -c1-12)"
+.docker_build_base_image:
+  extends:
+    - .on_master
+    - .docker_build_legacy_image_file
+  stage: build_docker_base
+  # Nothing of this pipeline's wex goes in: built while the package is.
+  needs: []
+  variables:
+    IMAGE_NAMESPACE: wexample-public/docker
+    # Its tag is its Dockerfile's hash, not the version it was built at.
+    IMAGE_TAG_VERSION: "false"
+  script:
+    - !reference [.docker_base_images, script]
+    - export IMAGE_TAG=$(sha256sum "$IMAGE_DOCKERFILE" | cut -c1-12)
+    - |
+      if docker buildx imagetools inspect "$BASE_REGISTRY/$IMAGE_NAME:$IMAGE_TAG" > /dev/null 2>&1; then
+        echo "$IMAGE_NAME:$IMAGE_TAG is already built."
+        exit 0
+      fi
+    - !reference [.docker_build_legacy_image_file, script]
+build_docker_release_base:
+  extends: .docker_build_base_image
+  variables:
+    IMAGE_NAME: wex/release-base
+    IMAGE_DOCKERFILE: .wex/docker/images/Dockerfile.release.base
+    IMAGE_PLATFORMS: linux/amd64,linux/arm64
+build_docker_runner_base:
+  extends: .docker_build_base_image
+  variables:
+    IMAGE_NAME: wex/runner-base
+    IMAGE_DOCKERFILE: .wex/docker/images/Dockerfile.runner.base
 build_docker:
   extends:
     - .on_master
@@ -73,6 +114,7 @@ build_docker:
   # installs the package itself and fails on a version it does not get.
   needs:
     - deploy
+    - build_docker_release_base
   variables:
     # Published to the public project so anyone can pull without credentials —
     # the source stays private. Pushing there uses the deploy token in
@@ -88,7 +130,8 @@ build_docker:
   script:
     - export IMAGE_TAG=$(cat version.txt)
     - export IMAGE_EXTRA_TAGS=latest
-    - export BUILD_OPTIONS="--build-arg WEX_VERSION=${IMAGE_TAG}"
+    - !reference [.docker_base_images, script]
+    - export BUILD_OPTIONS="--build-arg WEX_VERSION=${IMAGE_TAG} --build-arg BASE_IMAGE=${RELEASE_BASE_IMAGE}"
     - !reference [.docker_build_legacy_image_file, script]
 build_docker_runner:
   extends:
@@ -99,6 +142,7 @@ build_docker_runner:
   # installs the package itself and fails on a version it does not get.
   needs:
     - deploy
+    - build_docker_runner_base
   variables:
     IMAGE_NAMESPACE: wexample-public/docker
     # The GitLab runner the package suites are published from: the official
@@ -109,7 +153,8 @@ build_docker_runner:
   script:
     - export IMAGE_TAG=$(cat version.txt)
     - export IMAGE_EXTRA_TAGS=latest
-    - export BUILD_OPTIONS="--build-arg WEX_VERSION=${IMAGE_TAG}"
+    - !reference [.docker_base_images, script]
+    - export BUILD_OPTIONS="--build-arg WEX_VERSION=${IMAGE_TAG} --build-arg BASE_IMAGE=${RUNNER_BASE_IMAGE}"
     - !reference [.docker_build_legacy_image_file, script]
 variables:
   MAIN_BRANCH_NAME: main

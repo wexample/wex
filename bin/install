@@ -28,31 +28,39 @@ echo "Setting up Python virtual environment..."
 # Standard venv path at project root
 VENV_PATH="${WEX_DIR_ROOT}.venv"
 
-# Remove existing venv if present
-if [ -d "$VENV_PATH" ]; then
-    echo "Removing existing virtual environment..."
-    rm -rf "$VENV_PATH"
-fi
-
-# Create new virtual environment with copied binaries (not symlinks)
-echo "Creating new virtual environment..."
-PYTHON_BIN=""
-for py in python3.13 python3.12 python3.11; do
-    if command -v "$py" >/dev/null 2>&1; then
-        PYTHON_BIN=$(command -v "$py")
-        break
+# WEX_KEEP_VENV: a venv already there is kept, and the requirements below only
+# install what it lacks. The docker base images set it: their venv holds the
+# third-party packages, so an image build installs the wexample ones alone.
+if [ -n "${WEX_KEEP_VENV}" ] && [ -x "${VENV_PATH}/bin/python" ]; then
+    echo "Keeping the existing virtual environment..."
+else
+    # Remove existing venv if present
+    if [ -d "$VENV_PATH" ]; then
+        echo "Removing existing virtual environment..."
+        rm -rf "$VENV_PATH"
     fi
-done
-if [ -z "$PYTHON_BIN" ]; then
-    echo "Error: python3.11+ is required but not found (tried python3.13, python3.12, python3.11)" >&2
-    exit 1
-fi
-echo "Using $PYTHON_BIN"
-"$PYTHON_BIN" -m venv "$VENV_PATH" --clear --copies
 
-# Fix permissions
-echo "Fixing virtual environment permissions..."
-chown -R "${INSTALL_USER}:${INSTALL_USER}" "$VENV_PATH"
+    # Create new virtual environment with copied binaries (not symlinks)
+    echo "Creating new virtual environment..."
+    PYTHON_BIN=""
+    for py in python3.13 python3.12 python3.11; do
+        if command -v "$py" >/dev/null 2>&1; then
+            PYTHON_BIN=$(command -v "$py")
+            break
+        fi
+    done
+    if [ -z "$PYTHON_BIN" ]; then
+        echo "Error: python3.11+ is required but not found (tried python3.13, python3.12, python3.11)" >&2
+        exit 1
+    fi
+    echo "Using $PYTHON_BIN"
+    "$PYTHON_BIN" -m venv "$VENV_PATH" --clear --copies
+
+    # Fix permissions — not on a kept venv: in an image, touching every file of
+    # the base layer's venv copies it whole into the new layer.
+    echo "Fixing virtual environment permissions..."
+    chown -R "${INSTALL_USER}:${INSTALL_USER}" "$VENV_PATH"
+fi
 
 # Activate virtual environment
 echo "Activating virtual environment..."

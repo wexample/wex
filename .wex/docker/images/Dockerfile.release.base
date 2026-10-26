@@ -1,0 +1,38 @@
+# What wex/release holds besides wex itself: the system packages, the wexample
+# apt source, and wex's venv with its third-party packages. Built for both
+# platforms like wex/release, whose arm64 half is emulated on the runner: the
+# venv installed here once is what made each release build take half an hour.
+#
+# Tagged with the hash of this file and rebuilt only when it changes (see
+# `.docker_base_images` in .gitlab-ci.yml). The third-party pins move from
+# release to release meanwhile: the install on top fetches what this venv
+# lacks, so a base a few releases old stays correct, only a little slower.
+FROM debian:bookworm
+
+# wex's own apt dependencies (debian/control), installed here so the wex
+# package on top brings nothing but itself.
+RUN apt-get update -qq \
+    && apt-get install -y --no-install-recommends bash bash-completion ca-certificates git gnupg2 procps python3 python3-pip python3-venv sshpass sudo wget \
+    && wget -O - https://apt.wexample.com/gpg | gpg --dearmor -o /etc/apt/trusted.gpg.d/wexample.gpg \
+    && echo "deb http://apt.wexample.com/ stable main" > /etc/apt/sources.list.d/wexample.list \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# The venv where wex's installer puts it, the wexample packages left out: they
+# change at every release and are installed on top.
+COPY requirements.txt /tmp/requirements.txt
+RUN python3 -m venv --copies /usr/lib/wex/.venv \
+    && /usr/lib/wex/.venv/bin/pip install -q --upgrade pip setuptools wheel \
+    && grep -v '^wexample-' /tmp/requirements.txt > /tmp/requirements-base.txt \
+    && /usr/lib/wex/.venv/bin/pip install -q --no-cache-dir -r /tmp/requirements-base.txt \
+    && rm /tmp/requirements.txt /tmp/requirements-base.txt
+
+# Read by wex's installer, here and in every image built on this one.
+ENV WEX_KEEP_VENV=1
+
+# An ordinary user to run as. The Claude CLI that comes with the agent SDK refuses
+# to skip permission prompts under root, and anything reading the password database
+# needs the user to really exist rather than be a bare uid. Created here because
+# adding one downstream is the same work in every image; no `USER` follows, so a
+# derived build still installs as root and each container picks who runs it.
+RUN useradd --create-home --uid 1000 --shell /bin/bash wex

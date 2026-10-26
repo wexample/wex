@@ -1,0 +1,46 @@
+# What wex/runner holds besides wex itself (see Dockerfile.runner): the official
+# runner image, plus what a suite publication runs — docker to run the test
+# containers and the Roave image on the host's daemon, git and ssh to push,
+# python's venv and pdm for the Python suite (tests in a venv, `pdm publish`),
+# node and npm for the JavaScript one (lockfile refresh, tests) — and wex's venv
+# with its third-party packages.
+#
+# Tagged with the hash of this file and rebuilt only when it changes (see
+# `.docker_base_images` in .gitlab-ci.yml), like Dockerfile.release.base.
+FROM gitlab/gitlab-runner:v19.0.1
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update -qq \
+    && apt-get install -y --no-install-recommends bash-completion ca-certificates curl git gnupg2 openssh-client procps python3 python3-pip python3-venv pipx sshpass sudo wget \
+    && install -m 0755 -d /etc/apt/keyrings \
+    # Docker's own repository: the client and the buildx and compose plugins,
+    # no daemon — the jobs talk to the host's through its socket.
+    && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg \
+    && chmod a+r /etc/apt/keyrings/docker.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" > /etc/apt/sources.list.d/docker.list \
+    && wget -O - https://apt.wexample.com/gpg | gpg --dearmor -o /etc/apt/trusted.gpg.d/wexample.gpg \
+    && echo "deb http://apt.wexample.com/ stable main" > /etc/apt/sources.list.d/wexample.list \
+    && apt-get update -qq \
+    && apt-get install -y --no-install-recommends docker-ce-cli docker-buildx-plugin docker-compose-plugin \
+    # The Node the apps build their front with.
+    && curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# pdm on the PATH of every job, outside any project's venv.
+ENV PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin
+RUN pipx install pdm
+
+# The venv where wex's installer puts it, the wexample packages left out: they
+# change at every release and are installed on top.
+COPY requirements.txt /tmp/requirements.txt
+RUN python3 -m venv --copies /usr/lib/wex/.venv \
+    && /usr/lib/wex/.venv/bin/pip install -q --upgrade pip setuptools wheel \
+    && grep -v '^wexample-' /tmp/requirements.txt > /tmp/requirements-base.txt \
+    && /usr/lib/wex/.venv/bin/pip install -q --no-cache-dir -r /tmp/requirements-base.txt \
+    && rm /tmp/requirements.txt /tmp/requirements-base.txt
+
+# Read by wex's installer, here and in every image built on this one.
+ENV WEX_KEEP_VENV=1
