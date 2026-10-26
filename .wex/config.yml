@@ -1,4 +1,7 @@
 git:
+  # No pipeline runs on wex's merge requests (its CI is post-merge): none is
+  # looked for before merging.
+  merge_request_pipeline: false
   publication_strategy: branch_merge
   wait_post_merge: false
 global:
