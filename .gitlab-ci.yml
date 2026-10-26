@@ -68,6 +68,7 @@ stages:
   - deploy
   - checkup_install
   - build_docker
+  - upgrade_runner
 # The base images wex/release and wex/runner are built on: everything but wex,
 # tagged with the hash of their Dockerfile. A pipeline builds one only when no
 # image holds that tag yet — when its Dockerfile changed — and the image
@@ -159,6 +160,41 @@ build_docker_runner:
     - !reference [.docker_base_images, script]
     - export BUILD_OPTIONS="--build-arg WEX_VERSION=${IMAGE_TAG} --build-arg BASE_IMAGE=${RUNNER_BASE_IMAGE}"
     - !reference [.docker_build_legacy_image_file, script]
+# The runner that publishes the suites, recreated on the image just built, so
+# the next publication runs this wex. Not from this job itself: recreating the
+# runner's container kills whatever job it runs, this one included. It starts
+# a container beside it, on the new image, which waits until the runner runs
+# no job — no shell job under gitlab-runner, no docker job's container — and
+# then restarts the runner app as an operator would.
+upgrade_runner:
+  extends:
+    - .on_master
+  stage: upgrade_runner
+  needs:
+    - build_docker_runner
+  tags:
+    - suite-publish
+  variables:
+    GIT_STRATEGY: none
+    RUNNER_APP_PATH: /var/www/dev/runner
+    RUNNER_CONTAINER: runner_dev_gitlab_runner
+  script:
+    - docker rm -f runner-upgrade > /dev/null 2>&1 || true
+    - |
+      docker run --detach --rm --name runner-upgrade \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        --volume /var/www:/var/www \
+        --env RUNNER_APP_PATH --env RUNNER_CONTAINER \
+        --entrypoint sh \
+        gitlab-docker.wexample.com/wexample-public/docker/wex/runner:latest -c '
+          busy() {
+            docker ps --format "{{.Names}}" | grep -qE "^runner-.*-(build|predefined)" && return 0
+            docker exec "$RUNNER_CONTAINER" sh -c "pgrep -P \$(pgrep -f \"gitlab-runner run\" | head -1)" > /dev/null 2>&1
+          }
+          # Idle twice in a row, a job starting between two checks aside.
+          while busy || { sleep 10; busy; }; do sleep 30; done
+          cd "$RUNNER_APP_PATH" && wex app::app/restart --pull'
+    - echo "The runner is recreated on the new image once it runs no job (container runner-upgrade)."
 variables:
   MAIN_BRANCH_NAME: main
 # Publishes wex from the runner, as `wex app::release/publish` does on a
