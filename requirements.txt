@@ -286,7 +286,7 @@ starlette==1.10.0
     # via
     #   mcp
     #   sse-starlette
-syrtis-python-client==9.0.1
+syrtis-python-client==9.0.2
     # via wexample-wex-addon-ai
 tomli==2.5.0
     # via
@@ -333,7 +333,7 @@ wcwidth==0.9.4
     # via
     #   wexample-helpers
     #   wexample-prompt
-wexample-api==6.8.14
+wexample-api==6.8.15
     # via
     #   wexample-filestate-git
     #   wexample-filestate-python
@@ -345,13 +345,13 @@ wexample-app==19.7.2
     #   wexample-cli
     #   wexample-queue
     #   wexample-wex-core
-wexample-cli==2.3.3
+wexample-cli==2.3.4
     # via wexample-wex-core
-wexample-config==7.2.11
+wexample-config==7.2.12
     # via wexample-filestate
-wexample-event==8.0.14
+wexample-event==8.0.15
     # via wexample-filestate
-wexample-file==9.3.0
+wexample-file==9.3.1
     # via
     #   wexample-filestate
     #   wexample-wex-addon-process
@@ -377,7 +377,7 @@ wexample-filestate-python==9.4.0
     # via wexample-wex-addon-dev-python
 wexample-filestate-symfony==2.5.0
     # via wexample-wex-addon-dev-php
-wexample-helpers==20.7.0
+wexample-helpers==20.8.0
     # via
     #   syrtis-python-client
     #   wexample-api
@@ -392,37 +392,37 @@ wexample-helpers==20.7.0
     #   wexample-prompt
     #   wexample-queue
     #   wexample-runner
-wexample-helpers-git==7.3.0
+wexample-helpers-git==7.3.1
     # via
     #   wexample-filestate-git
     #   wexample-wex-core
-wexample-helpers-yaml==7.0.11
+wexample-helpers-yaml==7.0.12
     # via
     #   wexample-app
     #   wexample-filestate
-wexample-migration==10.2.2
+wexample-migration==10.2.3
     # via wexample-wex-addon-app
-wexample-orm==2.1.0
+wexample-orm==2.1.1
     # via syrtis-python-client
-wexample-prompt==16.2.0
+wexample-prompt==16.2.1
     # via
     #   wexample-api
     #   wexample-cli
     #   wexample-filestate
-wexample-queue==2.1.2
+wexample-queue==2.1.3
     # via wexample-wex-addon-process
-wexample-runner==10.2.0
+wexample-runner==10.2.1
     # via
     #   wexample-filestate
     #   wexample-wex-addon-app
-wexample-wex-addon-ai==19.1.14
+wexample-wex-addon-ai==19.1.15
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-dev-javascript
     #   wexample-wex-addon-dev-php
     #   wexample-wex-addon-dev-python
     #   wexample-wex-addon-master
-wexample-wex-addon-app==35.1.0
+wexample-wex-addon-app==35.2.0
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-ai
@@ -437,33 +437,33 @@ wexample-wex-addon-app==35.1.0
     #   wexample-wex-addon-services-db
     #   wexample-wex-addon-services-monitoring
     #   wexample-wex-addon-services-platform
-wexample-wex-addon-dev-css==6.0.106
+wexample-wex-addon-dev-css==6.0.107
     # via wex (pyproject.toml)
-wexample-wex-addon-dev-javascript==8.13.6
+wexample-wex-addon-dev-javascript==8.13.7
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-dev-php
-wexample-wex-addon-dev-php==12.23.3
+wexample-wex-addon-dev-php==12.23.4
     # via wex (pyproject.toml)
-wexample-wex-addon-dev-python==15.8.0
+wexample-wex-addon-dev-python==15.8.1
     # via wex (pyproject.toml)
 wexample-wex-addon-filestate==6.2.30
     # via wex (pyproject.toml)
-wexample-wex-addon-master==11.6.2
+wexample-wex-addon-master==11.6.3
     # via wex (pyproject.toml)
-wexample-wex-addon-package==7.12.0
+wexample-wex-addon-package==7.12.1
     # via wex (pyproject.toml)
-wexample-wex-addon-process==5.1.15
+wexample-wex-addon-process==5.1.16
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-ai
-wexample-wex-addon-services-collab==11.10.15
+wexample-wex-addon-services-collab==11.10.16
     # via wex (pyproject.toml)
-wexample-wex-addon-services-db==12.7.15
+wexample-wex-addon-services-db==12.7.16
     # via wex (pyproject.toml)
-wexample-wex-addon-services-monitoring==7.11.15
+wexample-wex-addon-services-monitoring==7.11.16
     # via wex (pyproject.toml)
-wexample-wex-addon-services-platform==13.5.9
+wexample-wex-addon-services-platform==13.5.10
     # via wex (pyproject.toml)
 wexample-wex-core==31.4.6
     # via
