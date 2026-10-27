@@ -261,11 +261,7 @@ release:
         if [ ! -d "$1/.git" ]; then git clone --branch "$3" "$2" "$1"; fi
         reset_to "$1" "$3"
       done
-      # The packages side by side, eight at a time: one after the other they
-      # took half a minute, each fetch waiting on the network.
-      for package in "$SUITE_PATH"/packages/*/ "$SUITE_PATH"/wex/*/; do
-        [ -d "$package.git" ] && printf '%s\0' "$package"
-      done | xargs -0 -r -P 8 -I{} sh -c 'git -C "$1" fetch --quiet --force --tags origin main && git -C "$1" checkout --quiet --force main && git -C "$1" reset --quiet --hard origin/main' _ {}
+      # The packages: `package::suite/sync --reset` below, side by side.
       true
     # What .wex/local/env.yml holds on a developer's machine.
     - |
@@ -325,7 +321,9 @@ release:
     - export CORE_BIN=/usr/local/bin/wex-src
     # One command a line: in a `a && b` list, set -e lets a failing `a` go on.
     - cd "$SUITE_PATH"
-    - wex-src package::suite/sync
+    # Every package brought to its remote exactly, whatever an interrupted run
+    # left, eight at a time; the missing ones cloned.
+    - wex-src package::suite/sync --reset
     # Every package from its checkout with its dev extra (pytest…), in one
     # resolution: the suite's packages satisfy each other from their sources.
     - |
