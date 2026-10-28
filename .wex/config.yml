@@ -5,7 +5,7 @@ git:
 global:
   description: Runs infrastructure and Docker-backed apps from a single command line, resolving addon-provided commands under one shared grammar
   name: wex
-  version: 6.0.178
+  version: 6.0.179
 libraries:
   - ${PROGRAM_PUBLICATION_SOURCE_LIBRARY_PATH}
 python:
@@ -15,5 +15,5 @@ release:
   runner:
     variable: WEX_RELEASE
 wex:
-  migration: 3
-  version: 6.0.150
+  migration: 1
+  version: 6.0.179
