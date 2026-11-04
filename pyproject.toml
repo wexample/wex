@@ -4,7 +4,7 @@ build-backend = "pdm.backend"
 
 [project]
 name = "wex"
-version = "6.0.182"
+version = "6.0.183"
 description = "Runs infrastructure and Docker-backed apps from a single command line, resolving addon-provided commands under one shared grammar"
 authors = [
     { name = "weeger", email = "contact@wexample.com" },
@@ -22,12 +22,16 @@ dependencies = [
     "wexample-wex-addon-filestate>=6.2.30",
     "wexample-wex-addon-master>=11.6.9",
     "wexample-wex-addon-package>=8.0.2",
-    "wexample-wex-addon-process>=5.1.22",
+    "wexample-wex-addon-process>=5.1.23",
     "wexample-wex-addon-services-collab>=11.10.22",
     "wexample-wex-addon-services-db>=12.7.22",
     "wexample-wex-addon-services-monitoring>=7.11.22",
     "wexample-wex-addon-services-platform>=13.5.16",
-    "wexample-wex-core>=31.4.9",
+<<<<<<< Updated upstream
+    "wexample-wex-core>=31.4.10",
+=======
+    "wexample-wex-core>=31.4.11",
+>>>>>>> Stashed changes
 ]
 
 [project.readme]
