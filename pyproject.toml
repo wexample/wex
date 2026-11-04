@@ -27,7 +27,11 @@ dependencies = [
     "wexample-wex-addon-services-db>=12.7.22",
     "wexample-wex-addon-services-monitoring>=7.11.22",
     "wexample-wex-addon-services-platform>=13.5.16",
+<<<<<<< Updated upstream
     "wexample-wex-core>=31.4.10",
+=======
+    "wexample-wex-core>=31.4.11",
+>>>>>>> Stashed changes
 ]
 
 [project.readme]
