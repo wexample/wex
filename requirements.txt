@@ -83,9 +83,9 @@ cffi==2.1.1
     #   pynacl
 charset-normalizer==3.5.2
     # via requests
-claude-agent-sdk==0.2.178
+claude-agent-sdk==0.2.183
     # via wexample-wex-addon-ai
-click==8.5.0
+click==8.5.1
     # via
     #   black
     #   uvicorn
@@ -124,9 +124,9 @@ h11==0.16.0
     # via
     #   httpcore2
     #   uvicorn
-httpcore2==2.16.0
+httpcore2==2.16.2
     # via httpx2
-httpx2==2.16.0
+httpx2==2.16.2
     # via mcp
 idna==3.20
     # via
@@ -179,7 +179,7 @@ octodns==1.22.0
     #   octodns-cloudflare
     #   octodns-ovh
     #   wexample-wex-addon-master
-octodns-cloudflare==1.2.0
+octodns-cloudflare==2.0.0
     # via wexample-wex-addon-master
 octodns-ovh==1.2.0
     # via wexample-wex-addon-master
@@ -195,32 +195,32 @@ paramiko==5.1.0
     # via wexample-runner
 pathspec==1.1.1
     # via black
-pika==1.4.4
+pika==1.5.0
     # via wexample-queue
-platformdirs==4.14.4
+platformdirs==4.14.6
     # via
     #   black
     #   pylint
 psutil==7.2.2
     # via wexample-wex-core
-psycopg==3.3.8
+psycopg==3.3.9
     # via wexample-orm
-psycopg-binary==3.3.8
+psycopg-binary==3.3.9
     # via psycopg
 pycparser==3.12
     # via cffi
-pydantic==2.14.2
+pydantic==2.14.3
     # via
     #   mcp
     #   mcp-types
     #   wexample-config
-pydantic-core==2.50.2
+pydantic-core==2.50.4
     # via pydantic
 pyflakes==4.1.0
     # via autoflake
 pyjwt==2.15.1
     # via mcp
-pylint==4.1.3
+pylint==4.1.4
     # via wexample-wex-addon-dev-python
 pynacl==1.6.2
     # via paramiko
@@ -233,7 +233,7 @@ python-dotenv==1.2.4
     #   dotenv
     #   wexample-app
     #   wexample-filestate
-python-multipart==0.0.33
+python-multipart==0.0.34
     # via mcp
 pytokens==0.4.1
     # via black
@@ -268,23 +268,23 @@ rpds-py==2026.9.1
     #   referencing
 ruamel-yaml==0.19.1
     # via wexample-filestate
-ruff==0.17.3
+ruff==0.17.5
     # via wexample-filestate-python
 smmap==5.0.3
     # via gitdb
 sniffio==1.3.1
     # via claude-agent-sdk
-sqlalchemy==2.1.8
+sqlalchemy==2.1.9
     # via
     #   syrtis-python-client
     #   wexample-orm
-sse-starlette==3.6.0
+sse-starlette==3.7.0
     # via mcp
 starlette==1.10.0
     # via
     #   mcp
     #   sse-starlette
-syrtis-python-client==9.0.2
+syrtis-python-client==11.0.0
     # via wexample-wex-addon-ai
 tomli==2.5.0
     # via
@@ -331,7 +331,7 @@ wcwidth==0.9.4
     # via
     #   wexample-helpers
     #   wexample-prompt
-wexample-api==6.8.15
+wexample-api==6.8.16
     # via
     #   wexample-filestate-git
     #   wexample-filestate-python
@@ -343,13 +343,13 @@ wexample-app==19.8.1
     #   wexample-cli
     #   wexample-queue
     #   wexample-wex-core
-wexample-cli==2.3.5
+wexample-cli==2.3.6
     # via wexample-wex-core
-wexample-config==7.2.12
+wexample-config==7.2.13
     # via wexample-filestate
-wexample-event==8.0.15
+wexample-event==8.0.16
     # via wexample-filestate
-wexample-file==9.4.0
+wexample-file==9.4.1
     # via
     #   wexample-filestate
     #   wexample-wex-addon-process
@@ -375,7 +375,7 @@ wexample-filestate-python==9.4.1
     # via wexample-wex-addon-dev-python
 wexample-filestate-symfony==2.5.1
     # via wexample-wex-addon-dev-php
-wexample-helpers==20.8.0
+wexample-helpers==20.9.0
     # via
     #   syrtis-python-client
     #   wexample-api
@@ -390,37 +390,37 @@ wexample-helpers==20.8.0
     #   wexample-prompt
     #   wexample-queue
     #   wexample-runner
-wexample-helpers-git==7.3.1
+wexample-helpers-git==7.3.2
     # via
     #   wexample-filestate-git
     #   wexample-wex-core
-wexample-helpers-yaml==7.0.12
+wexample-helpers-yaml==7.0.13
     # via
     #   wexample-app
     #   wexample-filestate
-wexample-migration==10.2.4
+wexample-migration==10.2.5
     # via wexample-wex-addon-app
-wexample-orm==2.1.1
+wexample-orm==2.1.2
     # via syrtis-python-client
-wexample-prompt==16.2.1
+wexample-prompt==16.2.2
     # via
     #   wexample-api
     #   wexample-cli
     #   wexample-filestate
-wexample-queue==2.1.4
+wexample-queue==2.1.5
     # via wexample-wex-addon-process
-wexample-runner==10.2.1
+wexample-runner==10.2.2
     # via
     #   wexample-filestate
     #   wexample-wex-addon-app
-wexample-wex-addon-ai==19.1.21
+wexample-wex-addon-ai==19.2.0
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-dev-javascript
     #   wexample-wex-addon-dev-php
     #   wexample-wex-addon-dev-python
     #   wexample-wex-addon-master
-wexample-wex-addon-app==35.8.0
+wexample-wex-addon-app==35.9.0
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-ai
@@ -435,33 +435,33 @@ wexample-wex-addon-app==35.8.0
     #   wexample-wex-addon-services-db
     #   wexample-wex-addon-services-monitoring
     #   wexample-wex-addon-services-platform
-wexample-wex-addon-dev-css==6.0.113
+wexample-wex-addon-dev-css==6.0.114
     # via wex (pyproject.toml)
-wexample-wex-addon-dev-javascript==8.14.2
+wexample-wex-addon-dev-javascript==8.14.3
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-dev-php
-wexample-wex-addon-dev-php==12.25.2
+wexample-wex-addon-dev-php==12.25.3
     # via wex (pyproject.toml)
-wexample-wex-addon-dev-python==15.10.4
+wexample-wex-addon-dev-python==15.10.5
     # via wex (pyproject.toml)
 wexample-wex-addon-filestate==6.2.30
     # via wex (pyproject.toml)
-wexample-wex-addon-master==11.6.9
+wexample-wex-addon-master==11.6.10
     # via wex (pyproject.toml)
-wexample-wex-addon-package==8.0.2
+wexample-wex-addon-package==8.0.3
     # via wex (pyproject.toml)
-wexample-wex-addon-process==5.1.23
+wexample-wex-addon-process==5.1.24
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-ai
-wexample-wex-addon-services-collab==11.10.22
+wexample-wex-addon-services-collab==11.10.23
     # via wex (pyproject.toml)
-wexample-wex-addon-services-db==12.7.22
+wexample-wex-addon-services-db==12.7.23
     # via wex (pyproject.toml)
-wexample-wex-addon-services-monitoring==7.11.22
+wexample-wex-addon-services-monitoring==7.11.23
     # via wex (pyproject.toml)
-wexample-wex-addon-services-platform==13.5.16
+wexample-wex-addon-services-platform==13.5.17
     # via wex (pyproject.toml)
 wexample-wex-core==31.4.11
     # via
