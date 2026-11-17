@@ -363,11 +363,7 @@ wexample-filestate==18.2.0
     #   wexample-filestate-symfony
     #   wexample-migration
     #   wexample-wex-core
-<<<<<<< Updated upstream
-wexample-filestate-git==9.8.1
-=======
 wexample-filestate-git==9.9.0
->>>>>>> Stashed changes
     # via wexample-wex-core
 wexample-filestate-javascript==6.8.1
     # via wexample-wex-addon-dev-javascript
@@ -467,11 +463,7 @@ wexample-wex-addon-services-monitoring==7.11.22
     # via wex (pyproject.toml)
 wexample-wex-addon-services-platform==13.5.16
     # via wex (pyproject.toml)
-<<<<<<< Updated upstream
-wexample-wex-core==31.4.10
-=======
 wexample-wex-core==31.4.11
->>>>>>> Stashed changes
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-app
