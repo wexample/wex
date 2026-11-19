@@ -415,7 +415,7 @@ wexample-wex-addon-dev-javascript==8.15.0
     # via
     #   wex (pyproject.toml)
     #   wexample-wex-addon-dev-php
-wexample-wex-addon-dev-php==12.26.0
+wexample-wex-addon-dev-php==13.0.0
     # via wex (pyproject.toml)
 wexample-wex-addon-dev-python==15.11.0
     # via wex (pyproject.toml)
