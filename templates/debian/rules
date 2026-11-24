@@ -8,6 +8,11 @@ override_dh_auto_install:
 	mkdir -p debian/wex/usr/bin
 	ln -s ../lib/wex/bin/wex debian/wex/usr/bin/wex
 
+# debian/wex.wex-webhook.service, installed disabled; deb-systemd-invoke then
+# restarts it after an upgrade only where it was enabled.
+override_dh_installsystemd:
+	dh_installsystemd --name=wex-webhook --no-enable
+
 override_dh_fixperms:
 	dh_fixperms
 	chmod 0755 debian/wex/usr/lib/wex/bin/wex

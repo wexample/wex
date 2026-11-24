@@ -1,11 +1,16 @@
+# The webhook daemon deployments call (`core::webhook/listen`). Shipped
+# disabled: a host that deploys enables it once (`wex app::release/setup`, or
+# `systemctl enable --now wex-webhook`), and every upgrade of wex restarts it on
+# the new code. `--force` takes the port from a daemon started by hand before.
 [Unit]
 Description=Wex webhook HTTP daemon
-After=network.target
+After=network-online.target
+Wants=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/wex core::webhook/listen --port 7654
-Restart=on-failure
+ExecStart=/usr/bin/wex core::webhook/listen --port 7654 --force
+Restart=always
 RestartSec=5
 User=root
 Group=root
